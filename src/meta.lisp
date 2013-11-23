@@ -1,8 +1,9 @@
 (in-package :crane)
+(annot:enable-annot-syntax)
 
 (defclass table-class (closer-mop:standard-class)
   ((table-name :reader table-class-name :initarg :table-name)
-   (abstract-p :reader table-class-abstract-p :initarg :abstract-p :initform nil)))
+   (abstractp :reader table-class-abstract-p :initarg :abstractp :initform nil)))
 
 (defmethod table-name ((class table-class))
   (if (slot-boundp class 'table-name)
@@ -12,11 +13,11 @@
 (defmethod table-name ((class-name symbol))
   (table-name (find-class class-name)))
 
-(defmethod abstract-p ((class table-class))
+(defmethod abstractp ((class table-class))
   (car (table-class-abstract-p class)))
 
-(defmethod abstract-p ((class-name symbol))
-  (abstract-p (find-class class-name)))
+(defmethod abstractp ((class-name symbol))
+  (abstractp (find-class class-name)))
 
 (defmethod closer-mop:validate-superclass ((class table-class) (super closer-mop:standard-class))
   t)
@@ -36,8 +37,6 @@
    (col-index-p :initarg :col-index-p
              :reader  col-index-p
              :initform nil)
-   (col-name :initarg :col-name
-             :reader  col-name)
    (col-default :initarg :col-default
              :reader  col-default)))
 
@@ -50,8 +49,6 @@
              :reader  col-unique-p)
    (col-index-p :initarg :col-index-p
              :reader  col-index-p)
-   (col-name :initarg :col-name
-             :reader  col-name)
    (col-default :initarg :col-default
              :reader  col-default)))
 
@@ -83,26 +80,36 @@
           (slot-value effective-slot-definition 'col-index-p)
           (col-index-p (first direct-slot-definitions))
           
-          (slot-value effective-slot-definition 'col-name)
-          (if (slot-boundp (first direct-slot-definitions) 'col-name)
-              (col-name (first direct-slot-definitions))
-              slot-name)
-
           (slot-value effective-slot-definition 'col-default)
           (if (slot-boundp (first direct-slot-definitions) 'col-default)
               (col-default (first direct-slot-definitions))
               nil))
     effective-slot-definition))
 
-(defmethod digest-slots ((class table-class))
-  (loop for slot in (closer-mop:class-slots class) collecting
-        (list :name (closer-mop:slot-definition-name slot)
-              :sql-name (col-name slot)
-              :type (col-type slot)
-              :null-p (col-null-p slot)
-              :unique-p (col-null-p slot)
-              :index-p (col-index-p slot)
-              :default (col-default slot))))
+(defmethod digest ((class table-class))
+  "Serialize a class's options and slots' options into a plist"
+  (list nil ;; class diffs
+        (loop for slot in (closer-mop:class-slots class) collecting
+            (list :name (closer-mop:slot-definition-name slot)
+                  :type (col-type slot)
+                  :null-p (col-null-p slot)
+                  :unique-p (col-null-p slot)
+                  :index-p (col-index-p slot)
+                  :default (col-default slot)))))
 
-(defmethod digest-slots ((class-name symbol))
-  (digest-slots (find-class class-name)))
+@export
+(defmethod digest ((class-name symbol))
+  (digest (find-class class-name)))
+
+(defun diff-slot (slot-a slot-b)
+  "Compute the difference between two slot digests.
+See DIGEST."
+  (crane.utils:diff-plist (cdr slot-a) (cdr slot-b)))
+
+@export
+(defun diff-digest (digest-a digest-b)
+  "Compute the difference between two digests.
+See DIGEST."
+  (mapcar #'diff-slot
+          (sort (second digest-a) #'string<=)
+          (sort (second digest-b) #'string<=)))
