@@ -11,6 +11,7 @@
                 :serial t
                 :components
                 ((:file "crane")
+                 (:file "config")
                  (:module "utils"
                   :components
                   ((:file "utils")))
