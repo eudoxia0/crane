@@ -41,7 +41,10 @@
                 :reader  col-index-p
                 :initform nil)
    (col-default :initarg :col-default
-                :reader  col-default)))
+                :reader  col-default)
+   (col-check :initarg :col-check
+              :reader col-check
+              :initarg nil)))
 
 (defclass table-class-effective-slot-definition (closer-mop:standard-effective-slot-definition)
   ((col-type :initarg :col-type
@@ -55,7 +58,9 @@
    (col-index-p :initarg :col-index-p
                 :reader  col-index-p)
    (col-default :initarg :col-default
-                :reader  col-default)))
+                :reader  col-default)
+   (col-check :initarg :col-check
+              :reader col-check)))
 
 ;;; Common Lisp is a vast ocean of possibilities, stretching infinitely
 ;;; and with no horizon... And here I am pretending to understand
@@ -88,23 +93,30 @@
           (slot-value effective-slot-definition 'col-index-p)
           (col-index-p (first direct-slot-definitions))
           
-          (slot-value effective-slot-definition 'col-default)
-          (if (slot-boundp (first direct-slot-definitions) 'col-default)
-              (col-default (first direct-slot-definitions))
+          (slot-value effective-slot-definition 'col-check)
+          (if (slot-boundp (first direct-slot-definitions) 'col-check)
+              (col-check (first direct-slot-definitions))
               nil))
+    (if (slot-boundp (first direct-slot-definitions) 'col-default)
+        (setf (slot-value effective-slot-definition 'col-default)
+              (col-default (first direct-slot-definitions))))
     effective-slot-definition))
 
 (defmethod digest ((class table-class))
   "Serialize a class's options and slots' options into a plist"
   (list nil ;; class diffs
         (loop for slot in (closer-mop:class-slots class) collecting
-            (list :name (closer-mop:slot-definition-name slot)
-                  :type (col-type slot)
-                  :null-p (col-null-p slot)
-                  :unique-p (col-null-p slot)
-                  :primar-p (col-primar-p slot)
-                  :index-p (col-index-p slot)
-                  :default (col-default slot)))))
+            (append
+             (list :name (closer-mop:slot-definition-name slot)
+                   :type (col-type slot)
+                   :null-p (col-null-p slot)
+                   :unique-p (col-null-p slot)
+                   :primar-p (col-primary-p slot)
+                   :index-p (col-index-p slot)
+                   :check (col-check slot))
+             (if (slot-boundp slot 'col-default)
+                 (list :default (col-default slot))
+                 nil)))))
 
 @export
 (defmethod digest ((class-name symbol))
