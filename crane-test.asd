@@ -8,7 +8,11 @@
   :license "LLGPL"
   :depends-on (:crane :fiveam)
   :components ((:module "t"
+                :serial t
                 :components
                 ((:file "crane")
+                 (:module "utils"
+                  :components
+                  ((:file "utils")))
                  (:file "meta"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))

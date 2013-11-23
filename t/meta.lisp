@@ -11,12 +11,12 @@
 (defclass table-b ()
   ()
   (:metaclass crane:table-class)
-  (:abstract-p t))
+  (:abstractp t))
 
 (defclass table-c ()
   ()
   (:metaclass crane:table-class)
-  (:abstract-p t)
+  (:abstractp t)
   (:table-name table--c))
 
 (test find-tables
@@ -47,6 +47,6 @@
     (closer-mop:ensure-finalized (find-class 'table-d)))
   (finishes
     (closer-mop:class-slots (find-class 'table-d)))
-  (finishes (crane::digest-slots (find-class 'table-d))))
+  (finishes (crane::digest (find-class 'table-d))))
 
 (run! 'column-slots)
