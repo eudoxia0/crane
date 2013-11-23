@@ -2,19 +2,19 @@
 (annot:enable-annot-syntax)
 
 (defun get-configuration ()
-  (aif (getf (envy:config) :crane)
+  (aif (getf (envy:config *package*) :crane)
        it
        (error 'crane.errors:no-configuration-error)))
 
 (defun get-config-value (property)
   (aif (getf (get-configuration) property)
        it
-       (error 'configuration-error :text
-              "The configuration for the property ~A was not found."
+       (error 'crane.errors:configuration-error
+              :text "The configuration for the property ~A was not found."
               property)))
 
 (defun get-migration-dir ()
-  (ensure-directories-exist (get-config-value :migration-directory)))
+  (ensure-directories-exist (get-config-value :migrations-directory)))
 
 (defun migration-history-file (table-name)
   "Return the pathname to the file containing the migration

@@ -22,9 +22,9 @@
                   ((:file "utils")
                    (:file "mop-utils")))
                  (:file "errors")
+                 (:file "migration")
                  (:file "meta")
-                 (:file "table")
-                 (:file "migration"))))
+                 (:file "table"))))
   :description "An ORM for Common Lisp."
   :long-description
   #.(with-open-file (stream (merge-pathnames
