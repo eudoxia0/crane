@@ -24,7 +24,8 @@
                  (:file "errors")
                  (:file "migration")
                  (:file "meta")
-                 (:file "table"))))
+                 (:file "table")
+                 (:file "crane"))))
   :description "An ORM for Common Lisp."
   :long-description
   #.(with-open-file (stream (merge-pathnames
