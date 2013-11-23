@@ -11,13 +11,20 @@
                :cl-json
                :anaphora
                :s-sql
-               :envy)
+               :envy
+               :cl-annot)
   :components ((:module "src"
                 :serial t
                 :components
                 ((:file "package")
+                 (:module "utils"
+                  :components
+                  ((:file "utils")
+                   (:file "mop-utils")))
+                 (:file "errors")
                  (:file "meta")
-                 (:file "table"))))
+                 (:file "table")
+                 (:file "migration"))))
   :description "An ORM for Common Lisp."
   :long-description
   #.(with-open-file (stream (merge-pathnames
