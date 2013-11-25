@@ -19,4 +19,4 @@
          ,slots
          ,@options
          (:metaclass crane:table-class))
-       (closer-mop:ensure-class (find-class (quote ,name))))))
+       (closer-mop:finalize-inheritance (find-class (quote ,name))))))
