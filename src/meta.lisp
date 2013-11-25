@@ -136,6 +136,6 @@ See DIGEST."
           (sort (second digest-b) #'string<=)))
 
 (defmethod initialize-instance :after ((class table-class) &key)
-  (if (migration-history-p (table-name class))
+  (if (crane.migration:migration-history-p (table-name class))
       (format t "Class already defined~&")
       (format t "Class defined for the first time~&")))
