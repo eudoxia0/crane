@@ -1,3 +1,45 @@
+#+title: Crane Manual
+
+* Overview
+
+Crane is an ORM for Common Lisp. It's intended to provide a simple,
+object-oriented interface to relational databases, and is inspired
+by the SQLAlchemy ORM for Python.
+
+** Structure
+
+#+begin_src ditaa :file img/dia.png
+                       +-----------+
+                       | ORM Layer |
+                       +-----+-----+
+                             |
+                         +---+---+
+                         | S-SQL |
+                         +---+---+
+                             |
+                       +-----+-----+
+                       |  cl-dbi   |
+                       +-----+-----+
+                             |
+     +-----------+----------++--------+--------------+
+     |           |          |         |              |
+     v           v          v         v              v
++----------+ +--------+ +-------+ +--------+ +---------------+
+|      {s} | |    {s} | |   {s} | |    {s} | |           {s} |
+| Postgres | | SQLite | | MySQL | | Oracle | | MS SQL Server |
++----------+ +--------+ +-------+ +--------+ +---------------+
+#+end_src
+
+Crane mainly uses three libraries:
+
+- [[http://marijnhaverbeke.nl/postmodern/s-sql.html][S-SQL]] :: A DSL for safely generating SQL, originally created for the
+           Postmodern project, an ORM for the PostgreSQL RDBMS.
+- [[https://github.com/fukamachi/cl-dbi][CL-DBI]] :: A backend-independent interface to relational DBMSs. At
+            present, only PostgreSQL, SQLite version 3, and MySQL are
+            supported, but support for Oracle and MS SQL Server
+            can be added.
+- [[https://github.com/fukamachi/envy][Envy]] :: A configuration manager.
+
 * Migrations
 
 Your schema will change, and this is a fact. Most ORMs hope the users
