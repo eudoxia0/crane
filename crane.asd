@@ -8,7 +8,6 @@
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
   :depends-on (:closer-mop
-               :cl-json
                :anaphora
                :s-sql
                :envy
