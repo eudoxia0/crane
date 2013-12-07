@@ -6,7 +6,7 @@
 (defsystem crane
   :version "0.1"
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
-  :license "LLGPL"
+  :license "MIT"
   :depends-on (:closer-mop
                :cl-json
                :anaphora

@@ -5,8 +5,10 @@
 
 (defsystem crane-test
   :author "Fernando Borretti"
-  :license "LLGPL"
-  :depends-on (:crane :fiveam)
+  :license "MIT"
+  :depends-on (:crane
+               :fiveam
+               :cl-fad)
   :components ((:module "t"
                 :serial t
                 :components
