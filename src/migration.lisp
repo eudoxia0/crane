@@ -36,12 +36,19 @@ history for the table `table-name`."
     (migration-history-pathname table-name))))
 
 @export
+(defun get-last-migration (table-name)
+  (first (last (read-migration-history))))
+
+@export
 (defun insert-migration (table-name digest)
   "Insert a new diff to the migration history"
   (with-open-file (stream (migration-history-pathname table-name)
                           :direction :output
                           :if-does-not-exist :create)
-    (format stream "~A" digest)))
+    (if (migration-history-p table-name)
+        (format stream "~A" (list digest))
+        (format stream "~A" (append (read-migration-history table-name)
+                                    (list digest))))))
 
 @export
 (defun rename-migration-history (table-name new-name)

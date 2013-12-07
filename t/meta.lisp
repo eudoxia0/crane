@@ -8,22 +8,20 @@
     :description "Test that table metaclass slots work.")
 (in-suite table-slots)
 
-(test create-tables
-  (finishes
-    (defclass table-a ()
-      ((field-a :col-type 'string :col-null-p t))
-      (:metaclass crane:table-class))
+(defclass table-a ()
+  ((field-a :col-type 'string :col-null-p t))
+  (:metaclass crane:table-class))
 
-    (defclass table-b ()
-      ((field-a :col-type 'string :col-null-p t))
-      (:metaclass crane:table-class)
-      (:abstractp t))
-    
-    (defclass table-c ()
-      ((field-a :col-type 'string :col-null-p t))
-      (:metaclass crane:table-class)
-      (:abstractp t)
-      (:table-name table--c))))
+(defclass table-b ()
+  ((field-a :col-type 'string :col-null-p t))
+  (:metaclass crane:table-class)
+  (:abstractp t))
+
+(defclass table-c ()
+  ((field-a :col-type 'string :col-null-p t))
+  (:metaclass crane:table-class)
+  (:abstractp t)
+  (:table-name table--c))
 
 (test find-tables
   (finishes
