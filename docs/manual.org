@@ -32,13 +32,67 @@ by the SQLAlchemy ORM for Python.
 
 Crane mainly uses three libraries:
 
-- [[http://marijnhaverbeke.nl/postmodern/s-sql.html][S-SQL]] :: A DSL for safely generating SQL, originally created for the
+- [[http://marijnhaverbeke.nl/postmodern/s-sql.html][S-SQL]] :: A DSL for safely generating SQL. Originally created for the
            Postmodern project, an ORM for the PostgreSQL RDBMS.
 - [[https://github.com/fukamachi/cl-dbi][CL-DBI]] :: A backend-independent interface to relational DBMSs. At
             present, only PostgreSQL, SQLite version 3, and MySQL are
             supported, but support for Oracle and MS SQL Server
             can be added.
 - [[https://github.com/fukamachi/envy][Envy]] :: A configuration manager.
+
+* Tables
+
+Crane uses the metaobject protocol to bind SQL tables and CLOS objects.
+
+SQL tables belong to the =TABLE-CLASS= metaclass, and can be defined as follows:
+
+#+begin_src lisp
+  (defclass [name] ([super]*)
+    ([field]*)
+    (:abstractp {t|nil}))
+#+end_src
+
+For example:
+
+#+begin_src lisp
+  (crane:defclass enemy ()
+    ((name :col-type 'string
+           :col-pk t)
+     (age :col-type 'integer
+          :col-check '(:> 'age 12))
+     (address :col-type 'string
+              :col-null-p t
+              :col-foreign '(important-addresses :cascade :cascade))
+     (fatal-weakness
+              :col-type 'text
+              :col-default "None")
+     (identifying-color
+              :col-type '(string 20)
+              :col-unique t
+              :foreign '(colors name)))
+    (:metaclass crane:table-class))
+#+end_src
+
+** The =deftable= macro
+
+Crane provides a simpler way to define tables through its =deftable=
+macro:
+
+#+begin_src lisp
+  (deftable [name] ([super]*)
+    [field-or-option]*)
+#+end_src
+
+Compare the following code to the previous example:
+
+#+begin_src lisp
+  (deftable enemy ()
+    (name :type string :pk t)
+    (age :type integer :check '(:> 'age 12))
+    (address :type 'string :nullp t :foreign (important-addresses :cascade :cascade))
+    (fatal-weakness :type text :default "None")
+    (identifying-color 'type (string 20) :unique t :foreign (colors name)))
+#+end_src
 
 * Migrations
 
