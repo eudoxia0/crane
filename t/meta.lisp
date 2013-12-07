@@ -1,23 +1,29 @@
 (in-package :crane-test)
 
+;; Clean slate
+;(fad:delete-directory-and-files
+; (crane.migration::get-migration-dir))
+
 (def-suite table-slots
     :description "Test that table metaclass slots work.")
 (in-suite table-slots)
 
-(defclass table-a ()
-  ()
-  (:metaclass crane:table-class))
+(test create-tables
+  (finishes
+    (defclass table-a ()
+      ((field-a :col-type 'string :col-null-p t))
+      (:metaclass crane:table-class))
 
-(defclass table-b ()
-  ()
-  (:metaclass crane:table-class)
-  (:abstractp t))
-
-(defclass table-c ()
-  ()
-  (:metaclass crane:table-class)
-  (:abstractp t)
-  (:table-name table--c))
+    (defclass table-b ()
+      ((field-a :col-type 'string :col-null-p t))
+      (:metaclass crane:table-class)
+      (:abstractp t))
+    
+    (defclass table-c ()
+      ((field-a :col-type 'string :col-null-p t))
+      (:metaclass crane:table-class)
+      (:abstractp t)
+      (:table-name table--c))))
 
 (test find-tables
   (finishes
@@ -36,15 +42,12 @@
     :description "Test that table column options work.")
 (in-suite column-slots)
 
-(defclass table-d ()
-  ((field-a :col-type 'string :col-null-p t)
-   (field-b :col-type 'integer :col-default 1
+(defclass table-d (table-a)
+  ((field-b :col-type 'integer :col-default 1
             :col-unique-p t))
   (:metaclass crane:table-class))
 
 (test column-options
-  (finishes
-    (closer-mop:ensure-finalized (find-class 'table-d)))
   (finishes
     (closer-mop:class-slots (find-class 'table-d)))
   (finishes (crane::digest (find-class 'table-d))))
