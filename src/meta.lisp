@@ -102,21 +102,29 @@
               (col-default (first direct-slot-definitions))))
     effective-slot-definition))
 
+(defun digest-slot (slot)
+  (append
+   (list :name (closer-mop:slot-definition-name slot)
+         :type (col-type slot)
+         :null-p (col-null-p slot)
+         :unique-p (col-null-p slot)
+         :primar-p (col-primary-p slot)
+         :index-p (col-index-p slot)
+         :check (col-check slot))
+   (if (slot-boundp slot 'col-default)
+       (list :default (col-default slot))
+       nil)))
+
 (defmethod digest ((class table-class))
   "Serialize a class's options and slots' options into a plist"
-  (list nil ;; class diffs
-        (loop for slot in (closer-mop:class-slots class) collecting
-            (append
-             (list :name (closer-mop:slot-definition-name slot)
-                   :type (col-type slot)
-                   :null-p (col-null-p slot)
-                   :unique-p (col-null-p slot)
-                   :primar-p (col-primary-p slot)
-                   :index-p (col-index-p slot)
-                   :check (col-check slot))
-             (if (slot-boundp slot 'col-default)
-                 (list :default (col-default slot))
-                 nil)))))
+  (list nil
+        (let ((slots (closer-mop:class-slots class)))
+          (if slots
+              (mapcar #'digest-slot
+                (closer-mop:class-slots class))
+              (error 'crane.errors:empty-table
+                      :text "The table ~A has no slots."
+                      (table-name class))))))
 
 @export
 (defmethod digest ((class-name symbol))
@@ -136,6 +144,13 @@ See DIGEST."
           (sort (second digest-b) #'string<=)))
 
 (defmethod initialize-instance :after ((class table-class) &key)
+  (format t "Initializing class~&")
+  (closer-mop:finalize-inheritance class)
   (if (crane.migration:migration-history-p (table-name class))
-      (format t "Class already defined~&")
-      (format t "Class defined for the first time~&")))
+      (progn
+        (format t "Class already defined. Comparing digests...~&")
+        )
+      (progn
+        (format t "Class defined for the first time. Creating file...~&")
+        (crane.migration:insert-migration (table-name class)
+                                          (digest class)))))
