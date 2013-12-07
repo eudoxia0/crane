@@ -139,9 +139,10 @@ See DIGEST."
 (defun diff-digest (digest-a digest-b)
   "Compute the difference between two digests.
 See DIGEST."
-  (mapcar #'diff-slot
-          (sort (second digest-a) #'string<=)
-          (sort (second digest-b) #'string<=)))
+  (remove-if #'null
+             (mapcar #'diff-slot
+                     (sort (second digest-a) #'string<=)
+                     (sort (second digest-b) #'string<=))))
 
 (defmethod initialize-instance :after ((class table-class) &key)
   (format t "Initializing class~&")
@@ -149,7 +150,11 @@ See DIGEST."
   (if (crane.migration:migration-history-p (table-name class))
       (progn
         (format t "Class already defined. Comparing digests...~&")
-        )
+        (aif (diff-digest
+              (digest class)
+              (crane.migration:get-last-migration (table-name class)))
+            (crane.migration:migrate class if)
+            (format t "No differences.~&")))
       (progn
         (format t "Class defined for the first time. Creating file...~&")
         (crane.migration:insert-migration (table-name class)

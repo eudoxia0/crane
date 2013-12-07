@@ -37,7 +37,22 @@ history for the table `table-name`."
 
 @export
 (defun get-last-migration (table-name)
-  (first (last (read-migration-history))))
+  (first (last (read-migration-history table-name))))
+
+(defun readable-printer (plist))
+
+(defun serialize-plist (stream plist)
+  (format stream "(~{:~A ~A~#[~:; ~]~})" plist))
+
+(defun serialize (stream list)
+  (format stream "(")
+  (dolist (digest list)
+    (format stream
+            "(~A ~A)"
+            nil ;(serialize-plist stream (car digest))
+            (dolist (plist (cadr digest))
+              (serialize-plist stream plist))))
+  (format stream ")"))
 
 @export
 (defun insert-migration (table-name digest)
@@ -46,10 +61,16 @@ history for the table `table-name`."
                           :direction :output
                           :if-does-not-exist :create)
     (if (migration-history-p table-name)
-        (format stream "~A" (list digest))
-        (format stream "~A" (append (read-migration-history table-name)
-                                    (list digest))))))
+        (progn
+          (format t "Creating migration history")
+          (serialize stream (list digest)))
+        (serialize stream (append (read-migration-history table-name)
+                                  (list digest))))))
 
 @export
 (defun rename-migration-history (table-name new-name)
   (rename-file (migration-history-pathname table-name) new-name))
+
+@export
+(defun migrate (table-class digest)
+  (format t "Migrating!~&"))
