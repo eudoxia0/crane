@@ -40,7 +40,7 @@ history for the table `table-name`."
   "Insert a new diff to the migration history"
   (with-open-file (stream (migration-history-pathname table-name)
                           :direction :output
-                          :if-does-not-exist :error)
+                          :if-does-not-exist :create)
     (format stream "~A" digest)))
 
 @export
