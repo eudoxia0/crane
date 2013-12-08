@@ -133,7 +133,10 @@
 (defun diff-slot (slot-a slot-b)
   "Compute the difference between two slot digests.
 See DIGEST."
-  (crane.utils:diff-plist (cdr slot-a) (cdr slot-b)))
+  (crane.utils:diff-plist slot-a slot-b :test #'equal))
+
+(defun sort-slot-list (list)
+  list)
 
 @export
 (defun diff-digest (digest-a digest-b)
@@ -141,8 +144,8 @@ See DIGEST."
 See DIGEST."
   (remove-if #'null
              (mapcar #'diff-slot
-                     (sort (second digest-a) #'string<=)
-                     (sort (second digest-b) #'string<=))))
+                     (sort-slot-list (second digest-a))
+                     (sort-slot-list (second digest-b)))))
 
 (defmethod initialize-instance :after ((class table-class) &key)
   (format t "Initializing class~&")

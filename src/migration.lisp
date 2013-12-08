@@ -39,10 +39,8 @@ history for the table `table-name`."
 (defun get-last-migration (table-name)
   (first (last (read-migration-history table-name))))
 
-(defun readable-printer (plist))
-
-(defun serialize-plist (stream plist)
-  (format stream "(~{:~A ~A~#[~:; ~]~})" plist))
+(defun serialize-plist (plist)
+  (format nil "(~{:~A ~A~#[~:; ~]~})" plist))
 
 (defun serialize (stream list)
   (format stream "(")
@@ -50,8 +48,9 @@ history for the table `table-name`."
     (format stream
             "(~A ~A)"
             nil ;(serialize-plist stream (car digest))
-            (dolist (plist (cadr digest))
-              (serialize-plist stream plist))))
+            (mapcar #'(lambda (plist)
+                        (serialize-plist plist))
+                    (cadr digest))))
   (format stream ")"))
 
 @export
