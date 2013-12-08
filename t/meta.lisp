@@ -12,13 +12,13 @@
   ((field-a :col-type 'string :col-null-p t))
   (:metaclass crane:table-class))
 
-(defclass table-b ()
-  ((field-a :col-type 'string :col-null-p t))
+(defclass table-b (table-a)
+  ()
   (:metaclass crane:table-class)
   (:abstractp t))
 
-(defclass table-c ()
-  ((field-a :col-type 'string :col-null-p t))
+(defclass table-c (table-b)
+  ()
   (:metaclass crane:table-class)
   (:abstractp t)
   (:table-name table--c))
