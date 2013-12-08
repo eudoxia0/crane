@@ -9,15 +9,14 @@
 
 (defconfig |dev|
   (list
-   :debug T
-   :crane (list
-            :migrations-directory
-               (merge-pathnames
+   :debug t
+   :crane `(:migrations-directory
+              ,(merge-pathnames
                 #p"t/migrations/"
                 (asdf:component-pathname (asdf:find-system :crane-test)))
             :databases
-              (list :name "main"
-                    :type :sqlite3
-                    :name ":memory:"))))
+              (:name "main"
+               :type :sqlite3
+               :name ":memory:"))))
 
 (setf (env-var "CRANE_TEST_ENV") "dev")
