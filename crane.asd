@@ -16,11 +16,12 @@
                 :serial t
                 :components
                 ((:file "package")
+                 (:file "errors")
                  (:module "utils"
                   :components
                   ((:file "utils")
                    (:file "mop-utils")))
-                 (:file "errors")
+                 (:file "connect")
                  (:file "migration")
                  (:file "meta")
                  (:file "table")

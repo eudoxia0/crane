@@ -1,19 +1,7 @@
 (defpackage :crane.migration
-  (:use :cl :anaphora))
+  (:use :cl :anaphora :crane.utils))
 (in-package :crane.migration)
 (annot:enable-annot-syntax)
-
-(defun get-configuration ()
-  (aif (getf (envy:config *package*) :crane)
-       it
-       (error 'crane.errors:no-configuration-error)))
-
-(defun get-config-value (property)
-  (aif (getf (get-configuration) property)
-       it
-       (error 'crane.errors:configuration-error
-              :text "The configuration for the property ~A was not found."
-              property)))
 
 (defun get-migration-dir ()
   (ensure-directories-exist (get-config-value :migrations-directory)))
@@ -47,7 +35,7 @@ history for the table `table-name`."
   (dolist (digest list)
     (format stream
             "(~A ~A)"
-            nil ;(serialize-plist stream (car digest))
+            :class-opts-placeholder ;; Might not actually use this
             (mapcar #'(lambda (plist)
                         (serialize-plist plist))
                     (cadr digest))))
@@ -73,3 +61,7 @@ history for the table `table-name`."
 @export
 (defun migrate (table-class digest)
   (format t "Migrating!~&"))
+
+@export
+(defun create-table (table-name digest)
+  )

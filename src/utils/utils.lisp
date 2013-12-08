@@ -1,5 +1,5 @@
 (defpackage :crane.utils
-  (:use :cl))
+  (:use :cl :anaphora))
 (in-package :crane.utils)
 (annot:enable-annot-syntax)
 
@@ -24,3 +24,17 @@ the result as a list of ([property] [old value] [new value])"
     (let ((seq (make-array (file-length stream) :element-type 'character :fill-pointer t)))
       (setf (fill-pointer seq) (read-sequence seq stream))
       seq)))
+
+@export
+(defun get-configuration ()
+  (aif (getf (envy:config *package*) :crane)
+       it
+       (error 'crane.errors:no-configuration-error)))
+
+@export
+(defun get-config-value (property)
+  (aif (getf (get-configuration) property)
+       it
+       (error 'crane.errors:configuration-error
+              :text "The configuration for the property ~A was not found."
+              property)))
