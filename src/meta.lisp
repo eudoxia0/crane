@@ -158,7 +158,7 @@ See DIGEST."
               (crane.migration:get-last-migration (table-name class)))
             (crane.migration:migrate class if)
             (format t "No differences.~&")))
-      (progn
+      (let ((digest (digest class)))
         (format t "Class defined for the first time. Creating file...~&")
-        (crane.migration:insert-migration (table-name class)
-                                          (digest class)))))
+        (crane.migration:insert-migration (table-name class) digest)
+        (crane.migration:create-table (table-name class) digest))))
