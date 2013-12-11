@@ -147,18 +147,21 @@ See DIGEST."
                      (sort-slot-list (second digest-a))
                      (sort-slot-list (second digest-b)))))
 
-(defmethod initialize-instance :after ((class table-class) &key)
+@export
+(defun build (table-name)
   (format t "Initializing class~&")
-  (closer-mop:finalize-inheritance class)
-  (if (crane.migration:migration-history-p (table-name class))
+  (if (crane.migration:migration-history-p table-name)
       (progn
         (format t "Class already defined. Comparing digests...~&")
         (aif (diff-digest
-              (digest class)
-              (crane.migration:get-last-migration (table-name class)))
-            (crane.migration:migrate class if)
+              (digest table-name)
+              (crane.migration:get-last-migration table-name))
+            (crane.migration:migrate (find-class table-name) it)
             (format t "No differences.~&")))
-      (let ((digest (digest class)))
+      (let ((digest (digest table-name)))
         (format t "Class defined for the first time. Creating file...~&")
-        (crane.migration:insert-migration (table-name class) digest)
-        (crane.migration:create-table (table-name class) digest))))
+        (crane.migration:insert-migration  table-name digest)
+        (crane.migration:create-table  table-name digest))))
+
+(defmethod initialize-instance :after ((class table-class) &key)
+  (build (table-name class)))
