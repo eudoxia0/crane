@@ -11,10 +11,12 @@
         :check    :col-check))
 
 @doc "Take a plist like (:col-type 'string :col-null-p t) and remove the
-prefixes on the keys."
+prefixes on the keys. Turn 'deftable slot properties' into 'table-class slot
+properties'"
 (defun process-slot (slot)
-  (iter (for (key val) on slot by #'cddr)
-        (appending (list (getf +slot-mapping+ key) val))))
+  (cons (car slot)
+        (iter (for (key val) on (cdr slot) by #'cddr)
+          (appending (list (getf +slot-mapping+ key) val)))))
         
 
 @doc "To minimize the number of parentheses, both slots and table options come
@@ -26,9 +28,7 @@ symbols, table options are keywords."
     (iter (for item in slots-and-options)
       (if (eq (symbol-package (car item)) (find-package :keyword))
           (push item options)
-          (push (cons (car item)
-                        (process-slot (cdr item)))
-                slots)))
+          (push (process-slot item) slots)))
     (list slots options)))
 
 @export
