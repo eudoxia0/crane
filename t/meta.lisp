@@ -11,7 +11,7 @@
 (test create-tables
   (finishes
     (deftable table-a ()
-      (field-a :col-type 'string :col-null-p t))
+      (field-a :type 'string :nullp t))
     
     (deftable table-b (table-a)
       (:abstractp t))
@@ -31,8 +31,6 @@
       (equal (table-name 'table-b) 'table-b)
       (equal (table-name 'table-c) 'table--c)))
 
-(run! 'table-slots)
-
 (def-suite column-slots
     :description "Test that table column options work.")
 (in-suite column-slots)
@@ -40,10 +38,11 @@
 (test column-options
   (finishes
     (deftable table-d (table-a)
-      (field-b :col-type 'integer :col-default 1
-                       :col-unique-p t)))
+      (field-b :type 'integer :default 1
+               :unique-p t)))
   (finishes
     (closer-mop:class-slots (find-class 'table-d)))
   (finishes (crane::digest (find-class 'table-d))))
 
+(run! 'table-slots)
 (run! 'column-slots)
