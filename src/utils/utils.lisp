@@ -32,9 +32,10 @@ the result as a list of ([property] [old value] [new value])"
        (error 'crane.errors:no-configuration-error)))
 
 @export
-(defun get-config-value (property)
-  (aif (getf (get-configuration) property)
+(defun get-config-value (key)
+  (aif (getf (get-configuration) key)
        it
        (error 'crane.errors:configuration-error
-              :text "The configuration for the property ~A was not found."
-              property)))
+              :key key
+              :text "This key is not configured."
+              key)))
