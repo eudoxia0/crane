@@ -8,16 +8,18 @@
     :description "Test that table metaclass slots work.")
 (in-suite table-slots)
 
-(deftable table-a ()
-  (field-a :col-type 'string :col-null-p t))
-
-(deftable table-b (table-a)
-  (:abstractp t))
-
-(deftable table-c (table-a)
-  (:abstractp t)
-  (:table-name table--c))
-
+(test create-tables
+  (finishes
+    (deftable table-a ()
+      (field-a :col-type 'string :col-null-p t))
+    
+    (deftable table-b (table-a)
+      (:abstractp t))
+    
+    (deftable table-c (table-a)
+      (:abstractp t)
+      (:table-name table--c))))
+    
 (test find-tables
   (finishes
     (find-class 'table-a)
@@ -35,11 +37,11 @@
     :description "Test that table column options work.")
 (in-suite column-slots)
 
-(deftable table-d (table-a)
-  (field-b :col-type 'integer :col-default 1
-           :col-unique-p t))
-
 (test column-options
+  (finishes
+    (deftable table-d (table-a)
+      (field-b :col-type 'integer :col-default 1
+                       :col-unique-p t)))
   (finishes
     (closer-mop:class-slots (find-class 'table-d)))
   (finishes (crane::digest (find-class 'table-d))))
