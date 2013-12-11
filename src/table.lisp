@@ -20,4 +20,4 @@
          ,@options
          (:metaclass crane:table-class))
        (closer-mop:finalize-inheritance (find-class (quote ,name)))
-       (crane.meta:build name))))
+       (crane:build name))))
