@@ -162,6 +162,3 @@ See DIGEST."
         (format t "Class defined for the first time. Creating file...~&")
         (crane.migration:insert-migration  table-name digest)
         (crane.migration:create-table  table-name digest))))
-
-(defmethod initialize-instance :after ((class table-class) &key)
-  (build (table-name class)))
