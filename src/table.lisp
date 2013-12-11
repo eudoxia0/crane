@@ -6,7 +6,7 @@
 (defun separate-slots-and-options (slots-and-options)
   (let ((slots (list))
         (options (list)))
-    (loop for item in slots-and-options do
+    (iter (for item in slots-and-options)
       (if (eq (symbol-package (car item)) (find-package :keyword))
           (push item options)
           (push (process-slot item) slots)))
@@ -19,4 +19,5 @@
          ,slots
          ,@options
          (:metaclass crane:table-class))
-       (closer-mop:finalize-inheritance (find-class (quote ,name))))))
+       (closer-mop:finalize-inheritance (find-class (quote ,name)))
+       (crane.meta:build name))))

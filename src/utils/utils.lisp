@@ -1,5 +1,5 @@
 (defpackage :crane.utils
-  (:use :cl :anaphora))
+  (:use :cl :anaphora :iter))
 (in-package :crane.utils)
 (annot:enable-annot-syntax)
 

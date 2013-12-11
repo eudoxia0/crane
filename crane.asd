@@ -11,6 +11,7 @@
                :anaphora
                :s-sql
                :envy
+               :iterate
                :cl-annot)
   :components ((:module "src"
                 :serial t
