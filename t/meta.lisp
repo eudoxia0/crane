@@ -1,25 +1,20 @@
 (in-package :crane-test)
 
 ;; Clean slate
-;(fad:delete-directory-and-files
-; (crane.migration::get-migration-dir))
+(fad:delete-directory-and-files
+ (crane.migration::get-migration-dir))
 
 (def-suite table-slots
     :description "Test that table metaclass slots work.")
 (in-suite table-slots)
 
-(defclass table-a ()
-  ((field-a :col-type 'string :col-null-p t))
-  (:metaclass crane:table-class))
+(deftable table-a ()
+  (field-a :col-type 'string :col-null-p t))
 
-(defclass table-b (table-a)
-  ()
-  (:metaclass crane:table-class)
+(deftable table-b (table-a)
   (:abstractp t))
 
-(defclass table-c (table-b)
-  ()
-  (:metaclass crane:table-class)
+(deftable table-c (table-a)
   (:abstractp t)
   (:table-name table--c))
 
@@ -40,10 +35,9 @@
     :description "Test that table column options work.")
 (in-suite column-slots)
 
-(defclass table-d (table-a)
-  ((field-b :col-type 'integer :col-default 1
-            :col-unique-p t))
-  (:metaclass crane:table-class))
+(deftable table-d (table-a)
+  (field-b :col-type 'integer :col-default 1
+           :col-unique-p t))
 
 (test column-options
   (finishes
