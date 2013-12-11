@@ -15,8 +15,8 @@
                 #p"t/migrations/"
                 (asdf:component-pathname (asdf:find-system :crane-test)))
             :databases
-              (:name "main"
-               :type :sqlite3
-               :name ":memory:"))))
+              (:main
+                (:type :sqlite3
+                 :name ":memory:")))))
 
 (setf (env-var "CRANE_TEST_ENV") "dev")
