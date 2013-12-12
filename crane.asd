@@ -11,6 +11,7 @@
                :anaphora
                :s-sql
                :envy
+               :dbi
                :iterate
                :cl-annot)
   :components ((:module "src"
