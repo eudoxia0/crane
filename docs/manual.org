@@ -1,4 +1,5 @@
 #+title: Crane Manual
+#+author: Fernando Borretti
 
 * Overview
 
@@ -39,6 +40,26 @@ Crane mainly uses three libraries:
             supported, but support for Oracle and MS SQL Server
             can be added.
 - [[https://github.com/fukamachi/envy][Envy]] :: A configuration manager.
+     
+* Connecting
+
+Crane autoconnects to all the databases specified in the =:databases= key of the
+configuration when the =crane:connect= function is called (No parameters).
+
+Configuration for the databases might look like this:
+
+#+begin_src lisp
+#+include: "../t/config.lisp" :lines "5-20"
+#+end_src
+
+The value of =:databases= is a plist that maps a database's name (Not that
+actual name, but rather a way to identify it, like =:main= or =:users-db=) to a
+list of connection parameters, called the /connection spec/.
+
+Crane maintains a list of connection specs for every supported database backend,
+and ensures that all required parameters and no parameters other than the
+required and optional ones are passed. Connection specs for all supported
+backends are listed in [[Appendix A: Connecting][Appendix A]].
 
 * Tables
 
@@ -150,3 +171,30 @@ Note: A migration is a set of reversible transformations that take place at a
 particular point in the database's history. A migration plan is a blueprint for
 a migration, and is not tied to the migration history. Migration plans can be
 applied repeatedly to create many migrations.
+* Appendix A: Connecting
+
+** PostgreSQL
+
+Required:
+- =:name= :: Database name.
+- =:user= :: User name.
+- =:pass= :: User password.
+
+Optional:
+- =:host= :: Host that runs the database server. Default: "=localhost=".
+- =:port= :: Port the database server listens on. Default: =5432=.
+- =:ssl= :: =:yes= enables secure SSL connections to the server. This might be
+            useful if the server is running on a host other than the
+            default. Note that OpenSSL must be installed on both machines. For
+            more information, see the [[http://www.postgresql.org/docs/9.1/static/ssl-tcp.html][relevant PostgreSQL
+            documentation]]. Default: =:no=.
+
+** SQLite
+
+Required:
+- =:name= :: The name of the database. As usual, a value of "=:memory:=" will
+             create an in-memory database.
+
+** MySQL
+
+Required and Optional: Same as [[PostgreSQL]], except for =:ssl=.
