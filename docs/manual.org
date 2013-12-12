@@ -10,7 +10,16 @@ by the SQLAlchemy ORM for Python.
 ** Structure
 
 #+begin_src ditaa :file img/dia.png
-                       +-----------+
+Application:
+
+   +--------+       +-------------------+
+   | Tables +<--+-->+ Migration History |
+   +--------+   |   | {d}               |
+                |   +-------------------+
+                \------------\
+.............................|.........................
+                             |
+                       +-----+-----+
                        | ORM Layer |
                        +-----+-----+
                              |
