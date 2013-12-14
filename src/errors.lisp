@@ -17,7 +17,7 @@
              (text condition)))))
   
 @export
-(define-condition no-configuration-error (configuration-error) ())
+(define-condition no-configuration-error (crane-error) ())
 
 @export
 (define-condition empty-table (crane-error) ())
