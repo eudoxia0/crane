@@ -4,6 +4,7 @@
 (fad:delete-directory-and-files
  (crane.migration::get-migration-dir))
 
+
 (def-suite table-slots
     :description "Test that table metaclass slots work.")
 (in-suite table-slots)
@@ -30,6 +31,7 @@
   (is (equal (table-name 'table-a) 'table-a)
       (equal (table-name 'table-b) 'table-b)
       (equal (table-name 'table-c) 'table--c)))
+
 
 (def-suite column-slots
     :description "Test that table column options work.")
