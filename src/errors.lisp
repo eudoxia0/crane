@@ -9,11 +9,11 @@
 @export
 (define-condition configuration-error (crane-error)
   ((key :initarg :key :reader key
-          :documentation "The configuration key afflicted by the error."))
+        :documentation "The configuration key afflicted by the error."))
   (:report
-   (lambda (stream condition)
+   (lambda (condition stream)
      (format stream "Configuration error (~A): ~A"
-             (field condition)
+             (key condition)
              (text condition)))))
   
 @export
