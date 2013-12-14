@@ -39,3 +39,8 @@ the result as a list of ([property] [old value] [new value])"
               :key key
               :text "This key is not configured."
               key)))
+
+@export
+(defun plist-keys (plist)
+  (iter (for key in plist by #'cddr)
+        (collecting key)))
