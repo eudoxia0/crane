@@ -1,3 +1,6 @@
+;;;; This file defines the metaclasses that map CLOS objects to SQL tables, and
+;;;; some basic operations on them.
+
 (in-package :crane)
 (annot:enable-annot-syntax)
 
