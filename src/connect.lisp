@@ -59,9 +59,9 @@ spec for the database '~A' have not been provided: ~A" db it))
   (aif (getf +system-mapping+ (getf spec :type))
     (progn
       (load-driver it)
-      (validate-connection-spec db (getf spec :type) spec)
-      ;; Actually do the connecting
-      )
+      (apply #'dbi-connect
+        (cons (getf spec :type)
+              (validate-connection-spec db (getf spec :type) spec))))
     (error 'crane.errors:configuration-error
            :key (list :databases :-> db)
            :text (format nil
