@@ -9,7 +9,7 @@
   :license "MIT"
   :depends-on (:closer-mop
                :anaphora
-               :s-sql
+               :sxql
                :envy
                :dbi
                :iterate
