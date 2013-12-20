@@ -120,14 +120,15 @@
 
 (defmethod digest ((class table-class))
   "Serialize a class's options and slots' options into a plist"
-  (list nil
+  (list :table-options nil
+        :columns
         (let ((slots (closer-mop:class-slots class)))
           (if slots
               (mapcar #'digest-slot
-                (closer-mop:class-slots class))
+                      (closer-mop:class-slots class))
               (error 'crane.errors:empty-table
-                      :text "The table ~A has no slots."
-                      (table-name class))))))
+                     :text "The table ~A has no slots."
+                     (table-name class))))))
 
 @export
 (defmethod digest ((class-name symbol))
@@ -147,8 +148,8 @@ See DIGEST."
 See DIGEST."
   (remove-if #'null
              (mapcar #'diff-slot
-                     (sort-slot-list (second digest-a))
-                     (sort-slot-list (second digest-b)))))
+                     (sort-slot-list (getf digest-a :columns))
+                     (sort-slot-list (getf digest-b :columns)))))
 
 @export
 (defun build (table-name)
