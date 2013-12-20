@@ -72,41 +72,9 @@ backends are listed in [[Appendix A: Connecting][Appendix A]].
 
 * Tables
 
-Crane uses the metaobject protocol to bind SQL tables and CLOS objects.
-
-SQL tables belong to the =TABLE-CLASS= metaclass, and can be defined as follows:
-
-#+begin_src lisp
-  (defclass [name] ([super]*)
-    ([field]*)
-    (:abstractp {t|nil}))
-#+end_src
-
-For example:
-
-#+begin_src lisp
-  (crane:defclass enemy ()
-    ((name :col-type 'string
-           :col-pk t)
-     (age :col-type 'integer
-          :col-check '(:> 'age 12))
-     (address :col-type 'string
-              :col-null-p t
-              :col-foreign '(important-addresses :cascade :cascade))
-     (fatal-weakness
-              :col-type 'text
-              :col-default "None")
-     (identifying-color
-              :col-type '(string 20)
-              :col-unique t
-              :foreign '(colors name)))
-    (:metaclass crane:table-class))
-#+end_src
-
-** The =deftable= macro
-
-Crane provides a simpler way to define tables through its =deftable=
-macro:
+Crane uses the metaobject protocol to bind SQL tables and CLOS objects through a
+=TABLE-CLASS= metaclass. Table classes can be defined simply through the
+=deftable= macro:
 
 #+begin_src lisp
   (deftable [name] ([super]*)
@@ -123,6 +91,45 @@ Compare the following code to the previous example:
     (fatal-weakness :type text :default "None")
     (identifying-color 'type (string 20) :unique t :foreign (colors name)))
 #+end_src
+
+
+** Internals
+
+When a table is created, its digest is separated into two parts: Columns, and
+constraints. Columns are basically a map of slot names to SQL types. Constraints
+are automatically-named SQL constraints created by extracting slot options. That
+is, no constraints from the =deftable= macro are nameless, they are all named
+and at the column level.
+
+Consider the following table:
+
+#+begin_src lisp
+  (deftable user
+    (name :type string :pk t :nullp nil)
+    (age :type integer :nullp nil))
+#+end_src
+
+A human would write SQL like the following:
+
+#+begin_src sql
+  CREATE TABLE user (
+    name STRING NOT NULL PRIMARY KEY,
+    age INTEGER NOT NULL
+  )
+#+end_src
+
+Crane, however, would generate the following SQL:
+
+#+begin_src sql
+  CREATE TABLE user (
+    name STRING CONSTRAINT user_name_nullity NOT NULL
+                CONSTRAINT user_name_primary PRIMARY KEY,
+    age INTEGER CONSTRAINT user_age_nullity NOT NULL
+  )
+#+end_src
+
+Naming all constraints makes it possible for them to be dropped simply through
+=ALTER TABLE= statements when migrating from an old schema.
 
 * Migrations
 
@@ -206,4 +213,5 @@ Required:
 
 ** MySQL
 
-Required and Optional: Same as [[PostgreSQL]], except for =:ssl=.
+Required and Optional: Same as [[PostgreSQL]], except for =:ssl=. The default port
+number =3306=.
