@@ -24,6 +24,7 @@
                   ((:file "utils")
                    (:file "mop-utils")))
                  (:file "connect")
+                 (:file "sql")
                  (:file "migration")
                  (:file "meta")
                  (:file "table")
