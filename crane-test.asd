@@ -17,5 +17,6 @@
                  (:module "utils"
                   :components
                   ((:file "utils")))
+                 (:file "connect")
                  (:file "meta"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))
