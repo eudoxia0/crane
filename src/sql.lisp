@@ -18,13 +18,26 @@
      (map 'string #'(lambda (char) (if (eql char #\-) #\_ char))
           obj))))
 
+@doc "Give constraints Crane-specific names"
 (defun constraint-name (column-name type)
   (concatenate 'string "crane_" (sqlize name) "_" (sqlize type)))
 
+@doc "Toggle NULL constraint."
 (defun set-null (column-name value)
   (unless value
-    (format nil "NOT NULL")))
+    "NOT NULL"))
 
+@doc "Toggle UNIQUE constraint."
+(defun set-unique (column-name value)
+  (when value
+    "UNIQUE"))
+
+@doc "Toggle PRIMARY KEY constraint."
+(defun set-primary (column-name value)
+  (when value
+    "PRIMARY KEY"))
+
+@doc "Toggle INDEX pseudo-constraint."
 (defun set-index (table-name column-name value)
   (if value
     (list :external
@@ -37,14 +50,6 @@
                 (constraint-name column-name 'index)
                 table-name))))
 
-(defun create-constraint (cons-type value)
-  (case cons-type
-    (nullp
-     (if value "NULL" "NOT NULL"))))
-
-(defun make-constraint (column-name cons-type value)
-  (format nil "CONSTRAINT ~A_~A ~A" column-name cons-type
-          (create-constraint cons-type value)))
 
 @export
 (defun create-column-constraints (column)
