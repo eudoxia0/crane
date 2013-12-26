@@ -4,7 +4,7 @@
 ;;;; of table-creating SQL is handled by src/sql.lisp
 
 (defpackage :crane.migration
-  (:use :cl :anaphora :crane.utils :cl-annot.doc))
+  (:use :cl :anaphora :crane.utils :cl-annot.doc :iter))
 (in-package :crane.migration)
 (annot:enable-annot-syntax)
 
@@ -55,7 +55,6 @@ history for the table `table-name`."
                           :if-does-not-exist :create)
     (if (migration-history-p table-name)
         (progn
-          (format t "Creating migration history")
           (serialize stream (list digest)))
         (serialize stream (append (read-migration-history table-name)
                                   (list digest))))))
@@ -70,4 +69,9 @@ history for the table `table-name`."
 
 @export
 (defun create-table (table-name digest)
-  )
+  (let ((columns
+          (iter (for column in (getf digest :columns))
+            (collecting (append (list (getf column :name)
+                                      (getf column :type))
+                                (crane.sql:process-column-constraints column))))))
+    (print columns)))

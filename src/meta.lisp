@@ -109,10 +109,10 @@
   (append
    (list :name (closer-mop:slot-definition-name slot)
          :type (col-type slot)
-         :null-p (col-null-p slot)
-         :unique-p (col-null-p slot)
-         :primar-p (col-primary-p slot)
-         :index-p (col-index-p slot)
+         :nullp (col-null-p slot)
+         :uniquep (col-null-p slot)
+         :primaryp (col-primary-p slot)
+         :indexp (col-index-p slot)
          :check (col-check slot))
    (if (slot-boundp slot 'col-default)
        (list :default (col-default slot))
@@ -153,16 +153,12 @@ See DIGEST."
 
 @export
 (defun build (table-name)
-  (format t "Initializing class~&")
   (if (crane.migration:migration-history-p table-name)
       (progn
-        (format t "Class already defined. Comparing digests...~&")
         (aif (diff-digest
               (digest table-name)
               (crane.migration:get-last-migration table-name))
-            (crane.migration:migrate (find-class table-name) it)
-            (format t "No differences.~&")))
+            (crane.migration:migrate (find-class table-name) it)))
       (let ((digest (digest table-name)))
-        (format t "Class defined for the first time. Creating file...~&")
-        (crane.migration:insert-migration  table-name digest)
-        (crane.migration:create-table  table-name digest))))
+        (crane.migration:insert-migration table-name digest)
+        (crane.migration:create-table table-name digest))))
