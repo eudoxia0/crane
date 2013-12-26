@@ -17,3 +17,38 @@
     (string
      (map 'string #'(lambda (char) (if (eql char #\-) #\_ char))
           obj))))
+
+(defun constraint-name (column-name type)
+  (concatenate 'string "crane_" (sqlize name) "_" (sqlize type)))
+
+(defun set-null (column-name value)
+  (unless value
+    (format nil "NOT NULL")))
+
+(defun set-index (table-name column-name value)
+  (if value
+    (list :external
+          (format nil "CREATE INDEX ~A ON ~A (~A)"
+                  (constraint-name column-name 'index)
+                  table-name
+                  value))
+    (list :external
+        (format nil "DROP INDEX ~A ON ~A"
+                (constraint-name column-name 'index)
+                table-name))))
+
+(defun create-constraint (cons-type value)
+  (case cons-type
+    (nullp
+     (if value "NULL" "NOT NULL"))))
+
+(defun make-constraint (column-name cons-type value)
+  (format nil "CONSTRAINT ~A_~A ~A" column-name cons-type
+          (create-constraint cons-type value)))
+
+@export
+(defun create-column-constraints (column)
+  (iter (for key in '(:nullp :indexp))
+    (collecting (make-constraint (sqlize (getf column :name))
+                                 key
+                                 (getf column key)))))
