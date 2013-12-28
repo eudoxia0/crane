@@ -69,9 +69,16 @@ history for the table `table-name`."
 
 @export
 (defun create-table (table-name digest)
-  (let ((columns
+  (let* ((columns
           (iter (for column in (getf digest :columns))
             (collecting (append (list (getf column :name)
-                                      (getf column :type))
-                                (crane.sql:create-column-constraints column))))))
+                                      (crane.sql:sqlize-type (getf column :type)))
+                                (crane.sql:create-column-constraints column)))))
+         ;; Each item in COLUMNS follows the format
+         ;; (<column name> <column type> <constraint>*...)
+         ;; If a constraint is a string, then it goes right into the CREATE
+         ;; TABLE statement. If it's a list beginning with the symbol :external,
+         ;; it goes into a separate command.
+         )
+
     (print columns)))

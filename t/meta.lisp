@@ -18,6 +18,7 @@
       (:abstractp t))
     
     (deftable table-c (table-a)
+      (field-b :type 'integer :nullp nil :indexp t)
       (:abstractp t)
       (:table-name table--c))))
     

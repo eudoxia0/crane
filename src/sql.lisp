@@ -73,16 +73,22 @@
 created (eg :nullp t doesn't create a constraint, but :nullp nil creates a NOT
 NULL constraint)."
 (defun make-constraint (table-name column-name type value &optional (first-time nil))
-  (case type
-    (:nullp
-     (set-null column-name value))
-    (:uniquep
-     (set-unique column-name value))
-    (:indexp
-     (when value (set-index table-name column-name value)))
-    (:primaryp
-     (set-primary column-name value))))
-
+  (if (eql type :indexp)
+      ;; :indexp is treated especially, because it generates an external command
+      ;; which already includes the constraint name
+      (when value (set-index table-name column-name value))
+      (aif (case type
+             (:nullp
+              (set-null column-name value))
+             (:uniquep
+              (set-unique column-name value))
+             (:primaryp
+              (set-primary column-name value)))
+           (format nil "CONSTRAINT ~A ~A"
+                   (constraint-name column-name type)
+                   it))))
+                   
+      
 @export
 (defun create-column-constraints (column)
   (let ((column-name (getf column :name)))
@@ -95,3 +101,7 @@ NULL constraint)."
                                               t))))))
   
 ;;;; Constraint processing is stupid, I wish I was coding something more fun :c
+
+@export
+(defun sqlize-type (type)
+  type)
