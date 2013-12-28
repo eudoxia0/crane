@@ -99,7 +99,7 @@ NULL constraint)."
                                               t))))))
 
 @export
-(defun create-and-sort-constraints (table-name column)
+(defun create-and-sort-constraints (table-name digest)
   (let* ((columns
           (iter (for column in (getf digest :columns))
             (collecting (append (list (crane.sql:sqlize (getf column :name))
@@ -123,8 +123,8 @@ NULL constraint)."
              (appending (mapcar #'cadr
                                 (remove-if-not #'listp (cddr column)))))))
     (list :definition column-definitions
-          :internal-constraints internal-constraints
-          :external-constraints external-constraints)))
+          :internal internal-constraints
+          :external external-constraints)))
 
 ;;;; Constraint processing is stupid, I wish I was coding something more fun :c
 

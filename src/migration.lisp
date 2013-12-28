@@ -71,7 +71,7 @@ history for the table `table-name`."
 (defun create-table (table-name digest)
   (let ((constraints (crane.sql:create-and-sort-constraints
                       (crane.sql:sqlize table-name)
-                      column)))
+                      digest)))
     (format nil "CREATE TABLE ~A (~&~{    ~A,~&~}~{    ~A,~&~});~&~{~A;~&~}"
             (crane.sql:sqlize table-name)
             (getf constraints :definitions)
