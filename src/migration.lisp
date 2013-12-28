@@ -73,5 +73,5 @@ history for the table `table-name`."
           (iter (for column in (getf digest :columns))
             (collecting (append (list (getf column :name)
                                       (getf column :type))
-                                (crane.sql:process-column-constraints column))))))
+                                (crane.sql:create-column-constraints column))))))
     (print columns)))

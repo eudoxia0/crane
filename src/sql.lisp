@@ -20,7 +20,7 @@
 
 @doc "Give constraints Crane-specific names"
 (defun constraint-name (column-name type)
-  (concatenate 'string "crane_" (sqlize name) "_" (sqlize type)))
+  (concatenate 'string "crane_" (sqlize column-name) "_" (sqlize type)))
 
 @doc "Toggle NULL constraint."
 (defun set-null (column-name value)
@@ -46,14 +46,52 @@
                   table-name
                   value))
     (list :external
-        (format nil "DROP INDEX ~A ON ~A"
-                (constraint-name column-name 'index)
-                table-name))))
+          (format nil "DROP INDEX ~A ON ~A"
+                  (constraint-name column-name 'index)
+                  table-name))))
 
+(defparameter +referential-actions+
+  (list :cascade "CASCADE"
+        :restrict "RESTRICT"
+        :no-action "NO ACTION"
+        :set-null "SET NULL"
+        :set-default "SET DEFAULT"))
+
+(defun map-ref-action (action)
+  (aif (getf +referential-actions+ action)
+       it
+       (error "No such referential action: ~A" action)))
+
+(defun foreign (local foreign &key (on-delete :no-action) (on-update :no-action))
+  (format nil "FOREIGN KEY ~A REFERENCES (~A) ON DELETE ~a ON UPDATE"
+          (sqlize local)
+          (sqlize foreign)
+          (map-ref-action on-delete)
+          (map-ref-action on-update)))
+
+@doc "Create a constraint from its type and values, if it can be
+created (eg :nullp t doesn't create a constraint, but :nullp nil creates a NOT
+NULL constraint)."
+(defun make-constraint (table-name column-name type value &optional (first-time nil))
+  (case type
+    (:nullp
+     (set-null column-name value))
+    (:uniquep
+     (set-unique column-name value))
+    (:indexp
+     (when value (set-index table-name column-name value)))
+    (:primaryp
+     (set-primary column-name value))))
 
 @export
 (defun create-column-constraints (column)
-  (iter (for key in '(:nullp :indexp))
-    (collecting (make-constraint (sqlize (getf column :name))
-                                 key
-                                 (getf column key)))))
+  (let ((column-name (getf column :name)))
+    (remove-if #'null
+               (iter (for key in '(:nullp :uniquep :primaryp :indexp))
+                 (collecting (make-constraint 'table
+                                              column-name
+                                              key
+                                              (getf column key)
+                                              t))))))
+  
+;;;; Constraint processing is stupid, I wish I was coding something more fun :c
