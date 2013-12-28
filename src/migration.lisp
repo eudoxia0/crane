@@ -73,7 +73,9 @@ history for the table `table-name`."
           (iter (for column in (getf digest :columns))
             (collecting (append (list (crane.sql:sqlize (getf column :name))
                                       (crane.sql:sqlize-type (getf column :type)))
-                                (crane.sql:create-column-constraints column)))))
+                                (crane.sql:create-column-constraints
+                                 (crane.sql:sqlize table-name)
+                                 column)))))
          ;; Each item in COLUMNS follows the format
          ;; (<column name> <column type> <constraint>*...)
          ;; If a constraint is a string, then it goes right into the CREATE
@@ -89,7 +91,8 @@ history for the table `table-name`."
            (iter (for column in columns)
              (appending (mapcar #'cadr
                                 (remove-if-not #'listp (cddr column)))))))
-    (princ (format nil "CREATE TABLE (~&~{    ~A,~&~}~{    ~A,~&~});~&~{~A;~&~}"
+    (princ (format nil "CREATE TABLE ~A (~&~{    ~A,~&~}~{    ~A,~&~});~&~{~A;~&~}"
+                   (crane.sql:sqlize table-name)
                    column-definitions
                    internal-constraints
                    external-constraints))))

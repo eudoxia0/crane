@@ -89,11 +89,11 @@ NULL constraint)."
                    it))))
 
 @export
-(defun create-column-constraints (column)
+(defun create-column-constraints (table-name column)
   (let ((column-name (getf column :name)))
     (remove-if #'null
                (iter (for key in '(:nullp :uniquep :primaryp :indexp))
-                 (collecting (make-constraint 'table
+                 (collecting (make-constraint table-name
                                               (sqlize column-name)
                                               key
                                               (getf column key)
