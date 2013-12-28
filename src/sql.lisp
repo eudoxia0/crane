@@ -87,8 +87,7 @@ NULL constraint)."
            (format nil "CONSTRAINT ~A ~A"
                    (constraint-name column-name type)
                    it))))
-                   
-      
+
 @export
 (defun create-column-constraints (column)
   (let ((column-name (getf column :name)))
@@ -99,9 +98,9 @@ NULL constraint)."
                                               key
                                               (getf column key)
                                               t))))))
-  
+
 ;;;; Constraint processing is stupid, I wish I was coding something more fun :c
 
 @export
 (defun sqlize-type (type)
-  type)
+  (format nil "~A" type))
