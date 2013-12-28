@@ -69,30 +69,11 @@ history for the table `table-name`."
 
 @export
 (defun create-table (table-name digest)
-  (let* ((columns
-          (iter (for column in (getf digest :columns))
-            (collecting (append (list (crane.sql:sqlize (getf column :name))
-                                      (crane.sql:sqlize-type (getf column :type)))
-                                (crane.sql:create-column-constraints
-                                 (crane.sql:sqlize table-name)
-                                 column)))))
-         ;; Each item in COLUMNS follows the format
-         ;; (<column name> <column type> <constraint>*...)
-         ;; If a constraint is a string, then it goes right into the CREATE
-         ;; TABLE statement. If it's a list beginning with the symbol :external,
-         ;; it goes into a separate command.
-         (column-definitions
-           (iter (for column in columns)
-             (collecting (concatenate 'string (first column) " " (second column)))))
-         (internal-constraints
-           (iter (for column in columns)
-             (appending (remove-if-not #'stringp (cddr column)))))
-         (external-constraints
-           (iter (for column in columns)
-             (appending (mapcar #'cadr
-                                (remove-if-not #'listp (cddr column)))))))
-    (princ (format nil "CREATE TABLE ~A (~&~{    ~A,~&~}~{    ~A,~&~});~&~{~A;~&~}"
-                   (crane.sql:sqlize table-name)
-                   column-definitions
-                   internal-constraints
-                   external-constraints))))
+  (let ((constraints (crane.sql:create-and-sort-constraints
+                      (crane.sql:sqlize table-name)
+                      column)))
+    (format nil "CREATE TABLE ~A (~&~{    ~A,~&~}~{    ~A,~&~});~&~{~A;~&~}"
+            (crane.sql:sqlize table-name)
+            (getf constraints :definitions)
+            (getf constraints :internal)
+            (getf constraints :external))))

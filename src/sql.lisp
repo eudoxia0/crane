@@ -88,7 +88,6 @@ NULL constraint)."
                    (constraint-name column-name (sqlize type))
                    it))))
 
-@export
 (defun create-column-constraints (table-name column)
   (let ((column-name (getf column :name)))
     (remove-if #'null
@@ -98,6 +97,34 @@ NULL constraint)."
                                               key
                                               (getf column key)
                                               t))))))
+
+@export
+(defun create-and-sort-constraints (table-name column)
+  (let* ((columns
+          (iter (for column in (getf digest :columns))
+            (collecting (append (list (crane.sql:sqlize (getf column :name))
+                                      (crane.sql:sqlize-type (getf column :type)))
+                                (crane.sql:create-column-constraints
+                                 (crane.sql:sqlize table-name)
+                                 column)))))
+         ;; Each item in COLUMNS follows the format
+         ;; (<column name> <column type> <constraint>*...)
+         ;; If a constraint is a string, then it goes right into the CREATE
+         ;; TABLE statement. If it's a list beginning with the symbol :external,
+         ;; it goes into a separate command.
+         (column-definitions
+           (iter (for column in columns)
+             (collecting (concatenate 'string (first column) " " (second column)))))
+         (internal-constraints
+           (iter (for column in columns)
+             (appending (remove-if-not #'stringp (cddr column)))))
+         (external-constraints
+           (iter (for column in columns)
+             (appending (mapcar #'cadr
+                                (remove-if-not #'listp (cddr column)))))))
+    (list :definition column-definitions
+          :internal-constraints internal-constraints
+          :external-constraints external-constraints)))
 
 ;;;; Constraint processing is stupid, I wish I was coding something more fun :c
 
