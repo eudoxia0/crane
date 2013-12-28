@@ -20,7 +20,7 @@
 
 @doc "Give constraints Crane-specific names"
 (defun constraint-name (column-name type)
-  (concatenate 'string "crane_" (sqlize column-name) "_" (sqlize type)))
+  (concatenate 'string "crane_" column-name "_" type))
 
 @doc "Toggle NULL constraint."
 (defun set-null (column-name value)
@@ -42,12 +42,12 @@
   (if value
     (list :external
           (format nil "CREATE INDEX ~A ON ~A (~A)"
-                  (constraint-name column-name 'index)
+                  (constraint-name column-name "INDEX")
                   table-name
-                  value))
+                  column-name))
     (list :external
           (format nil "DROP INDEX ~A ON ~A"
-                  (constraint-name column-name 'index)
+                  (constraint-name column-name "INDEX")
                   table-name))))
 
 (defparameter +referential-actions+
@@ -64,8 +64,8 @@
 
 (defun foreign (local foreign &key (on-delete :no-action) (on-update :no-action))
   (format nil "FOREIGN KEY ~A REFERENCES (~A) ON DELETE ~a ON UPDATE"
-          (sqlize local)
-          (sqlize foreign)
+          local
+          foreign
           (map-ref-action on-delete)
           (map-ref-action on-update)))
 
@@ -85,7 +85,7 @@ NULL constraint)."
              (:primaryp
               (set-primary column-name value)))
            (format nil "CONSTRAINT ~A ~A"
-                   (constraint-name column-name type)
+                   (constraint-name column-name (sqlize type))
                    it))))
 
 @export
@@ -94,7 +94,7 @@ NULL constraint)."
     (remove-if #'null
                (iter (for key in '(:nullp :uniquep :primaryp :indexp))
                  (collecting (make-constraint 'table
-                                              column-name
+                                              (sqlize column-name)
                                               key
                                               (getf column key)
                                               t))))))
