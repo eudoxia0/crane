@@ -74,6 +74,7 @@ spec for the database '~A' have not been provided: ~A" db it))
                             (getf spec :type)))))
 
 @doc "Connect to all the databases specified in the configuration."
+@export
 (defun connect ()
   (aif (crane.utils:get-config-value :databases)
        (progn
@@ -87,3 +88,16 @@ spec for the database '~A' have not been provided: ~A" db it))
        (error 'crane.errors:configuration-error
               :key :databases
               :text "No databases found.")))
+
+@doc "Return the connection handler for a given database."
+@export
+(defun get-connection (&optional (database-name *default-db*))
+  (gethash database-name *db*))
+
+@doc "Prepare a query for execution"
+(defun prepare (query &optional (database-name *default-db*))
+  (dbi:prepare (get-connection database-name) query))
+
+@doc "Execute a query."
+(defun query (query &rest args)
+  (apply #'dbi:execute (cons query args)))
