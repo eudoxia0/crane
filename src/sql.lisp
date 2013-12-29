@@ -25,7 +25,7 @@
 @doc "Toggle NULL constraint."
 (defun set-null (column-name value)
   (unless value
-    (concatenate 'string "NOT NULL (" column-name ")")))
+    (concatenate 'string "CHECK (" column-name " IS NOT NULL)")))
 
 @doc "Toggle UNIQUE constraint."
 (defun set-unique (column-name value)
