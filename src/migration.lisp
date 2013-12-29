@@ -64,12 +64,9 @@ history for the table `table-name`."
   (rename-file (migration-history-pathname table-name) new-name))
 
 @export
-(defun migrate (table-class digest)
+(defun migrate (table-class diff)
   (format t "Migrating!~&")
-  (print "New digest")
-  (print digest)
-  (print "Old digest")
-  (print (get-last-migration (table-name table-class))))
+  (print diff))
 
 (defparameter +create-table-format-string+
   ;; Are you ready for this one?
@@ -90,5 +87,5 @@ history for the table `table-name`."
                    (getf constraints :internal)
                    (getf constraints :external))))
     (princ query)
-    ;(crane.sql:query (crane.sql:prepare query (crane::db table-name)))
+    ;(crane.sql:execute (crane.sql:prepare query (crane::db table-name)))
     ))
