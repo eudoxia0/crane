@@ -69,11 +69,14 @@ history for the table `table-name`."
 
 @export
 (defun create-table (table-name digest)
-  (let ((constraints (crane.sql:create-and-sort-constraints
+  (let* ((constraints (crane.sql:create-and-sort-constraints
                       (crane.sql:sqlize table-name)
-                      digest)))
-    (format nil "CREATE TABLE ~A (~&~{    ~A,~&~}~{    ~A,~&~});~&~{~A;~&~}"
-            (crane.sql:sqlize table-name)
-            (getf constraints :definitions)
-            (getf constraints :internal)
-            (getf constraints :external))))
+                      digest))
+         (query
+           (format nil "CREATE TABLE ~A (~&~{    ~A,~&~}~{    ~A,~&~});~&~{~A;~&~}"
+                   (crane.sql:sqlize table-name)
+                   (getf constraints :definitions)
+                   (getf constraints :internal)
+                   (getf constraints :external))))
+    (query (prepare query (db table-name)))))
+    
