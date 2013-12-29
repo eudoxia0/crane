@@ -41,10 +41,10 @@ history for the table `table-name`."
   (dolist (digest list)
     (format stream
             "(~A ~A)"
-            :class-opts-placeholder ;; Might not actually use this
+            (serialize-plist (getf digest :table-options))
             (mapcar #'(lambda (plist)
                         (serialize-plist plist))
-                    (cadr digest))))
+                    (getf digest :columns))))
   (format stream ")"))
 
 @doc "Insert a new diff to the migration history"

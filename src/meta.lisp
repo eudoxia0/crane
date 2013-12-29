@@ -6,7 +6,8 @@
 
 (defclass table-class (closer-mop:standard-class)
   ((table-name :reader table-class-name :initarg :table-name)
-   (abstractp :reader table-class-abstract-p :initarg :abstractp :initform nil)))
+   (abstractp :reader table-class-abstract-p :initarg :abstractp :initform nil)
+   (db :reader table-class-db :initarg :db :initform *default-db*)))
 
 (defmethod table-name ((class table-class))
   (if (slot-boundp class 'table-name)
@@ -21,6 +22,12 @@
 
 (defmethod abstractp ((class-name symbol))
   (abstractp (find-class class-name)))
+
+(defmethod db ((class table-class))
+  (car (table-class-db class)))
+
+(defmethod abstractp ((class-name symbol))
+  (db (find-class class-name)))
 
 (defmethod closer-mop:validate-superclass ((class table-class) (super closer-mop:standard-class))
   t)
@@ -120,7 +127,8 @@
 
 (defmethod digest ((class table-class))
   "Serialize a class's options and slots' options into a plist"
-  (list :table-options nil
+  (list :table-options
+        (list :db (db class))
         :columns
         (let ((slots (closer-mop:class-slots class)))
           (if slots
