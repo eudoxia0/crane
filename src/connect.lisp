@@ -56,6 +56,7 @@ spec for the database '~A' have not been provided: ~A" db it))
 (defparameter *db* (make-hash-table))
 
 @doc "The name of the default database"
+@export
 (defparameter *default-db* nil)
 
 (defun connect-spec (db spec)

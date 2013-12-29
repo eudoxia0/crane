@@ -134,7 +134,7 @@ NULL constraint)."
 
 @doc "Prepare a query for execution"
 @export
-(defun prepare (query &optional (database-name *default-db*))
+(defun prepare (query &optional (database-name crane:*default-db*))
   (dbi:prepare (crane:get-connection database-name) query))
 
 @doc "Execute a query."
