@@ -26,7 +26,7 @@
 (defmethod db ((class table-class))
   (car (table-class-db class)))
 
-(defmethod abstractp ((class-name symbol))
+(defmethod db ((class-name symbol))
   (db (find-class class-name)))
 
 (defmethod closer-mop:validate-superclass ((class table-class) (super closer-mop:standard-class))
