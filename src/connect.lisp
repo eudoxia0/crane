@@ -8,9 +8,8 @@
 
 @doc "Load the ASDF system for the specified database module."
 (defun load-driver (driver)
-  (let ((system (getf +system-mapping+ driver)))
-    #+quicklisp (ql:quickload system :verbose nil)
-    #-quicklisp (asdf:load-system system :verbose nil)))
+  #+quicklisp (ql:quickload driver :verbose nil)
+  #-quicklisp (asdf:load-system driver :verbose nil))
 
 (defparameter +db-params+
   '(:postgres ((:name :database-name)
@@ -29,16 +28,17 @@
 (defun validate-connection-spec (db database-type spec)
   (let* ((reference-spec (getf +db-params+ database-type))
          (normalized-spec
+           ;; The reference spec without default values
            (iter (for line in reference-spec)
                  (appending (list (car line) (cadr line)))))
          (required-keys
            (iter (for line in reference-spec)
                  (if (not (cddr line))
-                     (collecting (car line)))))
+                     (collecting (cadr line)))))
          (final-spec (list)))
     (iter (for key in spec by #'cddr)
           (aif (getf normalized-spec key)
-               (setf (getf final-spec key) (getf spec key))
+               (setf (getf final-spec it) (getf spec key))
                (error 'crane.errors:configuration-error
                       :key (list :databases :-> db :-> key)
                       :text (format nil "The property '~A' is not supported by
@@ -55,28 +55,35 @@ spec for the database '~A' have not been provided: ~A" db it))
 @doc "A map from database names to connections."
 (defparameter *db* (make-hash-table))
 
+@doc "The name of the default database"
+(defparameter *default-db* nil)
+
 (defun connect-spec (db spec)
   (aif (getf +system-mapping+ (getf spec :type))
-    (progn
-      (load-driver it)
-      (apply #'dbi-connect
-        (cons (getf spec :type)
-              (validate-connection-spec db (getf spec :type) spec))))
-    (error 'crane.errors:configuration-error
-           :key (list :databases :-> db)
-           :text (format nil
-                         "The database type '~A' is not supported by DBI yet."
-                         (getf spec :type)))))
+       (progn
+         (load-driver it)
+         (apply #'dbi:connect
+                (cons (getf spec :type)
+                      (validate-connection-spec db
+                                                (getf spec :type)
+                                                (alexandria:remove-from-plist spec :type)))))
+       (error 'crane.errors:configuration-error
+              :key (list :databases :-> db)
+              :text (format nil
+                            "The database type '~A' is not supported by DBI yet."
+                            (getf spec :type)))))
 
 @doc "Connect to all the databases specified in the configuration."
 (defun connect ()
   (aif (crane.utils:get-config-value :databases)
-       (iter (for (db spec) on it by #'cddr)
-         (if (gethash db *db*)
-             (error 'crane.errors:configuration-error
-                    :key :databases
-                    :text "Two databases have the same name.")
-             (setf (gethash db *db*) (connect-spec db spec))))
+       (progn
+         (iter (for (db spec) on it by #'cddr)
+               (if (gethash db *db*)
+                   (error 'crane.errors:configuration-error
+                          :key :databases
+                          :text "Two databases have the same name.")
+                   (setf (gethash db *db*) (connect-spec db spec))))
+         (setf *default-db* (car it)))
        (error 'crane.errors:configuration-error
               :key :databases
               :text "No databases found.")))
