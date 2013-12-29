@@ -139,5 +139,5 @@ NULL constraint)."
 
 @doc "Execute a query."
 @export
-(defun query (query &rest args)
+(defun execute (query &rest args)
   (apply #'dbi:execute (cons query args)))
