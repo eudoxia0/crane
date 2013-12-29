@@ -79,11 +79,7 @@ spec for the database '~A' have not been provided: ~A" db it))
   (aif (crane.utils:get-config-value :databases)
        (progn
          (iter (for (db spec) on it by #'cddr)
-               (if (gethash db *db*)
-                   (error 'crane.errors:configuration-error
-                          :key :databases
-                          :text "Two databases have the same name.")
-                   (setf (gethash db *db*) (connect-spec db spec))))
+               (setf (gethash db *db*) (connect-spec db spec)))
          (setf *default-db* (car it)))
        (error 'crane.errors:configuration-error
               :key :databases
@@ -93,11 +89,3 @@ spec for the database '~A' have not been provided: ~A" db it))
 @export
 (defun get-connection (&optional (database-name *default-db*))
   (gethash database-name *db*))
-
-@doc "Prepare a query for execution"
-(defun prepare (query &optional (database-name *default-db*))
-  (dbi:prepare (get-connection database-name) query))
-
-@doc "Execute a query."
-(defun query (query &rest args)
-  (apply #'dbi:execute (cons query args)))
