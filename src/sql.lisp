@@ -25,17 +25,17 @@
 @doc "Toggle NULL constraint."
 (defun set-null (column-name value)
   (unless value
-    "NOT NULL"))
+    (concatenate 'string "NOT NULL (" column-name ")")))
 
 @doc "Toggle UNIQUE constraint."
 (defun set-unique (column-name value)
   (when value
-    "UNIQUE"))
+    (concatenate 'string "UNIQUE (" column-name ")")))
 
 @doc "Toggle PRIMARY KEY constraint."
 (defun set-primary (column-name value)
   (when value
-    "PRIMARY KEY"))
+    (concatenate 'string "PRIMARY KEY (" column-name ")")))
 
 @doc "Toggle INDEX pseudo-constraint."
 (defun set-index (table-name column-name value)
