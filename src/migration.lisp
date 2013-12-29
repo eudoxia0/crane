@@ -40,7 +40,7 @@ history for the table `table-name`."
   (format stream "(")
   (dolist (digest list)
     (format stream
-            "(~A ~A)"
+            "(:table-options ~A :columns ~A)"
             (serialize-plist (getf digest :table-options))
             (mapcar #'(lambda (plist)
                         (serialize-plist plist))
@@ -65,11 +65,15 @@ history for the table `table-name`."
 
 @export
 (defun migrate (table-class digest)
-  (format t "Migrating!~&"))
+  (format t "Migrating!~&")
+  (print "New digest")
+  (print digest)
+  (print "Old digest")
+  (print (get-last-migration (table-name table-class))))
 
 (defparameter +create-table-format-string+
   ;; Are you ready for this one?
-  "CREATE TABLE ~A (~&~{    ~A,~&~}~{    ~A~#[~:;, ~]~&~});~&~{~A;~&~}"
+  "CREATE TABLE ~A (~&~{    ~A,~&~}~A~{    ~A~#[~:;, ~]~&~});~&~{~A;~&~}"
   ;; Is that clear?
   )
 
@@ -82,7 +86,9 @@ history for the table `table-name`."
            (format nil +create-table-format-string+
                    (crane.sql:sqlize table-name)
                    (getf constraints :definition)
+                   (if (getf constraints :internal) "" ",")
                    (getf constraints :internal)
                    (getf constraints :external))))
-    (crane.sql:query (crane.sql:prepare query (crane::db table-name)))))
-    
+    (princ query)
+    ;(crane.sql:query (crane.sql:prepare query (crane::db table-name)))
+    ))
