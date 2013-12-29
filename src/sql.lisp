@@ -102,10 +102,10 @@ NULL constraint)."
 (defun create-and-sort-constraints (table-name digest)
   (let* ((columns
           (iter (for column in (getf digest :columns))
-            (collecting (append (list (crane.sql:sqlize (getf column :name))
-                                      (crane.sql:sqlize-type (getf column :type)))
-                                (crane.sql:create-column-constraints
-                                 (crane.sql:sqlize table-name)
+            (collecting (append (list (sqlize (getf column :name))
+                                      (sqlize-type (getf column :type)))
+                                (create-column-constraints
+                                 (sqlize table-name)
                                  column)))))
          ;; Each item in COLUMNS follows the format
          ;; (<column name> <column type> <constraint>*...)
