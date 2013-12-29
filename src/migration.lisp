@@ -67,16 +67,22 @@ history for the table `table-name`."
 (defun migrate (table-class digest)
   (format t "Migrating!~&"))
 
+(defparameter +create-table-format-string+
+  ;; Are you ready for this one?
+  "CREATE TABLE ~A (~&~{    ~A,~&~}~{    ~A~#[~:;, ~]~&~});~&~{~A;~&~}"
+  ;; Is that clear?
+  )
+
 @export
 (defun create-table (table-name digest)
   (let* ((constraints (crane.sql:create-and-sort-constraints
                       (crane.sql:sqlize table-name)
                       digest))
          (query
-           (format nil "CREATE TABLE ~A (~&~{    ~A,~&~}~{    ~A,~&~});~&~{~A;~&~}"
+           (format nil +create-table-format-string+
                    (crane.sql:sqlize table-name)
-                   (getf constraints :definitions)
+                   (getf constraints :definition)
                    (getf constraints :internal)
                    (getf constraints :external))))
-    (query (prepare query (db table-name)))))
+    (crane.sql:query (crane.sql:prepare query (crane::db table-name)))))
     

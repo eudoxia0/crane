@@ -131,3 +131,13 @@ NULL constraint)."
 @export
 (defun sqlize-type (type)
   (format nil "~A" type))
+
+@doc "Prepare a query for execution"
+@export
+(defun prepare (query &optional (database-name *default-db*))
+  (dbi:prepare (crane:get-connection database-name) query))
+
+@doc "Execute a query."
+@export
+(defun query (query &rest args)
+  (apply #'dbi:execute (cons query args)))

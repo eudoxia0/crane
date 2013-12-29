@@ -6,8 +6,8 @@
 
 (defclass table-class (closer-mop:standard-class)
   ((table-name :reader table-class-name :initarg :table-name)
-   (abstractp :reader table-class-abstract-p :initarg :abstractp :initform nil)
-   (db :reader table-class-db :initarg :db :initform *default-db*)))
+   (abstractp :reader table-class-abstract-p :initarg :abstractp :initform (list nil))
+   (db :reader table-class-db :initarg :db :initform (list *default-db*))))
 
 (defmethod table-name ((class table-class))
   (if (slot-boundp class 'table-name)
