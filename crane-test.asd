@@ -18,5 +18,6 @@
                   :components
                   ((:file "utils")))
                  (:file "connect")
-                 (:file "meta"))))
+                 (:file "meta")
+                 (:file "migration"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))
