@@ -70,7 +70,7 @@ history for the table `table-name`."
 
 (defparameter +create-table-format-string+
   ;; Are you ready for this one?
-  "CREATE TABLE ~A (~&~{    ~A,~&~}~A~{    ~A~#[~:;, ~]~&~});~&~{~A;~&~}"
+  "CREATE TABLE ~A (~{    ~A,~}~A~{    ~A~#[~:;, ~]~});~{~A;~}"
   ;; Is that clear?
   )
 
@@ -86,6 +86,6 @@ history for the table `table-name`."
                    (if (getf constraints :internal) "" ",")
                    (getf constraints :internal)
                    (getf constraints :external))))
-    (princ query)
+    (print query)
     ;(crane.sql:execute (crane.sql:prepare query (crane::db table-name)))
     ))
