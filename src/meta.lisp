@@ -161,12 +161,13 @@ See DIGEST."
 
 @export
 (defun build (table-name)
-  (if (crane.migration:migration-history-p table-name)
-      (progn
-        (aif (diff-digest
-              (digest table-name)
-              (crane.migration:get-last-migration table-name))
-            (crane.migration:migrate (find-class table-name) it)))
-      (let ((digest (digest table-name)))
-        (crane.migration:insert-migration table-name digest)
-        (crane.migration:create-table table-name digest))))
+  (unless (abstractp table-name)
+    (if (crane.migration:migration-history-p table-name)
+        (progn
+          (aif (diff-digest
+                (digest table-name)
+                (crane.migration:get-last-migration table-name))
+               (crane.migration:migrate (find-class table-name) it)))
+        (let ((digest (digest table-name)))
+          (crane.migration:insert-migration table-name digest)
+          (crane.migration:create-table table-name digest)))))
