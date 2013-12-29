@@ -2,21 +2,25 @@
 
 ;; Clean slate
 (fad:delete-directory-and-files
- (crane.migration::get-migration-dir))
+  (crane.migration::get-migration-dir))
 
 
 (def-suite table-slots
   :description "Test that table metaclass slots work.")
 (in-suite table-slots)
 
-(test create-tables
+(test create-simple-table
   (finishes
     (deftable table-a ()
-      (field-a :type string :nullp t))
-    
+      (field-a :type text :nullp t))))
+
+(test create-inherited-table
+  (finishes
     (deftable table-b (table-a)
-      (:abstractp t))
-    
+      (:abstractp t))))
+
+(test create-another-table
+  (finishes
     (deftable table-c (table-a)
       (field-b :type integer :nullp nil :indexp t)
       (:abstractp t)

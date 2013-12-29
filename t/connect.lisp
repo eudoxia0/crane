@@ -64,7 +64,18 @@
   (finishes
     (shared-good-specs :mysql)))
 
+(def-suite connecting
+    :description "Test that we can actually connect.")
+(in-suite connecting)
+
+(test connect
+  (finishes
+    (crane:connect)))
+
+(test main-db
+  (is (equal :main crane:*default-db*)))
 
 (run! 'postgres)
 (run! 'sqlite3)
 (run! 'mysql)
+(run! 'connecting)
