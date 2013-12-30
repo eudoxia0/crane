@@ -1,18 +1,15 @@
-# Crane
+Crane is an ORM for Common Lisp, providing a simple bridge between CLOS and relational databases, and out of the box migrations.
 
-## Usage
+# Usage
 
-## Installation
-
-## Author
-
-* Fernando Borretti (eudoxiahp@gmail.com)
-
-## Copyright
-
-Copyright (c) 2013 Fernando Borretti (eudoxiahp@gmail.com)
+```lisp
+(deftable user
+  (name :type text :uniquep t)
+  (age :type integer :nullp nil))
+```
 
 # License
 
-Licensed under the LLGPL License.
+Copyright (c) 2013 Fernando Borretti (eudoxiahp@gmail.com)
 
+Released under the MIT license.
