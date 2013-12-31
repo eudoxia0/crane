@@ -63,10 +63,7 @@ history for the table `table-name`."
 (defun rename-migration-history (table-name new-name)
   (rename-file (migration-history-pathname table-name) new-name))
 
-@export
-(defun migrate (table-class diff)
-  (format t "Migrating!~&")
-  (print diff))
+;;;; Actual table creation and migration
 
 (defparameter +create-table-format-string+
   ;; Are you ready for this one?
@@ -89,3 +86,8 @@ history for the table `table-name`."
     (print query)
     ;(crane.sql:execute (crane.sql:prepare query (crane::db table-name)))
     ))
+
+@export
+(defun migrate (table-class diff)
+  (format t "Migrating!~&")
+  (print diff))
