@@ -145,7 +145,9 @@
 (defun diff-slot (slot-a slot-b)
   "Compute the difference between two slot digests.
 See DIGEST."
-  (crane.utils:diff-plist slot-a slot-b :test #'equal))
+  (append (list :name (getf slot-a :name) :diff)
+          (list
+           (crane.utils:diff-plist slot-a slot-b :test #'equal))))
 
 (defun sort-slot-list (list)
   list)
