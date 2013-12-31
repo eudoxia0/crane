@@ -9,6 +9,6 @@
        nil)
       (equal
        (crane.utils:diff-plist '(:a 1 :b 2 :c 3) '(:a 4 :b 5 :c 6))
-       '((:a 1 4) (:b 2 5) (:c 3 6)))))
+       '(:a (1 4) :b (2 5) :c (3 6)))))
 
 (run! 'util-tests)
