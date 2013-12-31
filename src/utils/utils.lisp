@@ -26,6 +26,10 @@ the result as a list of ([property] [old value] [new value])"
       seq)))
 
 @export
+(defun debugp ()
+  (getf (envy:config *package*) :debug))
+
+@export
 (defun get-configuration ()
   (aif (getf (envy:config *package*) :crane)
        it
