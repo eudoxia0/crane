@@ -83,10 +83,9 @@ history for the table `table-name`."
                    (if (getf constraints :internal) "" ",")
                    (getf constraints :internal)
                    (getf constraints :external))))
-    (when (debugp)
-      (print query))
     (crane.sql:execute (crane.sql:prepare query (crane::db table-name)))))
 
 @export
 (defun migrate (table-class diff)
-  (print diff))
+  (when (debugp)
+    (print diff)))
