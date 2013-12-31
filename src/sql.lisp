@@ -72,7 +72,8 @@
 @doc "Create a constraint from its type and values, if it can be
 created (eg :nullp t doesn't create a constraint, but :nullp nil creates a NOT
 NULL constraint)."
-(defun make-constraint (table-name column-name type value &optional (first-time nil))
+@export
+(defun make-constraint (table-name column-name type value)
   (if (eql type :indexp)
       ;; :indexp is treated especially, because it generates an external command
       ;; which already includes the constraint name
@@ -88,6 +89,7 @@ NULL constraint)."
                    (constraint-name column-name (sqlize type))
                    it))))
 
+
 (defun create-column-constraints (table-name column)
   (let ((column-name (getf column :name)))
     (remove-if #'null
@@ -95,8 +97,7 @@ NULL constraint)."
                  (collecting (make-constraint table-name
                                               (sqlize column-name)
                                               key
-                                              (getf column key)
-                                              t))))))
+                                              (getf column key)))))))
 
 @export
 (defun create-and-sort-constraints (table-name digest)
