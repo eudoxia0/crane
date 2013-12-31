@@ -7,14 +7,14 @@
 (defun diff-plist (plist-a plist-b &key (test #'eql))
   "Calculates the difference between two plists, returning
 the result as a list of ([property] [old value] [new value])"
-  (remove-if-not
-    #'consp
+  (remove-if
+    #'null
     (loop for slot in plist-a by #'cddr appending
       (if slot
           (let ((val-a (getf plist-a slot))
                 (val-b (getf plist-b slot)))
             (if (funcall test val-a val-b)
-                (list t)
+                (list nil)
                 (list slot (list val-a val-b))))))))
 
 @export

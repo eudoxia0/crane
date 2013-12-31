@@ -156,11 +156,10 @@ See DIGEST."
 (defun diff-digest (digest-a digest-b)
   "Compute the difference between two digests.
 See DIGEST."
-  (car
-   (remove-if #'null
-              (mapcar #'diff-slot
-                      (sort-slot-list (getf digest-a :columns))
-                      (sort-slot-list (getf digest-b :columns))))))
+  (remove-if #'null
+             (mapcar #'diff-slot
+                     (sort-slot-list (getf digest-a :columns))
+                     (sort-slot-list (getf digest-b :columns)))))
 
 @export
 (defun build (table-name)
