@@ -6,7 +6,7 @@
 
 (test simple-migration
   (finishes
-    (deftable table-a ()
-      (field-a :type string :nullp nil))))
+    (deftable table-d (table-a)
+      (field-b :type integer :unique t))))
 
 (run! 'migrations)
