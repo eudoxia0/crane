@@ -129,6 +129,23 @@ NULL constraint)."
 
 ;;;; Constraint processing is stupid, I wish I was coding something more fun :c
 
+;;;; Alter Table
+
+@export
+(defun add-constraint (table-name column-name body)
+  (format nil "ALTER TABLE ~A ADD CONSTRAINT ~A ~A;"
+          table-name
+          (constraint-name column-name type)
+          body))
+
+@export
+(defun drop-constraint (table-name column-name type)
+  (format nil "ALTER TABLE ~A DROP CONSTRAINT ~A;"
+          table-name
+          (constraint-name column-name type)))
+
+;;;; Utility functions
+
 @export
 (defun sqlize-type (type)
   (format nil "~A" type))

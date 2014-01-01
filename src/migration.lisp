@@ -87,5 +87,30 @@ history for the table `table-name`."
 
 @export
 (defun migrate (table-class diff)
-  (when (debugp)
-    (print diff)))
+  (print diff)
+  (print (iter (for column in diff)
+    (collecting
+     (iter (for type in (getf column :diff) by #'cddr)
+       (collecting
+        (if (member type (list :primaryp :uniquep :indexp :foreign))
+            (if (cadr (getf (getf column :diff) type))
+                ;; The constraint wasn't there, add it
+                (crane.sql:make-constraint (crane:table-name table-class)
+                                           (crane.sql:sqlize (getf column :name))
+                                           type
+                                           t)
+                ;; The constraint has been dropped
+                (crane.sql:drop-constraint (crane:table-name table-class)
+                                           (crane.sql:sqlize (getf column :name))
+                                           (crane.sql:sqlize type)))
+            ;; NULL constraint
+            (if (cadr (getf (getf column :diff) type))
+                ;; Set null
+                (crane.sql:make-constraint (crane:table-name table-class)
+                                           (crane.sql:sqlize (getf column :name))
+                                           :nullp
+                                           t)
+                ;; Remove null constraint
+                (crane.sql:drop-constraint (crane:table-name table-class)
+                                           (crane.sql:sqlize (getf column :name))
+                                           (crane.sql:sqlize type))))))))))
