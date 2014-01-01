@@ -144,6 +144,31 @@ NULL constraint)."
           table-name
           (constraint-name column-name type)))
 
+@export
+(defun alter-constraint (table-name column-name type value)
+  (if (member type (list :primaryp :uniquep :indexp :foreign :default :check))
+      (if value
+          ;; The constraint wasn't there, add it
+          (crane.sql:make-constraint table-name
+                                     column-name
+                                     type
+                                     t)
+          ;; The constraint has been dropped
+          (crane.sql:drop-constraint table-name
+                                     column-name
+                                     (crane.sql:sqlize type)))
+      ;; NULL constraint
+      (if (cadr (getf (getf column :diff) type))
+          ;; Set null
+          (crane.sql:make-constraint table-name
+                                     column-name
+                                     :nullp
+                                     t)
+          ;; Remove null constraint
+          (crane.sql:drop-constraint table-name
+                                     column-name
+                                     (sqlize type)))))
+
 ;;;; Utility functions
 
 @export
