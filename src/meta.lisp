@@ -156,10 +156,48 @@ See DIGEST."
 (defun diff-digest (digest-a digest-b)
   "Compute the difference between two digests.
 See DIGEST."
-  (remove-if #'null
-             (mapcar #'diff-slot
-                     (sort-slot-list (getf digest-a :columns))
-                     (sort-slot-list (getf digest-b :columns)))))
+  (flet ((find-slot-definition (slot-name digest)
+           (iter (for slot in (getf digest :columns))
+             (if (eql slot-name (getf slot :name))
+                 (return slot)))))
+    (let* ((slot-names-a
+             (iter (for slot-name in (getf digest-a :columns) by #'cddr)
+               (collecting slot-name)))
+           (slot-names-b
+             (iter (for slot-name in (getf digest-a :columns) by #'cddr)
+               (collecting slot-name)))
+           (changes
+             (intersection slot-names-a slot-names-b))
+           (additions
+             (iter (for slot-name in slot-names-b)
+               (appending (if (member slot-name slot-names-a)
+                              (list (find-slot-definition slot-name digest-b))
+                              nil))))
+           (deletions
+             (iter (for slot-name in slot-names-a)
+               (appending (if (member slot-name slot-names-b)
+                            (list (find-slot-definition slot-name digest-a))
+                            nil))))
+           (changes-a
+             (iter (for slot-name in changes)
+               (collecting (find-slot-definition slot-name digest-a))))
+           (changes-a
+             (iter (for slot-name in changes)
+               (collecting (find-slot-definition slot-name digest-a)))))
+      (print (list :additions additions
+            :deletions deletions
+            :changes
+            (remove-if #'null
+                       (mapcar #'diff-slot
+                               (sort-slot-list (getf digest-a :columns))
+                               (sort-slot-list (getf digest-b :columns))))))
+      (list :additions (remove-if #'null additions)
+            :deletions (remove-if #'null deletions)
+            :changes
+            (remove-if #'null
+                       (mapcar #'diff-slot
+                               (sort-slot-list (getf digest-a :columns))
+                               (sort-slot-list (getf digest-b :columns))))))))
 
 @export
 (defun build (table-name)
