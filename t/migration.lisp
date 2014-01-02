@@ -4,9 +4,15 @@
   :description "Test that migrations actually work.")
 (in-suite migrations)
 
-(test simple-migration
+(test initial-definitions
   (finishes
-    (deftable table-d (table-a)
-      (field-b :type integer :unique t))))
+    (deftable a ()
+      (field-a :type integer))
+
+    (deftable b ()
+      (field-a :type text :nullp nil))
+
+    (deftable c ()
+      (field-a :type integer :uniquep t))))
 
 (run! 'migrations)
