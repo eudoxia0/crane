@@ -87,8 +87,10 @@ history for the table `table-name`."
 
 @export
 (defun migrate (table-class diff)
+  (when (debugp)
+      (princ diff))
   (let* ((queries
-          (iter (for column in diff)
+          (iter (for column in (getf diff :changes))
             (collecting
              (iter (for type in (getf column :diff) by #'cddr)
                (collecting

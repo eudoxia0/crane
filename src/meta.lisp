@@ -184,13 +184,6 @@ See DIGEST."
            (changes-a
              (iter (for slot-name in changes)
                (collecting (find-slot-definition slot-name digest-a)))))
-      (print (list :additions additions
-            :deletions deletions
-            :changes
-            (remove-if #'null
-                       (mapcar #'diff-slot
-                               (sort-slot-list (getf digest-a :columns))
-                               (sort-slot-list (getf digest-b :columns))))))
       (list :additions (remove-if #'null additions)
             :deletions (remove-if #'null deletions)
             :changes
