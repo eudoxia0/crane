@@ -1,4 +1,4 @@
-3;;;; Normally I would use SxQL for table creation and alteration, but the
+;;;; Normally I would use SxQL for table creation and alteration, but the
 ;;;; sources are too obscure for me to grok, and I don't want to have to
 ;;;; contribue a pull request just to get basic functionality working. So, for
 ;;;; now, CREATE TABLE and MIGRATE TABLE statements will be produced as raw
@@ -158,7 +158,7 @@ NULL constraint)."
                                      column-name
                                      (crane.sql:sqlize type)))
       ;; NULL constraint
-      (if (cadr (getf (getf column :diff) type))
+      (if value
           ;; Set null
           (crane.sql:make-constraint table-name
                                      column-name
