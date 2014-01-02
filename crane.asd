@@ -28,6 +28,7 @@
                  (:file "migration")
                  (:file "meta")
                  (:file "table")
+                 (:file "interface")
                  (:file "crane"))))
   :description "An ORM for Common Lisp."
   :long-description
