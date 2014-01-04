@@ -26,4 +26,10 @@
     (deftable c ()
       (field-a :type text :uniquep nil :primaryp p))))
 
+(test basic-additions
+  (finishes
+    (deftable a ()
+      (field-a :type integer :uniquep t)
+      (field-b :type integer :nullp nil))))
+
 (run! 'migrations)
