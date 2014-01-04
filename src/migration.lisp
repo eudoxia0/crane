@@ -88,8 +88,8 @@ history for the table `table-name`."
 @export
 (defun migrate (table-class diff)
   (when (debugp)
-      (princ diff))
-  (let* ((queries
+      (print diff))
+  (let* ((alterations
           (iter (for column in (getf diff :changes))
             (collecting
              (iter (for type in (getf column :diff) by #'cddr)
@@ -100,6 +100,6 @@ history for the table `table-name`."
                   (crane.sql:sqlize (getf column :name))
                   type
                   (cadr (getf (getf column :diff) type)))))))))
-    (when (debugp)
-      (print queries))
-    (remove-if #'null queries)))
+    ;(when (debugp)
+    ;  (print alterations))
+    (remove-if #'null alterations)))

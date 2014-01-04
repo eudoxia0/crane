@@ -161,36 +161,34 @@ See DIGEST."
              (if (eql slot-name (getf slot :name))
                  (return slot)))))
     (let* ((slot-names-a
-             (iter (for slot-name in (getf digest-a :columns) by #'cddr)
-               (collecting slot-name)))
+             (iter (for slot in (getf digest-a :columns))
+               (collecting (getf slot :name))))
            (slot-names-b
-             (iter (for slot-name in (getf digest-a :columns) by #'cddr)
-               (collecting slot-name)))
+             (iter (for slot in (getf digest-b :columns))
+               (collecting (getf slot :name))))
            (changes
              (intersection slot-names-a slot-names-b))
            (additions
-             (iter (for slot-name in slot-names-b)
-               (appending (if (member slot-name slot-names-a)
-                              (list (find-slot-definition slot-name digest-b))
-                              nil))))
+             (set-difference slot-names-b slot-names-a))
            (deletions
-             (iter (for slot-name in slot-names-a)
-               (appending (if (member slot-name slot-names-b)
-                            (list (find-slot-definition slot-name digest-a))
-                            nil))))
+             (set-difference slot-names-a slot-names-b))
            (changes-a
              (iter (for slot-name in changes)
                (collecting (find-slot-definition slot-name digest-a))))
-           (changes-a
+           (changes-b
              (iter (for slot-name in changes)
-               (collecting (find-slot-definition slot-name digest-a)))))
-      (list :additions (remove-if #'null additions)
-            :deletions (remove-if #'null deletions)
+               (collecting (find-slot-definition slot-name digest-b)))))
+      (list :additions (mapcar #'(lambda (slot-name)
+                                   (find-slot-definition slot-name digest-b))
+                               (remove-if #'null additions))
+            :deletions (mapcar #'(lambda (slot-name)
+                                   (find-slot-definition slot-name digest-a))
+                               (remove-if #'null deletions))
             :changes
             (remove-if #'null
                        (mapcar #'diff-slot
-                               (sort-slot-list (getf digest-a :columns))
-                               (sort-slot-list (getf digest-b :columns))))))))
+                               (sort-slot-list changes-a)
+                               (sort-slot-list changes-b)))))))
 
 @export
 (defun build (table-name)
