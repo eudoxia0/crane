@@ -12,8 +12,7 @@ management.
 (setf (config-env-var) "MYAPP_ENV")
 
 (defconfig |conf|
-  `(:debug t
-    :crane (:migrations-directory
+  `(:crane (:migrations-directory
              ,(merge-pathnames
                #p"t/migrations/"
                (asdf:component-pathname (asdf:find-system :crane-test)))
