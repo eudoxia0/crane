@@ -23,9 +23,9 @@ Application:
                        | ORM Layer |
                        +-----+-----+
                              |
-                         +---+---+
-                         | S-SQL |
-                         +---+---+
+                          +--+---+
+                          | sxql |
+                          +--+---+
                              |
                        +-----+-----+
                        |  cl-dbi   |
@@ -42,8 +42,7 @@ Application:
 
 Crane mainly uses three libraries:
 
-- [[http://marijnhaverbeke.nl/postmodern/s-sql.html][S-SQL]] :: A DSL for safely generating SQL. Originally created for the
-           Postmodern project, an ORM for the PostgreSQL RDBMS.
+- [[https://github.com/fukamachi/sxql][sxql]] :: A DSL for safely generating SQL.
 - [[https://github.com/fukamachi/cl-dbi][CL-DBI]] :: A backend-independent interface to relational DBMSs. At
             present, only PostgreSQL, SQLite version 3, and MySQL are
             supported, but support for Oracle and MS SQL Server
