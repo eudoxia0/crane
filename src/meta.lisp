@@ -117,7 +117,7 @@
    (list :name (closer-mop:slot-definition-name slot)
          :type (col-type slot)
          :nullp (col-null-p slot)
-         :uniquep (col-null-p slot)
+         :uniquep (col-unique-p slot)
          :primaryp (col-primary-p slot)
          :indexp (col-index-p slot)
          :check (col-check slot))
