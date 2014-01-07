@@ -67,7 +67,7 @@ history for the table `table-name`."
 
 (defparameter +create-table-format-string+
   ;; Are you ready for this one?
-  "CREATE TABLE ~A (~{    ~A,~}~A~{    ~A~#[~:;, ~]~});~{~A;~}"
+  "CREATE TABLE ~A (~{    ~A~#[~:;, ~]~}~A~{    ~A~#[~:;, ~]~});~{~A;~}"
   ;; Is that clear?
   )
 
@@ -80,7 +80,7 @@ history for the table `table-name`."
            (format nil +create-table-format-string+
                    (crane.sql:sqlize table-name)
                    (getf constraints :definition)
-                   (if (getf constraints :internal) "" ",")
+                   (if (getf constraints :internal) "," "")
                    (getf constraints :internal)
                    (getf constraints :external))))
     (crane.sql:execute (crane.sql:prepare query (crane::db table-name)))))
@@ -88,7 +88,8 @@ history for the table `table-name`."
 @export
 (defun migrate (table-class diff)
   (when (debugp)
-      (print diff))
+    (print table-class)
+    (print diff))
   (let* ((alterations
           (iter (for column in (getf diff :changes))
             (collecting
