@@ -100,32 +100,31 @@ NULL constraint)."
                                               (getf column key)))))))
 
 @export
-(defun create-and-sort-constraints (table-name digest)
-  (let* ((columns
-          (iter (for column in (getf digest :columns))
-            (collecting (append (list (sqlize (getf column :name))
-                                      (sqlize-type (getf column :type)))
-                                (create-column-constraints
-                                 (sqlize table-name)
-                                 column)))))
-         ;; Each item in COLUMNS follows the format
-         ;; (<column name> <column type> <constraint>*...)
-         ;; If a constraint is a string, then it goes right into the CREATE
-         ;; TABLE statement. If it's a list beginning with the symbol :external,
-         ;; it goes into a separate command.
-         (column-definitions
-           (iter (for column in columns)
-             (collecting (concatenate 'string (first column) " " (second column)))))
+(defun define-column (table-name column)
+  (let* ((column-definition
+           (concatenate 'string
+                        (sqlize (getf column :name))
+                        (sqlize-type (getf column :type))))
+         (constraints
+           (create-column-constraints (sqlize table-name column)))
          (internal-constraints
-           (iter (for column in columns)
-             (appending (remove-if-not #'stringp (cddr column)))))
+           (remove-if-not #'stringp constraints))
          (external-constraints
-           (iter (for column in columns)
-             (appending (mapcar #'cadr
-                                (remove-if-not #'listp (cddr column)))))))
-    (list :definition column-definitions
+           (mapcar #'cadr
+                   (remove-if-not #'listp constraints))))
+    (list :definition column-definition
           :internal internal-constraints
           :external external-constraints)))
+
+@export
+(defun create-and-sort-constraints (table-name digest)
+  (let ((definitions
+          (mapcar #'(lambda (col)
+                      (define-column table-name col))
+                  (getf digest :columns))))
+    (list :definitions (mapcar #'(lambda (def) (getf :definition def)) definitions)
+          :internal (mapcar #'(lambda (def) (getf :internal def)) definitions)
+          :external (mapcar #'(lambda (def) (getf :external def)) definitions))))
 
 ;;;; Constraint processing is stupid, I wish I was coding something more fun :c
 
@@ -149,25 +148,25 @@ NULL constraint)."
   (if (member type (list :primaryp :uniquep :indexp :foreign :default :check))
       (if value
           ;; The constraint wasn't there, add it
-          (crane.sql:make-constraint table-name
-                                     column-name
-                                     type
-                                     t)
+          (make-constraint table-name
+                           column-name
+                           type
+                           t)
           ;; The constraint has been dropped
-          (crane.sql:drop-constraint table-name
+          (drop-constraint table-name
                                      column-name
-                                     (crane.sql:sqlize type)))
+                                     (sqlize type)))
       ;; NULL constraint
       (if value
           ;; Set null
-          (crane.sql:make-constraint table-name
-                                     column-name
-                                     :nullp
-                                     t)
+          (make-constraint table-name
+                           column-name
+                           :nullp
+                           t)
           ;; Remove null constraint
-          (crane.sql:drop-constraint table-name
-                                     column-name
-                                     (sqlize type)))))
+          (drop-constraint table-name
+                           column-name
+                           (sqlize type)))))
 
 ;;;; Utility functions
 
