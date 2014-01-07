@@ -104,9 +104,10 @@ NULL constraint)."
   (let* ((column-definition
            (concatenate 'string
                         (sqlize (getf column :name))
+                        " "
                         (sqlize-type (getf column :type))))
          (constraints
-           (create-column-constraints (sqlize table-name column)))
+           (create-column-constraints table-name column))
          (internal-constraints
            (remove-if-not #'stringp constraints))
          (external-constraints
@@ -122,9 +123,11 @@ NULL constraint)."
           (mapcar #'(lambda (col)
                       (define-column table-name col))
                   (getf digest :columns))))
-    (list :definitions (mapcar #'(lambda (def) (getf :definition def)) definitions)
-          :internal (mapcar #'(lambda (def) (getf :internal def)) definitions)
-          :external (mapcar #'(lambda (def) (getf :external def)) definitions))))
+    (list :definition (mapcar #'(lambda (def) (getf def :definition)) definitions)
+          :internal (reduce #'append
+                            (mapcar #'(lambda (def) (getf def :internal)) definitions))
+          :external (reduce #'append
+                            (mapcar #'(lambda (def) (getf def :external)) definitions)))))
 
 ;;;; Constraint processing is stupid, I wish I was coding something more fun :c
 
