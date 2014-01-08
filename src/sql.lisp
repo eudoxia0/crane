@@ -85,9 +85,11 @@ NULL constraint)."
               (set-unique column-name value))
              (:primaryp
               (set-primary column-name value)))
-           (format nil "CONSTRAINT ~A ~A"
-                   (constraint-name column-name (sqlize type))
-                   it))))
+           (concatenate 'string
+                        "CONSTRAINT "
+                        (constraint-name column-name (sqlize type))
+                        " "
+                        it))))
 
 
 (defun create-column-constraints (table-name column)
@@ -134,10 +136,10 @@ NULL constraint)."
 ;;;; Alter Table
 
 @export
-(defun add-constraint (table-name column-name type value)
-  (format nil "ALTER TABLE ~A ADD CONSTRAINT ~A;"
+(defun add-constraint (table-name column-name body)
+  (format nil "ALTER TABLE ~A ADD ~A;"
           table-name
-          (make-constraint table-name column-name type value)))
+          body))
 
 @export
 (defun drop-constraint (table-name column-name type)
@@ -152,8 +154,7 @@ NULL constraint)."
           ;; The constraint wasn't there, add it
           (add-constraint table-name
                           column-name
-                          type
-                          t)
+                          (make-constraint table-name column-name type t))
           ;; The constraint has been dropped
           (drop-constraint table-name
                            column-name
@@ -163,8 +164,7 @@ NULL constraint)."
           ;; Set null
           (add-constraint table-name
                           column-name
-                          :nullp
-                          t)
+                          (make-constraint table-name column-name :nullp t))
           ;; Remove null constraint
           (drop-constraint table-name
                            column-name
