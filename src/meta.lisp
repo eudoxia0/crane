@@ -50,8 +50,6 @@
    (col-index-p :initarg :col-index-p
                 :reader  col-index-p
                 :initform nil)
-   (col-default :initarg :col-default
-                :reader  col-default)
    (col-check :initarg :col-check
               :reader col-check
               :initarg nil)))
@@ -67,8 +65,6 @@
                   :reader col-primary-p)
    (col-index-p :initarg :col-index-p
                 :reader  col-index-p)
-   (col-default :initarg :col-default
-                :reader  col-default)
    (col-check :initarg :col-check
               :reader col-check)))
 
@@ -107,23 +103,16 @@
           (if (slot-boundp (first direct-slot-definitions) 'col-check)
               (col-check (first direct-slot-definitions))
               nil))
-    (if (slot-boundp (first direct-slot-definitions) 'col-default)
-        (setf (slot-value effective-slot-definition 'col-default)
-              (col-default (first direct-slot-definitions))))
     effective-slot-definition))
 
 (defun digest-slot (slot)
-  (append
-   (list :name (closer-mop:slot-definition-name slot)
-         :type (col-type slot)
-         :nullp (col-null-p slot)
-         :uniquep (col-unique-p slot)
-         :primaryp (col-primary-p slot)
-         :indexp (col-index-p slot)
-         :check (col-check slot))
-   (if (slot-boundp slot 'col-default)
-       (list :default (col-default slot))
-       nil)))
+  (list :name (closer-mop:slot-definition-name slot)
+        :type (col-type slot)
+        :nullp (col-null-p slot)
+        :uniquep (col-unique-p slot)
+        :primaryp (col-primary-p slot)
+        :indexp (col-index-p slot)
+        :check (col-check slot)))
 
 (defmethod digest ((class table-class))
   "Serialize a class's options and slots' options into a plist"
