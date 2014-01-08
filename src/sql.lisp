@@ -181,15 +181,3 @@ NULL constraint)."
 @export
 (defun sqlize-type (type)
   (format nil "~A" type))
-
-@doc "Prepare a query for execution"
-@export
-(defun prepare (query &optional (database-name crane:*default-db*))
-  (when (debugp)
-    (print query))
-  (dbi:prepare (crane:get-connection database-name) query))
-
-@doc "Execute a query."
-@export
-(defun execute (query &rest args)
-  (apply #'dbi:execute (cons query args)))
