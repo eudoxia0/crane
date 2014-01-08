@@ -3,5 +3,6 @@
   (:use :cl :anaphora :iter :cl-annot.doc)
   (:export :table-class
            :table-name
-           :abstract-p))
+           :abstract-p
+           :<table>))
 (in-package :crane)

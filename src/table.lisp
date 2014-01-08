@@ -30,11 +30,14 @@ symbols, table options are keywords."
           (push (process-slot item) slots)))
     (list slots options)))
 
+(defclass <table> () ()
+  (:metaclass table-class))
+
 @export
 (defmacro deftable (name (&rest superclasses) &rest slots-and-options)
   (destructuring-bind (slots options) (separate-slots-and-options slots-and-options)
     `(progn
-       (defclass ,name ,superclasses
+       (defclass ,name ,(if superclasses superclasses `(crane:<table>))
          ,slots
          ,@options
          (:metaclass crane:table-class))
