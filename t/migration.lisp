@@ -30,6 +30,15 @@
   (finishes
     (deftable a ()
       (field-a :type integer :uniquep t)
-      (field-b :type integer :nullp nil))))
+      (field-b :type integer :nullp nil))
+
+    (deftable b ()
+      (field-a :type text :nullp t)
+      (field-b :type integer :indexp t))))
+
+(test basic-deletions
+  (finishes
+    (deftable a ()
+      (field-a :type integer :uniquep t))))
 
 (run! 'migrations)
