@@ -4,7 +4,7 @@
 (in-package :crane)
 (annot:enable-annot-syntax)
 
-(defmethod slot-tuple (object)
+(defmethod slot-tuple ((obj <table>))
   (mapcar #'symbol-name
           (remove-if-not #'(lambda (slot)
                              (slot-boundp object slot))
@@ -13,7 +13,7 @@
 
 @doc "Transform an object into a tuple of its values. Useful for INSERT
 statements."
-(defmethod tuple (object)
+(defmethod tuple ((obj <table>))
   (mapcar #'(lambda (slot)
               (slot-value object slot))
           (remove-if-not #'(lambda (slot)
@@ -22,8 +22,8 @@ statements."
                                  (closer-mop:class-slots (class-of object))))))
 
 @export
-(defmethod save (object)
-  )
+(defmethod save ((obj <table>))
+  (pprint "Saving"))
 
 @export
 (defmethod filter ((class table-class) &rest params)
