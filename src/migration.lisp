@@ -88,9 +88,6 @@ history for the table `table-name`."
 
 @export
 (defun migrate (table-class diff)
-  (when (debugp)
-    (print table-class)
-    (print diff))
   (let* ((table-name (crane.sql:sqlize (crane:table-name table-class)))
          (alterations
           (iter (for column in (getf diff :changes))
@@ -132,5 +129,8 @@ history for the table `table-name`."
                                               (crane.sql:sqlize column-name)))
                    (getf diff :deletions))))
     (when (debugp)
-      (format t "~&Alterations: ~A~&New Columns: ~A~&Additions: ~A~&Deletions: ~A~&"
-              alterations new-columns additions deletions))))
+      (pprint table-class)
+      (pprint (reduce #'(lambda (a b) (concatenate 'string a ";" b))
+                      (append alterations additions deletions))))
+    (reduce #'(lambda (a b) (concatenate 'string a ";" b))
+            (append alterations additions deletions))))
