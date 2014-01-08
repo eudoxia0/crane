@@ -7,7 +7,6 @@
         :uniquep  :col-unique-p
         :primaryp :col-primary-p
         :indexp   :col-index-p
-        :default  :col-default
         :check    :col-check))
 
 @doc "Take a plist like (:col-type 'string :col-null-p t) and remove the
