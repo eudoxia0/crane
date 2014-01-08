@@ -170,9 +170,7 @@ See DIGEST."
       (list :additions (mapcar #'(lambda (slot-name)
                                    (find-slot-definition slot-name digest-b))
                                (remove-if #'null additions))
-            :deletions (mapcar #'(lambda (slot-name)
-                                   (find-slot-definition slot-name digest-a))
-                               (remove-if #'null deletions))
+            :deletions (remove-if #'null deletions)
             :changes
             (remove-if #'null
                        (mapcar #'diff-slot
@@ -183,11 +181,13 @@ See DIGEST."
 (defun build (table-name)
   (unless (abstractp table-name)
     (if (crane.migration:migration-history-p table-name)
-        (progn
-          (aif (diff-digest
-                (crane.migration:get-last-migration table-name)
-                (digest table-name))
-               (crane.migration:migrate (find-class table-name) it)))
+        (aif (diff-digest
+              (crane.migration:get-last-migration table-name)
+              (digest table-name))
+             (progn
+               (crane.migration:migrate (find-class table-name) it)
+               (crane.migration:insert-migration table-name
+                                                 (digest table-name))))
         (let ((digest (digest table-name)))
           (crane.migration:insert-migration table-name digest)
           (crane.migration:create-table table-name digest)))))
