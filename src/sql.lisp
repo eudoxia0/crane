@@ -78,7 +78,7 @@ NULL constraint)."
       ;; :indexp is treated especially, because it generates an external command
       ;; which already includes the constraint name
       (when value (set-index table-name column-name value))
-      (aif (case type
+      (aif (ecase type
              (:nullp
               (set-null column-name value))
              (:uniquep
@@ -149,12 +149,13 @@ NULL constraint)."
 
 @export
 (defun alter-constraint (table-name column-name type value)
-  (if (member type (list :primaryp :uniquep :indexp :foreign :default :check))
+  (if (member type (list :primaryp :uniquep :indexp :foreign :check))
       (if value
           ;; The constraint wasn't there, add it
-          (add-constraint table-name
-                          column-name
-                          (make-constraint table-name column-name type t))
+          (aif (make-constraint table-name column-name type t)
+               (add-constraint table-name
+                               column-name
+                               it))
           ;; The constraint has been dropped
           (drop-constraint table-name
                            column-name
@@ -162,9 +163,10 @@ NULL constraint)."
       ;; NULL constraint
       (if value
           ;; Set null
-          (add-constraint table-name
-                          column-name
-                          (make-constraint table-name column-name :nullp t))
+          (aif (make-constraint table-name column-name :nullp t)
+               (add-constraint table-name
+                               column-name
+                               it))
           ;; Remove null constraint
           (drop-constraint table-name
                            column-name
