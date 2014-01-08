@@ -110,10 +110,10 @@ history for the table `table-name`."
                    (getf diff :additions)))
          (additions
            (iter (for def in new-columns)
-             (collecting
-              (append
-               (list (format nil "ALTER TABLE ~A ADD COLUMN ~A"
-                             table-name (getf def :definition))
+             (appending
+              (cons (format nil "ALTER TABLE ~A ADD COLUMN ~A"
+                            table-name (getf def :definition))
+                    (append 
                      (mapcar #'(lambda (internal-constraint)
                                  (crane.sql:add-constraint
                                   table-name
@@ -132,6 +132,5 @@ history for the table `table-name`."
                                               (crane.sql:sqlize column-name)))
                    (getf diff :deletions))))
     (when (debugp)
-      (print alterations)
-      (print additions)
-      (print deletions))))
+      (format t "~&Alterations: ~A~&New Columns: ~A~&Additions: ~A~&Deletions: ~A~&"
+              alterations new-columns additions deletions))))
