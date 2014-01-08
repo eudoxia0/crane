@@ -134,11 +134,10 @@ NULL constraint)."
 ;;;; Alter Table
 
 @export
-(defun add-constraint (table-name column-name body)
-  (format nil "ALTER TABLE ~A ADD CONSTRAINT ~A ~A;"
+(defun add-constraint (table-name column-name type value)
+  (format nil "ALTER TABLE ~A ADD CONSTRAINT ~A;"
           table-name
-          (constraint-name column-name type)
-          body))
+          (make-constraint table-name column-name type value)))
 
 @export
 (defun drop-constraint (table-name column-name type)
@@ -151,25 +150,29 @@ NULL constraint)."
   (if (member type (list :primaryp :uniquep :indexp :foreign :default :check))
       (if value
           ;; The constraint wasn't there, add it
-          (make-constraint table-name
-                           column-name
-                           type
-                           t)
+          (add-constraint table-name
+                          column-name
+                          type
+                          t)
           ;; The constraint has been dropped
           (drop-constraint table-name
-                                     column-name
-                                     (sqlize type)))
+                           column-name
+                           (sqlize type)))
       ;; NULL constraint
       (if value
           ;; Set null
-          (make-constraint table-name
-                           column-name
-                           :nullp
-                           t)
+          (add-constraint table-name
+                          column-name
+                          :nullp
+                          t)
           ;; Remove null constraint
           (drop-constraint table-name
                            column-name
                            (sqlize type)))))
+
+@export
+(defun drop-column (table-name column-name)
+  (format nil "ALTER TABLE ~A DROP COLUMN ~A" table-name column-name))
 
 ;;;; Utility functions
 

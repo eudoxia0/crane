@@ -92,7 +92,7 @@ history for the table `table-name`."
     (print diff))
   (let* ((alterations
           (iter (for column in (getf diff :changes))
-            (collecting
+            (appending
              (iter (for type in (getf column :diff) by #'cddr)
                (collecting
                 (crane.sql:alter-constraint
@@ -100,7 +100,9 @@ history for the table `table-name`."
                     (crane:table-name table-class))
                   (crane.sql:sqlize (getf column :name))
                   type
-                  (cadr (getf (getf column :diff) type)))))))))
-    ;(when (debugp)
-    ;  (print alterations))
+                  (cadr (getf (getf column :diff) type))))))))
+         (additions
+           nil))
+    (when (debugp)
+      (print alterations))
     (remove-if #'null alterations)))
