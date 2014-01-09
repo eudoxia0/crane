@@ -137,13 +137,13 @@ NULL constraint)."
 
 @export
 (defun add-constraint (table-name column-name body)
-  (format nil "ALTER TABLE ~A ADD ~A;"
+  (format nil "ALTER TABLE ~A ADD ~A"
           table-name
           body))
 
 @export
 (defun drop-constraint (table-name column-name type)
-  (format nil "ALTER TABLE ~A DROP CONSTRAINT ~A;"
+  (format nil "ALTER TABLE ~A DROP CONSTRAINT ~A"
           table-name
           (constraint-name column-name type)))
 

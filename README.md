@@ -40,6 +40,10 @@ The manual is provided in [org-mode](http://orgmode.org/) format in
 `docs/manual.org`. It can be compiled to HTML or PDF, or you can grab a copy
 from the site (Soon).
 
+# Notes
+
+Testing requires Postgres and running `t/setup.sh`.
+
 # License
 
 Copyright (c) 2013 Fernando Borretti (eudoxiahp@gmail.com)
