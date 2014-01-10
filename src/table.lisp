@@ -9,14 +9,17 @@
         :indexp   :col-index-p
         :check    :col-check))
 
+(defparameter +standard-class-options+
+  (list :initarg :initform :accessor :reader :writer))
+
 @doc "Take a plist like (:col-type 'string :col-null-p t) and remove the
 prefixes on the keys. Turn 'deftable slot properties' into 'table-class slot
 properties'"
 (defun process-slot (slot)
   (cons (car slot)
         (iter (for (key val) on (cdr slot) by #'cddr)
-          (appending (list (getf +slot-mapping+ key) val)))))
-        
+          (appending (unless (member key +standard-class-options+)
+                       (list (getf +slot-mapping+ key) val))))))
 
 @doc "To minimize the number of parentheses, both slots and table options come
 in the same list. This function separates them: Normal slot names are plain old
