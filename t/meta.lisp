@@ -1,9 +1,19 @@
 (in-package :crane-test)
 
-;; Clean slate
-(fad:delete-directory-and-files
-  (crane.migration::get-migration-dir))
-
+(handler-case
+    (progn
+      ;; Clean slate
+      (fad:delete-directory-and-files
+       (crane.migration::get-migration-dir))
+      
+      (dolist (table '(table-a table-b table-c table-d
+                       a b c))
+        (handler-case
+            ;; Make sure no single delete takes down the whole thing
+             (execute (prepare (format nil "DROP TABLE ~A"
+                                       (crane.sql:sqlize table))))
+          (t () t))))
+  (t () t))
 
 (def-suite table-slots
   :description "Test that table metaclass slots work.")

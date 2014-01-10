@@ -15,7 +15,10 @@
                (:type :postgres
                 :name "crane_test_db"
                 :user "crane_test_user"
-                :pass "crane_test_user")))))
+                :pass "crane_test_user")
+               :interface
+               (:type :sqlite3
+                :name ":memory:")))))
 
 (defconfig |dev|
   `(:debug t
