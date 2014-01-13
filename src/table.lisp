@@ -12,14 +12,28 @@
 (defparameter +standard-class-options+
   (list :initarg :initform :accessor :reader :writer))
 
+@doc "If the slot doesn't have :initarg or :accessor slots, add them"
+(defun add-default-slots (slot-name plist)
+  (let ((plist-with-accessor
+          (if (not (member :accessor plist))
+              (append (list :accessor slot-name) plist)
+              plist)))
+    (if (not (member :initarg plist))
+        (append (list :initarg (intern (symbol-name slot-name) :keyword))
+                plist-with-accessor)
+        plist-with-accessor)))
+      
+
 @doc "Take a plist like (:col-type 'string :col-null-p t) and remove the
-prefixes on the keys. Turn 'deftable slot properties' into 'table-class slot
-properties'"
+prefixes on the keys. Turn 'deftable slot properties' (:type, :nullp, etc.) into
+'table-class slot properties' (:col-type, :col-null-p, etc.)"
 (defun process-slot (slot)
   (cons (car slot)
-        (iter (for (key val) on (cdr slot) by #'cddr)
-          (appending (unless (member key +standard-class-options+)
-                       (list (getf +slot-mapping+ key) val))))))
+        (add-default-slots (car slot)
+         (iter (for (key val) on (cdr slot) by #'cddr)
+               (appending (if (member key +standard-class-options+)
+                              (list key val)
+                              (list (getf +slot-mapping+ key) val)))))))
 
 @doc "To minimize the number of parentheses, both slots and table options come
 in the same list. This function separates them: Normal slot names are plain old
