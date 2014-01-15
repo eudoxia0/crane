@@ -15,23 +15,28 @@
 (defmethod drop-table ((table-name symbol))
   (drop-table (find-class table-name)))
 
-(defmethod slot-tuple ((obj <table>))
-  (mapcar #'symbol-name
-          (remove-if-not #'(lambda (slot)
-                             (slot-boundp obj slot))
-                         (mapcar #'closer-mop:slot-definition-name
-                                 (closer-mop:class-slots (class-of obj))))))
+(defmethod slot-tuple (obj)
+  (remove-if-not #'(lambda (slot)
+                     (slot-boundp obj slot))
+                 (mapcar #'closer-mop:slot-definition-name
+                         (closer-mop:class-slots (class-of obj)))))
 
-@doc "Transform an object into a tuple of its values. Useful for INSERT
-statements."
-(defmethod tuple ((obj <table>))
-  (mapcar #'(lambda (slot)
-              (slot-value object slot))
-          (remove-if-not #'(lambda (slot)
-                             (slot-boundp object slot))
-                         (mapcar #'closer-mop:slot-definition-name
-                                 (closer-mop:class-slots (class-of object))))))
+@doc "Transform an object into a call to the set= function used by SxQL."
+(defun make-set (obj)
+  (let ((slot-names (slot-tuple obj)))
+    (iter (for slot in slot-names)
+      (appending (list (intern (crane.sql:sqlize (symbol-name slot))
+                               :keyword)
+                       (slot-value obj slot))))))
 
+(defmethod initialize-instance :after ((obj <table>) &key)
+  (query (sxql:insert-into
+             (table-name (class-of obj))
+           (apply #'sxql.clause:make-clause
+                  (cons :set=
+                        (make-set obj))))
+      (db (class-of obj))))
+     
 @export
 (defmethod save ((obj <table>))
   (pprint (slot-tuple obj))
