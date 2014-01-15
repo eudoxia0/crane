@@ -19,8 +19,8 @@
           obj))))
 
 @doc "Give constraints Crane-specific names"
-(defun constraint-name (column-name type)
-  (concatenate 'string "crane_" column-name "_" type))
+(defun constraint-name (table-name column-name type)
+  (concatenate 'string "crane_" table-name "_" column-name "_" type))
 
 @doc "Toggle NULL constraint."
 (defun set-null (column-name value)
@@ -42,12 +42,12 @@
   (if value
     (list :external
           (format nil "CREATE INDEX ~A ON ~A (~A)"
-                  (constraint-name column-name "INDEX")
+                  (constraint-name table-name column-name "INDEX")
                   table-name
                   column-name))
     (list :external
           (format nil "DROP INDEX ~A ON ~A"
-                  (constraint-name column-name "INDEX")
+                  (constraint-name table-name column-name "INDEX")
                   table-name))))
 
 (defparameter +referential-actions+
@@ -87,7 +87,7 @@ NULL constraint)."
               (set-primary column-name value)))
            (concatenate 'string
                         "CONSTRAINT "
-                        (constraint-name column-name (sqlize type))
+                        (constraint-name table-name column-name (sqlize type))
                         " "
                         it))))
 
@@ -145,7 +145,7 @@ NULL constraint)."
 (defun drop-constraint (table-name column-name type)
   (format nil "ALTER TABLE ~A DROP CONSTRAINT ~A"
           table-name
-          (constraint-name column-name type)))
+          (constraint-name table-name column-name type)))
 
 @export
 (defun alter-constraint (table-name column-name type value)
