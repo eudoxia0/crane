@@ -52,10 +52,12 @@ symbols, table options are keywords."
 
 @export
 (defmacro deftable (name (&rest superclasses) &rest slots-and-options)
-  (destructuring-bind (slots options) (separate-slots-and-options slots-and-options)
+  (destructuring-bind (slots options)
+      (separate-slots-and-options slots-and-options)
     `(progn
        (defclass ,name ,(if superclasses superclasses `(crane:<table>))
-         ,slots
+         ((id :col-type integer :col-primary-p t :col-null-p nil)
+          ,@slots)
          ,@options
          (:metaclass crane:table-class))
        (closer-mop:finalize-inheritance (find-class ',name))
