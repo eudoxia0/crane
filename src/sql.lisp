@@ -9,14 +9,17 @@
 (in-package :crane.sql)
 (annot:enable-annot-syntax)
 
+;(setf sxql:*quote-character* #\")
+
 @export
 (defun sqlize (obj)
   (typecase obj
     (symbol
      (sqlize (symbol-name obj)))
     (string
-     (map 'string #'(lambda (char) (if (eql char #\-) #\_ char))
-          obj))))
+     (string-downcase
+      (map 'string #'(lambda (char) (if (eql char #\-) #\_ char))
+           obj)))))
 
 @doc "Give constraints Crane-specific names"
 (defun constraint-name (table-name column-name type)
