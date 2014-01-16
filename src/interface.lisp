@@ -69,7 +69,7 @@ SxQL."
                      :keyword)
              tree))
         (t
-         (mapcan #'sqlize-all tree))))
+         (mapcar #'sqlize-all tree))))
 
 @export
 (defmacro filter (class &rest params)
