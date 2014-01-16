@@ -11,6 +11,8 @@
 @doc "Execute a query."
 @export
 (defun execute (query &rest args)
+  (when (and (crane.utils:debugp) args)
+    (print args))
   (apply #'dbi:execute (cons query args)))
 
 @doc "A combination of EXECUTE and SxQL's YIELD."
