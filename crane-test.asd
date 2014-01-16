@@ -19,5 +19,6 @@
                   ((:file "utils")))
                  (:file "connect")
                  (:file "meta")
-                 (:file "migration"))))
+                 (:file "migration")
+                 (:file "queries"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))
