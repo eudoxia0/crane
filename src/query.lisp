@@ -17,5 +17,14 @@
 @export
 (defmacro query (body &optional (database-name crane:*default-db*))
   `(multiple-value-bind (sql args) (sxql:yield ,body)
-     (dbi:fetch-all (apply #'execute
-                           (cons (prepare sql ,database-name) args)))))
+     (let ((result (apply #'execute
+                          (cons (prepare sql ,database-name) args))))
+       (when result (dbi:fetch-all result)))))
+
+(defun latest-id (class)
+  (let ((result (getf (car (query
+                               (sxql:select ((:max :id))
+                                 (sxql:from (table-name class))) 
+                               (db class)))
+                      :|max|)))
+    (if (eql result :null) 0 result)))
