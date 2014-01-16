@@ -43,20 +43,51 @@
     (query (sxql:update (table-name (class-of obj))
                         (apply #'sxql.clause:make-clause
                                (cons :set= set))
-                        (sxql:where (:= :id (getf set :id))))
+                        (sxql:where (:= :id (getf set :|id|))))
         (db (class-of obj)))))
 
 @export
 (defmethod del ((obj <table>))
   (query (sxql:delete-from (table-name (class-of obj))
-           (sxql:where (:= :id (getf (make-set obj) :id))))
+           (sxql:where (:= :id (getf (make-set obj) :|id|))))
       (db (class-of obj))))
 
-@export
-(defmethod filter ((class table-class) &rest params)
-  
-  )
+(defparameter *sxql-operators*
+  (list :not :is-null :not-null :desc :asc :distinct :include :constructor :type :=
+        :!= :< :> :<= :>= :as :in :not-in :like :or :and :+ :- :sql-op-name :* :/ :%
+        :union :union-all :include :constructor))
+
+(defun sqlize-all (tree)
+  "This is a load-bearing hack, until I overhaul everything in src/sql.lisp to
+SxQL."
+  (cond ((null tree)
+         nil)
+        ((atom tree)
+         (if (and (keywordp tree)
+                  (not (member tree *sxql-operators*)))
+             (intern (crane.sql:sqlize tree)
+                     :keyword)
+             tree))
+        (t
+         (mapcan #'sqlize-all tree))))
 
 @export
-(defmethod filter ((class-name symbol) &rest params)
-  (apply #'filter (cons (find-class class-name) params)))
+(defmacro filter (class &rest params)
+  (let ((equal-params (remove-if-not #'keywordp params))
+        (fn-params
+          (remove-if #'keywordp
+                     (iter (for item in params)
+                       (for prev previous item back 1 initially nil)
+                       (unless (keywordp prev) (collect item))))))
+    `(crane:query
+         ,(append
+           `(sxql:select :*
+              (sxql:from (table-name (find-class ',class))))
+           (when params
+             `((sxql:where (:and ,@(mapcar #'(lambda (slot-name)
+                                               (list :=
+                                                     (intern (crane.sql:sqlize slot-name)
+                                                             :keyword)
+                                                     (getf params slot-name)))
+                                           equal-params)
+                                 ,@(sqlize-all fn-params)))))))))
