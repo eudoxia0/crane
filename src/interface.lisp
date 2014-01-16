@@ -39,8 +39,18 @@
      
 @export
 (defmethod save ((obj <table>))
-  (pprint (slot-tuple obj))
-  (pprint "Saving"))
+  (let ((set (make-set obj)))
+    (query (sxql:update (table-name (class-of obj))
+                        (apply #'sxql.clause:make-clause
+                               (cons :set= set))
+                        (sxql:where (:= :id (getf set :id))))
+        (db (class-of obj)))))
+
+@export
+(defmethod del ((obj <table>))
+  (query (sxql:delete-from (table-name (class-of obj))
+           (sxql:where (:= :id (getf (make-set obj) :id))))
+      (db (class-of obj))))
 
 @export
 (defmethod filter ((class table-class) &rest params)
