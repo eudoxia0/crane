@@ -6,7 +6,7 @@ relational databases, and out of the box migrations.
 ## Defining Tables
 
 ```lisp
-(deftable user
+(deftable user ()
   (name :type text :uniquep t)
   (age :type integer :nullp nil :initform 18))
 ```
