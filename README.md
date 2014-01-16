@@ -8,7 +8,7 @@ relational databases, and out of the box migrations.
 ```lisp
 (deftable user
   (name :type text :uniquep t)
-  (age :type integer :nullp nil))
+  (age :type integer :nullp nil :initform 18))
 ```
 
 ## Connecting
@@ -32,6 +32,24 @@ management.
                 :pass "pass")))))
 
 (setf (env-var "MYAPP_ENV") "conf")
+```
+
+# Creating, Saving, and Deleting Objects
+
+```lisp
+(let ((ins (make-instance 'user :name "Eudoxia")))
+  (save ins)
+  (del ins))
+```
+
+# Filtering
+
+```lisp
+(filter user) ;; Returns everything
+
+(filter user :name "Eudoxia")
+
+(filter user (:> :age 21))
 ```
 
 # Documentation
