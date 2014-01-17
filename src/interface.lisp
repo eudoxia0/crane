@@ -52,6 +52,21 @@
            (sxql:where (:= :id (getf (make-set obj) :|id|))))
       (db (class-of obj))))
 
+
+(defun clean-tuple (tuple)
+  (flet ((process-key (key)
+           (intern (string-upcase
+                    (map 'string #'(lambda (char) (if (eql char #\_) #\- char))
+                         (symbol-name key)))
+                   :keyword)))
+    (iter (for (key value) on tuple by #'cddr)
+          (appending
+           (list (process-key key) value)))))
+
+(defmethod tuple->object ((class-name symbol) tuple)
+  (apply #'make-instance (cons class-name (clean-tuple tuple))))
+
+
 (defparameter *sxql-operators*
   (list :not :is-null :not-null :desc :asc :distinct :include :constructor :type :=
         :!= :< :> :<= :>= :as :in :not-in :like :or :and :+ :- :sql-op-name :* :/ :%
@@ -73,21 +88,22 @@ SxQL."
 
 @export
 (defmacro filter (class &rest params)
-  (let ((equal-params (remove-if-not #'keywordp params))
-        (fn-params
-          (remove-if #'keywordp
-                     (iter (for item in params)
-                       (for prev previous item back 1 initially nil)
-                       (unless (keywordp prev) (collect item))))))
-    `(crane:query
-         ,(append
-           `(sxql:select :*
-              (sxql:from (table-name (find-class ',class))))
-           (when params
-             `((sxql:where (:and ,@(mapcar #'(lambda (slot-name)
-                                               (list :=
-                                                     (intern (crane.sql:sqlize slot-name)
-                                                             :keyword)
-                                                     (getf params slot-name)))
-                                           equal-params)
-                                 ,@(sqlize-all fn-params)))))))))
+  (let* ((equal-params (remove-if-not #'keywordp params))
+         (fn-params
+           (remove-if #'keywordp
+                      (iter (for item in params)
+                        (for prev previous item back 1 initially nil)
+                        (unless (keywordp prev) (collect item))))))
+    `(mapcar #'(lambda (tuple) (tuple->object ',class tuple))
+             (crane:query
+                 ,(append
+                   `(sxql:select :*
+                      (sxql:from (table-name (find-class ',class))))
+                   (when params
+                     `((sxql:where (:and ,@(mapcar #'(lambda (slot-name)
+                                                       (list :=
+                                                             (intern (crane.sql:sqlize slot-name)
+                                                                     :keyword)
+                                                             (getf params slot-name)))
+                                                   equal-params)
+                                         ,@(sqlize-all fn-params))))))))))

@@ -57,7 +57,8 @@ symbols, table options are keywords."
     `(progn
        (defclass ,name ,(if superclasses superclasses `(crane:<table>))
          ((,(intern "ID" *package*) :col-type integer :col-primary-p t :col-null-p nil
-              :initform (1+ (crane::latest-id (find-class ',name))))
+              :initform (1+ (crane::latest-id (find-class ',name)))
+              :initarg :id)
           ,@slots)
          ,@options
          (:metaclass crane:table-class))
