@@ -37,7 +37,7 @@ management.
 # Creating, Saving, and Deleting Objects
 
 ```lisp
-(let ((ins (make-instance 'user :name "Eudoxia")))
+(let ((ins (create user :name "Eudoxia")))
   (save ins)
   (del ins))
 ```

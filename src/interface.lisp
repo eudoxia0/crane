@@ -29,13 +29,19 @@
                                :keyword)
                        (slot-value obj slot))))))
 
-(defmethod initialize-instance :after ((obj <table>) &key)
+(defmethod create% ((obj <table>))
   (query (sxql:insert-into
              (table-name (class-of obj))
            (apply #'sxql.clause:make-clause
                   (cons :set=
                         (make-set obj))))
       (db (class-of obj))))
+
+@export
+(defmacro create (class-name &rest args)
+  `(let ((instance (make-instance ',class-name ,@args)))
+     (crane::create% instance)
+     instance))
      
 @export
 (defmethod save ((obj <table>))

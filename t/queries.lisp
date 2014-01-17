@@ -6,21 +6,23 @@
 
 (test creating
   (finishes
-   (make-instance 'a :field-a 1)
-   (make-instance 'a :field-a 2)
-   (make-instance 'a :field-a 3)))
+   (create a :field-a 1)
+   (create a :field-a 2)
+   (create a :field-a 3)))
 
 (test saving
   (finishes
-    (save (make-instance 'a :field-a 42))))
+    (let ((instance (create a :field-a 19)))
+      (setf (field-a instance) 77)
+      (save instance))))
 
 (test deleting
   (finishes
-    (let ((instance (make-instance 'a :field-a 23)))
+    (let ((instance (create a :field-a 99)))
       (del instance))))
 
 (test filtering
   (finishes
-    (filter a :field-a 23)))
+    (filter a :field-a 55)))
 
 (run! 'queries)
