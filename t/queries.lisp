@@ -19,4 +19,8 @@
     (let ((instance (make-instance 'a :field-a 23)))
       (del instance))))
 
+(test filtering
+  (finishes
+    (filter a :field-a 23)))
+
 (run! 'queries)
