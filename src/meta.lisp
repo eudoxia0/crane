@@ -50,6 +50,9 @@
    (col-index-p :initarg :col-index-p
                 :reader  col-index-p
                 :initform nil)
+   (col-foreign :initarg :col-foreign
+                :reader  col-foreign
+                :initform nil)
    (col-check :initarg :col-check
               :reader col-check
               :initarg nil)))
@@ -65,6 +68,8 @@
                   :reader col-primary-p)
    (col-index-p :initarg :col-index-p
                 :reader  col-index-p)
+   (col-foreign :initarg :col-foreign
+                :reader  col-foreign)
    (col-check :initarg :col-check
               :reader col-check)))
 
@@ -98,6 +103,9 @@
 
           (slot-value effective-slot-definition 'col-index-p)
           (col-index-p (first direct-slot-definitions))
+
+          (slot-value effective-slot-definition 'col-foreign)
+          (col-foreign (first direct-slot-definitions))
           
           (slot-value effective-slot-definition 'col-check)
           (if (slot-boundp (first direct-slot-definitions) 'col-check)
@@ -112,7 +120,8 @@
         :uniquep (col-unique-p slot)
         :primaryp (col-primary-p slot)
         :indexp (col-index-p slot)
-        :check (col-check slot)))
+        :check (col-check slot)
+        :foreign (col-foreign slot)))
 
 (defmethod digest ((class table-class))
   "Serialize a class's options and slots' options into a plist"

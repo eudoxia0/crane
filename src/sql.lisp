@@ -65,10 +65,10 @@
        it
        (error "No such referential action: ~A" action)))
 
-(defun foreign (local foreign &key (on-delete :no-action) (on-update :no-action))
-  (format nil "FOREIGN KEY ~A REFERENCES (~A) ON DELETE ~a ON UPDATE"
+(defun foreign (local foreign-table &key (on-delete :no-action) (on-update :no-action))
+  (format nil "FOREIGN KEY (~A) REFERENCES ~A(id) ON DELETE ~a ON UPDATE"
           local
-          foreign
+          foreign-table
           (map-ref-action on-delete)
           (map-ref-action on-update)))
 
@@ -87,7 +87,9 @@ NULL constraint)."
              (:uniquep
               (set-unique column-name value))
              (:primaryp
-              (set-primary column-name value)))
+              (set-primary column-name value))
+             (:foreign
+              (when value (apply #'foreign (cons column-name value)))))
            (concatenate 'string
                         "CONSTRAINT "
                         (constraint-name table-name column-name (sqlize type))
@@ -98,7 +100,7 @@ NULL constraint)."
 (defun create-column-constraints (table-name column)
   (let ((column-name (getf column :name)))
     (remove-if #'null
-               (iter (for key in '(:nullp :uniquep :primaryp :indexp))
+               (iter (for key in '(:nullp :uniquep :primaryp :indexp :foreign))
                  (collecting (make-constraint table-name
                                               (sqlize column-name)
                                               key

@@ -7,7 +7,8 @@
         :uniquep  :col-unique-p
         :primaryp :col-primary-p
         :indexp   :col-index-p
-        :check    :col-check))
+        :check    :col-check
+        :foreign  :col-foreign))
 
 (defparameter +standard-class-options+
   (list :initarg :initform :accessor :reader :writer))
