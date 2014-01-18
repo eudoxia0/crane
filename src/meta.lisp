@@ -183,22 +183,27 @@ See DIGEST."
                                (remove-if #'null additions))
             :deletions (remove-if #'null deletions)
             :changes
-            (remove-if #'null
-                       (mapcar #'diff-slot
-                               (sort-slot-list changes-a)
-                               (sort-slot-list changes-b)))))))
+            (remove-if-not #'(lambda (slot) (getf slot :diff))
+                           (remove-if #'null
+                                      (mapcar #'diff-slot
+                                              (sort-slot-list changes-a)
+                                              (sort-slot-list changes-b))))))))
 
 @export
 (defun build (table-name)
   (unless (abstractp table-name)
     (if (crane.migration:migration-history-p table-name)
-        (aif (diff-digest
-              (crane.migration:get-last-migration table-name)
-              (digest table-name))
-             (progn
-               (crane.migration:migrate (find-class table-name) it)
-               (crane.migration:insert-migration table-name
-                                                 (digest table-name))))
+        (let ((diff (diff-digest
+                     (crane.migration:get-last-migration table-name)
+                     (digest table-name))))
+          (if (or (getf diff :additions)
+                  (getf diff :deletions)
+                  (getf diff :changes))
+              (progn
+                (pprint diff)
+                (crane.migration:migrate (find-class table-name) diff)
+                (crane.migration:insert-migration table-name
+                                                  (digest table-name)))))
         (let ((digest (digest table-name)))
           (crane.migration:insert-migration table-name digest)
           (crane.migration:create-table table-name digest)))))
