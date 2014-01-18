@@ -20,5 +20,6 @@
                  (:file "connect")
                  (:file "meta")
                  (:file "migration")
-                 (:file "queries"))))
+                 (:file "queries")
+                 (:file "foreign"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))

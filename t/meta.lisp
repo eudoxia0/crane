@@ -7,7 +7,7 @@
        (crane.migration::get-migration-dir))
       
       (dolist (table '(table-a table-b table-c table-d
-                       a b c))
+                       a b c parent child))
         (handler-case
             ;; Make sure no single delete takes down the whole thing
              (execute (prepare (format nil "DROP TABLE ~A"
