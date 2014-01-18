@@ -13,7 +13,7 @@
       (something-else :type text :initform "Foo")
       (ref :type integer :foreign (parent-table)))))
 
-(test dereferencing
+(test (dereferencing :depends-on creating-related-tables)
   (finishes
     (let ((instance (create 'parent-table)))
       (create 'child-table :ref (id instance)))))
