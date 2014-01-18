@@ -11,6 +11,18 @@ relational databases, and out of the box migrations.
   (age :type integer :nullp nil :initform 18))
 ```
 
+## Migrating
+
+```lisp
+(deftable user ()
+  (name :type text :uniquep t :nullp nil)
+  (age :type integer :nullp t :initform 18)
+  (description :type text))
+```
+
+Just make the changes, and Crane will compute the diffs and perform all the
+`ALTER TABLE`s for you.
+
 ## Connecting
 
 Crane uses [Envy](https://github.com/fukamachi/envy) for configuration
