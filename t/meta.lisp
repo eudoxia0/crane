@@ -10,8 +10,7 @@
                        a b c parent-table child-table))
         (handler-case
             ;; Make sure no single failed delete takes down the whole thing
-             (execute (prepare (format nil "DROP TABLE ~A"
-                                       (crane.sql:sqlize table))))
+            (query (sxql:drop-table (intern (crane.sql:sqlize table) :keyword)))
           (t () t))))
   (t () t))
 
@@ -55,5 +54,6 @@
     (closer-mop:class-slots (find-class 'table-d)))
   (finishes (crane::digest (find-class 'table-d))))
 
+(run! 'preliminary)
 (run! 'table-slots)
 (run! 'column-slots)
