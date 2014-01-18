@@ -35,13 +35,12 @@
            (apply #'sxql.clause:make-clause
                   (cons :set=
                         (make-set obj))))
-      (db (class-of obj))))
+      (db (class-of obj)))
+  obj)
 
 @export
 (defmacro create (class-name &rest args)
-  `(let ((instance (make-instance ',class-name ,@args)))
-     (crane::create% instance)
-     instance))
+  `(crane::create% (make-instance ',class-name ,@args)))
      
 @export
 (defmethod save ((obj <table>))
