@@ -6,7 +6,14 @@
 (defpackage :crane.migration
   (:use :cl :anaphora :cl-annot.doc :iter)
   (:import-from :crane.utils
-                :get-config-value))
+                :get-config-value
+                :debugp)
+  (:import-from :crane.query
+                :prepare
+                :execute)
+  (:import-from :crane.meta
+                :digest
+                :diff-digest))
 (in-package :crane.migration)
 (annot:enable-annot-syntax)
 
@@ -86,11 +93,11 @@ history for the table `table-name`."
                    (if (getf constraints :internal) "," "")
                    (getf constraints :internal)
                    (getf constraints :external))))
-    (crane:execute (crane:prepare query (crane::db table-name)))))
+    (execute (prepare query (crane.meta::db table-name)))))
 
 @export
 (defun migrate (table-class diff)
-  (let* ((table-name (crane.sql:sqlize (crane:table-name table-class)))
+  (let* ((table-name (crane.sql:sqlize (crane.meta:table-name table-class)))
          (alterations
           (iter (for column in (getf diff :changes))
             (appending
@@ -136,3 +143,22 @@ history for the table `table-name`."
                       (append alterations additions deletions))))
     (reduce #'(lambda (a b) (concatenate 'string a ";" b))
             (append alterations additions deletions))))
+
+@export
+(defun build (table-name)
+  (unless (crane.meta:abstractp table-name)
+    (if (migration-history-p table-name)
+        (let ((diff (diff-digest
+                     (get-last-migration table-name)
+                     (digest table-name))))
+          (if (or (getf diff :additions)
+                  (getf diff :deletions)
+                  (getf diff :changes))
+              (progn
+                (pprint diff)
+                (migrate (find-class table-name) diff)
+                (insert-migration table-name
+                                  (digest table-name)))))
+        (let ((digest (digest table-name)))
+          (insert-migration table-name digest)
+          (create-table table-name digest)))))

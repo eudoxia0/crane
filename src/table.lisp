@@ -1,4 +1,7 @@
-(in-package :crane)
+(defpackage :crane.table
+  (:use :cl :anaphora :cl-annot.doc :iter)
+  (:export :<table>))
+(in-package :crane.table)
 (annot:enable-annot-syntax)
 
 (defparameter +slot-mapping+
@@ -49,20 +52,20 @@ symbols, table options are keywords."
     (list slots options)))
 
 (defclass <table> () ()
-  (:metaclass table-class))
+  (:metaclass crane.meta:table-class))
 
 @export
 (defmacro deftable (name (&rest superclasses) &rest slots-and-options)
   (destructuring-bind (slots options)
       (separate-slots-and-options slots-and-options)
     `(progn
-       (defclass ,name ,(if superclasses superclasses `(crane:<table>))
+       (defclass ,name ,(if superclasses superclasses `(crane.table:<table>))
          ((,(intern "ID" *package*) :col-type integer :col-primary-p t :col-null-p nil
-              :initform (1+ (crane::latest-id (find-class ',name)))
+              :initform (1+ (crane.query:latest-id (find-class ',name)))
               :accessor ,(intern "ID" *package*)
               :initarg :id)
           ,@slots)
          ,@options
-         (:metaclass crane:table-class))
+         (:metaclass crane.meta:table-class))
        (closer-mop:finalize-inheritance (find-class ',name))
-       (crane:build ',name))))
+       (crane.migration:build ',name))))

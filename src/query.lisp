@@ -1,4 +1,9 @@
-(in-package :crane)
+(defpackage :crane.query
+  (:use :cl :anaphora :iter :cl-annot.doc)
+  (:import-from :crane.meta
+                :table-name
+                :db))
+(in-package :crane.query)
 (annot:enable-annot-syntax)
 
 @doc "Prepare a query for execution"
@@ -23,6 +28,7 @@
                           (cons (prepare sql ,database-name) args))))
        (when result (dbi:fetch-all result)))))
 
+@export
 (defun latest-id (class)
   (let ((result (getf (car (query
                                (sxql:select ((:max :id))

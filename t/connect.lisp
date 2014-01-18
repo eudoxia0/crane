@@ -1,7 +1,7 @@
 (in-package :crane-test)
 
 (defmacro validate (db-type spec)
-  `(crane::validate-connection-spec
+  `(crane.connect::validate-connection-spec
     :test-db ,db-type ,spec))
 
 (defun process-specs (db-type test-cases)
@@ -70,10 +70,10 @@
 
 (test connect
   (finishes
-    (crane:connect)))
+    (crane.connect:connect)))
 
 (test main-db
-  (is (equal :main crane:*default-db*)))
+  (is (equal :main crane.connect:*default-db*)))
 
 (run! 'postgres)
 (run! 'sqlite3)

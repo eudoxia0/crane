@@ -41,6 +41,7 @@
     (find-class 'table-b)
     (find-class 'table-c)))
 
+
 (def-suite column-slots
   :description "Test that table column options work.")
 (in-suite column-slots)
@@ -52,7 +53,7 @@
                :unique-p t)))
   (finishes
     (closer-mop:class-slots (find-class 'table-d)))
-  (finishes (crane::digest (find-class 'table-d))))
+  (finishes (crane.meta:digest (find-class 'table-d))))
 
 (run! 'preliminary)
 (run! 'table-slots)

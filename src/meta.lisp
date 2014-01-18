@@ -1,7 +1,21 @@
 ;;;; This file defines the metaclasses that map CLOS objects to SQL tables, and
 ;;;; some basic operations on them.
 
-(in-package :crane)
+(defpackage :crane.meta
+  (:use :cl :anaphora :cl-annot.doc :iter)
+  (:export
+   :table-class
+   :table-name
+   :abstractp
+   :db
+   :col-type
+   :col-null-p
+   :col-unique-p
+   :col-primary-p
+   :col-index-p
+   :col-foreign
+   :col-check))
+(in-package :crane.meta)
 (annot:enable-annot-syntax)
 
 (defclass table-class (closer-mop:standard-class)
@@ -125,6 +139,7 @@
         :check (col-check slot)
         :foreign (col-foreign slot)))
 
+@export
 (defmethod digest ((class table-class))
   "Serialize a class's options and slots' options into a plist"
   (list :table-options
@@ -138,7 +153,6 @@
                      :text "The table ~A has no slots."
                      (table-name class))))))
 
-@export
 (defmethod digest ((class-name symbol))
   (digest (find-class class-name)))
 
@@ -188,22 +202,3 @@ See DIGEST."
                                       (mapcar #'diff-slot
                                               (sort-slot-list changes-a)
                                               (sort-slot-list changes-b))))))))
-
-@export
-(defun build (table-name)
-  (unless (abstractp table-name)
-    (if (crane.migration:migration-history-p table-name)
-        (let ((diff (diff-digest
-                     (crane.migration:get-last-migration table-name)
-                     (digest table-name))))
-          (if (or (getf diff :additions)
-                  (getf diff :deletions)
-                  (getf diff :changes))
-              (progn
-                (pprint diff)
-                (crane.migration:migrate (find-class table-name) diff)
-                (crane.migration:insert-migration table-name
-                                                  (digest table-name)))))
-        (let ((digest (digest table-name)))
-          (crane.migration:insert-migration table-name digest)
-          (crane.migration:create-table table-name digest)))))
