@@ -37,7 +37,7 @@ management.
 # Creating, Saving, and Deleting Objects
 
 ```lisp
-(let ((ins (create user :name "Eudoxia")))
+(let ((ins (create 'user :name "Eudoxia")))
   (save ins)
   (del ins))
 ```
@@ -45,11 +45,11 @@ management.
 # Filtering
 
 ```lisp
-(filter user) ;; Returns everything
+(filter 'user) ;; Returns everything
 
-(filter user :name "Eudoxia")
+(filter 'user :name "Eudoxia")
 
-(filter user (:> :age 21))
+(filter 'user (:> :age 21))
 ```
 
 # Documentation

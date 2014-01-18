@@ -40,7 +40,7 @@
 
 @export
 (defmacro create (class-name &rest args)
-  `(crane::create% (make-instance ',class-name ,@args)))
+  `(crane::create% (make-instance ,class-name ,@args)))
      
 @export
 (defmethod save ((obj <table>))
@@ -72,25 +72,6 @@
   (apply #'make-instance (cons class-name (clean-tuple tuple))))
 
 
-(defparameter *sxql-operators*
-  (list :not :is-null :not-null :desc :asc :distinct :include :constructor :type :=
-        :!= :< :> :<= :>= :as :in :not-in :like :or :and :+ :- :sql-op-name :* :/ :%
-        :union :union-all :include :constructor))
-
-(defun sqlize-all (tree)
-  "This is a load-bearing hack, until I overhaul everything in src/sql.lisp to
-SxQL."
-  (cond ((null tree)
-         nil)
-        ((atom tree)
-         (if (and (keywordp tree)
-                  (not (member tree *sxql-operators*)))
-             (intern (crane.sql:sqlize tree)
-                     :keyword)
-             tree))
-        (t
-         (mapcar #'sqlize-all tree))))
-
 @export
 (defmacro filter (class &rest params)
   (let* ((equal-params (remove-if-not #'keywordp params))
@@ -99,11 +80,11 @@ SxQL."
                       (iter (for item in params)
                         (for prev previous item back 1 initially nil)
                         (unless (keywordp prev) (collect item))))))
-    `(mapcar #'(lambda (tuple) (tuple->object ',class tuple))
+    `(mapcar #'(lambda (tuple) (tuple->object ,class tuple))
              (crane:query
                  ,(append
                    `(sxql:select :*
-                      (sxql:from (table-name (find-class ',class))))
+                      (sxql:from (table-name (find-class ,class))))
                    (when params
                      `((sxql:where (:and ,@(mapcar #'(lambda (slot-name)
                                                        (list :=
@@ -111,4 +92,12 @@ SxQL."
                                                                      :keyword)
                                                              (getf params slot-name)))
                                                    equal-params)
-                                         ,@(sqlize-all fn-params))))))))))
+                                         ,@(crane.sql:sqlize-all fn-params))))))))))
+
+@export
+(defmethod deref ((obj <table>) (field symbol))
+  (let ((slot (remove-if-not #'(lambda (slot-name)
+                                 (eql slot-name
+                                      (closer-mop:slot-definition-name slot-name)))
+                        (closer-mop:class-slots (class-of obj)))))
+    (filter (first (col-foreign slot)) :id (slot-value obj field))))
