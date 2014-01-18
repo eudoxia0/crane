@@ -4,7 +4,9 @@
 ;;;; of table-creating SQL is handled by src/sql.lisp
 
 (defpackage :crane.migration
-  (:use :cl :anaphora :crane.utils :cl-annot.doc :iter))
+  (:use :cl :anaphora :cl-annot.doc :iter)
+  (:import-from :crane.utils
+                :get-config-value))
 (in-package :crane.migration)
 (annot:enable-annot-syntax)
 

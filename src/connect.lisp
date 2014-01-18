@@ -1,4 +1,6 @@
-(in-package :crane)
+(defpackage :crane.connect
+  (:use :cl :anaphora :iter :cl-annot.doc))
+(in-package :crane.connect)
 (annot:enable-annot-syntax)
 
 (defparameter +system-mapping+

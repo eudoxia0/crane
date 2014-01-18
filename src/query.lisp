@@ -3,10 +3,10 @@
 
 @doc "Prepare a query for execution"
 @export
-(defun prepare (query &optional (database-name crane:*default-db*))
+(defun prepare (query &optional (database-name crane.connect:*default-db*))
   (when (crane.utils:debugp)
     (print query))
-  (dbi:prepare (crane:get-connection database-name) query))
+  (dbi:prepare (crane.connect:get-connection database-name) query))
 
 @doc "Execute a query."
 @export
@@ -17,7 +17,7 @@
 
 @doc "A combination of EXECUTE and SxQL's YIELD."
 @export
-(defmacro query (body &optional (database-name crane:*default-db*))
+(defmacro query (body &optional (database-name crane.connect:*default-db*))
   `(multiple-value-bind (sql args) (sxql:yield ,body)
      (let ((result (apply #'execute
                           (cons (prepare sql ,database-name) args))))

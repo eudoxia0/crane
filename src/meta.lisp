@@ -7,7 +7,7 @@
 (defclass table-class (closer-mop:standard-class)
   ((table-name :reader table-class-name :initarg :table-name)
    (abstractp :reader table-class-abstract-p :initarg :abstractp :initform (list nil))
-   (db :reader table-class-db :initarg :db :initform (list *default-db*))))
+   (db :reader table-class-db :initarg :db :initform (list crane.connect:*default-db*))))
 
 (defmethod table-name ((class table-class))
   (intern (crane.sql:sqlize

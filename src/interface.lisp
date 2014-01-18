@@ -27,6 +27,8 @@
     (iter (for slot in slot-names)
       (appending (list (intern (crane.sql:sqlize (symbol-name slot))
                                :keyword)
+                       ;; TODO: If the slot is a foreign key, and is storing an
+                       ;; instance of an object, store that object's id
                        (slot-value obj slot))))))
 
 (defmethod create% ((obj <table>))

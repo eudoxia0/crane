@@ -9,8 +9,6 @@
 (in-package :crane.sql)
 (annot:enable-annot-syntax)
 
-;(setf sxql:*quote-character* #\")
-
 @export
 (defun sqlize (obj)
   (typecase obj
