@@ -6,7 +6,8 @@
   (:import-from :crane.meta
                 :table-class
                 :table-name
-                :db)
+                :db
+                :col-foreign)
   (:import-from :crane.sql
                 :sqlize
                 :sqlize-all)
@@ -107,10 +108,17 @@
                                                    equal-params)
                                          ,@(sqlize-all fn-params))))))))))
 
+(defun find-slot (obj name)
+  (aif (remove-if-not #'(lambda (slot-name)
+                          (eql name
+                               (closer-mop:slot-definition-name slot-name)))
+                      (closer-mop:class-slots (class-of obj)))
+       (first it)))
+
 @export
-(defmethod deref ((obj crane.table:<table>) (field symbol))
-  (let ((slot (remove-if-not #'(lambda (slot-name)
-                                 (eql slot-name
-                                      (closer-mop:slot-definition-name slot-name)))
-                        (closer-mop:class-slots (class-of obj)))))
-    (filter (first (col-foreign slot)) :id (slot-value obj field))))
+(defmacro deref (obj field)
+  `(filter
+    (first (crane.meta:col-foreign (crane.interface::find-slot
+                                    ,obj ,field)))
+    :id (slot-value ,obj (closer-mop:slot-definition-name
+                          (crane.interface::find-slot ,obj ',(intern "ID" *package*))))))
