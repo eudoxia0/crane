@@ -108,6 +108,23 @@
                                                    equal-params)
                                          ,@(sqlize-all fn-params))))))))))
 
+@export
+(defmacro single (class &rest params)
+  `(first (filter ,class ,@params)))
+
+@export
+(defmacro single! (class &rest params)
+  `(anaphora:aif (get ,class ,@params)
+                 anaphora:it
+                 (error 'crane.errors:query-error
+                        :text "Call to get returned more than one result.")))
+
+@export
+(defmacro single-or-create (class &rest params)
+  `(anaphora:aif (get ,class ,@params)
+                 anaphora:it
+                 (create ,class ,@params)))
+
 (defun find-slot (obj name)
   (aif (remove-if-not #'(lambda (slot-name)
                           (eql name

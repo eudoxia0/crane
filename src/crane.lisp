@@ -17,6 +17,9 @@
                 :save
                 :del
                 :filter
+                :single
+                :single!
+                :single-or-create
                 :deref)
   (:export
    ;; Connections
@@ -36,4 +39,7 @@
    :save
    :del
    :filter
+   :single
+   :single!
+   :single-or-create
    :deref))

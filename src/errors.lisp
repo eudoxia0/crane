@@ -4,7 +4,10 @@
 (annot:enable-annot-syntax)
 
 (define-condition crane-error ()
-  ((text :initarg :text :reader text)))
+  ((text :initarg :text :reader text))
+  (:report
+   (lambda (condition stream)
+     (format stream "Crane error: ~A" (text condition)))))
 
 @export
 (define-condition configuration-error (crane-error)
@@ -21,3 +24,6 @@
 
 @export
 (define-condition empty-table (crane-error) ())
+
+@export
+(define-condition query-error (crane-error) ())
