@@ -11,11 +11,13 @@
    
     (deftable child-table ()
       (something-else :type text :initform "Foo")
-      (ref :type integer :foreign (parent-table)))))
+      (ref :type integer :foreign (parent-table :on-delete :cascade)))))
 
 (test (dereferencing :depends-on creating-related-tables)
-  (finishes
-    (let ((instance (create 'parent-table)))
-      (create 'child-table :ref (id instance)))))
+  (is (equal
+       (let* ((parent-instance (create 'parent-table :something 99))
+              (child-instance  (create 'child-table :ref (id parent-instance))))
+         (something (first (deref child-instance 'ref))))
+       99)))
 
 (run! 'foreign)
