@@ -21,8 +21,7 @@
                  (:file "errors")
                  (:module "utils"
                   :components
-                  ((:file "utils")
-                   (:file "mop-utils")))
+                  ((:file "utils")))
                  (:file "connect")
                  (:file "sql")
                  (:file "query")
