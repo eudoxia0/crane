@@ -24,7 +24,7 @@
       (field-a :type text :nullp t))
 
     (deftable c ()
-      (field-a :type integer :uniquep nil :primaryp t))))
+      (field-a :type integer :uniquep nil))))
 
 (test basic-additions
   (finishes
