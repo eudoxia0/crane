@@ -6,11 +6,11 @@
 
 (test creating-related-tables
   (finishes
-    (deftable parent ()
+    (deftable parent-table ()
       (something :type integer))
    
-    (deftable child ()
+    (deftable child-table ()
       (something-else :type text :initform "Foo")
-      (ref :type integer :foreign (parent)))))
+      (ref :type integer :foreign (parent-table)))))
 
 (run! 'foreign)
