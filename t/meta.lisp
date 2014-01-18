@@ -42,12 +42,6 @@
     (find-class 'table-b)
     (find-class 'table-c)))
 
-(test table-names
-  (is (equal (table-name 'table-a) 'table-a)
-      (equal (table-name 'table-b) 'table-b)
-      (equal (table-name 'table-c) 'table--c)))
-
-
 (def-suite column-slots
   :description "Test that table column options work.")
 (in-suite column-slots)

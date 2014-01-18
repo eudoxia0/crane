@@ -10,9 +10,11 @@
    (db :reader table-class-db :initarg :db :initform (list *default-db*))))
 
 (defmethod table-name ((class table-class))
-  (if (slot-boundp class 'table-name)
-      (car (table-class-name class))
-      (class-name class)))
+  (intern (crane.sql:sqlize
+           (if (slot-boundp class 'table-name)
+               (car (table-class-name class))
+               (class-name class)))
+           :keyword))
 
 (defmethod table-name ((class-name symbol))
   (table-name (find-class class-name)))
