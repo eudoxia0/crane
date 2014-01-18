@@ -21,6 +21,26 @@
       (map 'string #'(lambda (char) (if (eql char #\-) #\_ char))
            obj)))))
 
+(defparameter *sxql-operators*
+  (list :not :is-null :not-null :desc :asc :distinct :include :constructor :type :=
+        :!= :< :> :<= :>= :as :in :not-in :like :or :and :+ :- :sql-op-name :* :/ :%
+        :union :union-all :include :constructor))
+
+@export
+(defun sqlize-all (tree)
+  "This is a load-bearing hack, until I overhaul everything in src/sql.lisp to
+SxQL."
+  (cond ((null tree)
+         nil)
+        ((atom tree)
+         (if (and (keywordp tree)
+                  (not (member tree *sxql-operators*)))
+             (intern (sqlize tree)
+                     :keyword)
+             tree))
+        (t
+         (mapcar #'sqlize-all tree))))
+
 @doc "Give constraints Crane-specific names"
 (defun constraint-name (table-name column-name type)
   (concatenate 'string "crane_" table-name "_" column-name "_" type))
@@ -68,7 +88,7 @@
 (defun foreign (local foreign-table &key (on-delete :no-action) (on-update :no-action))
   (format nil "FOREIGN KEY (~A) REFERENCES ~A(id) ON DELETE ~A ON UPDATE ~A"
           local
-          foreign-table
+          (sqlize foreign-table)
           (map-ref-action on-delete)
           (map-ref-action on-update)))
 
