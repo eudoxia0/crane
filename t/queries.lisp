@@ -23,6 +23,10 @@
 
 (test filtering
   (finishes
-    (filter a :field-a 55)))
+    (filter a :field-a 55))
+  (is (= (length (filter a))
+         4))
+  (is (= (field-a (first (filter a :field-a 1)))
+         1)))
 
 (run! 'queries)
