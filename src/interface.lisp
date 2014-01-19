@@ -109,6 +109,10 @@
                                          ,@(sqlize-all fn-params))))))))))
 
 @export
+(defmacro exists (class &rest params)
+  `(if (filter ,class ,@params) t nil))
+
+@export
 (defmacro single (class &rest params)
   `(first (filter ,class ,@params)))
 

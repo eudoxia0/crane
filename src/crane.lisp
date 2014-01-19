@@ -17,6 +17,7 @@
                 :save
                 :del
                 :filter
+                :exists
                 :single
                 :single!
                 :single-or-create
@@ -39,6 +40,7 @@
    :save
    :del
    :filter
+   :exists
    :single
    :single!
    :single-or-create
