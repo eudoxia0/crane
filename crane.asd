@@ -4,7 +4,7 @@
 (in-package :crane-asd)
 
 (defsystem crane
-  :version "0.1"
+  :version "0.2"
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
   :depends-on (:closer-mop
@@ -17,16 +17,15 @@
   :components ((:module "src"
                 :serial t
                 :components
-                ((:file "package")
-                 (:file "errors")
+                ((:file "errors")
                  (:module "utils"
                   :components
                   ((:file "utils")))
                  (:file "connect")
                  (:file "sql")
+                 (:file "meta")
                  (:file "query")
                  (:file "migration")
-                 (:file "meta")
                  (:file "table")
                  (:file "interface")
                  (:file "crane"))))
