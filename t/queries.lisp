@@ -27,6 +27,8 @@
   (is (= (length (filter 'a))
          4))
   (is (= (field-a (first (filter 'a :field-a 1)))
-         1)))
+         1))
+  (is (= (field-a (single 'a :field-a 1))))
+  (is-true (exists 'a :field-a 1)))
 
 (run! 'queries)
