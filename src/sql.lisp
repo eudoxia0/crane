@@ -16,8 +16,10 @@
      (sqlize (symbol-name obj)))
     (string
      (string-downcase
-      (map 'string #'(lambda (char) (if (eql char #\-) #\_ char))
-           obj)))))
+      (remove-if #'(lambda (char) (or (char= #\< char)
+                                      (char= #\> char)))
+                 (map 'string #'(lambda (char) (if (char= char #\-) #\_ char))
+                      obj))))))
 
 (defparameter *sxql-operators*
   (list :not :is-null :not-null :desc :asc :distinct :include :constructor :type :=
