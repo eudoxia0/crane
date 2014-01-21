@@ -8,6 +8,8 @@
                 :prepare
                 :execute
                 :query)
+  (:import-from :crane.migration
+                :build)
   (:import-from :crane.table
                 :<table>
                 :deftable)
@@ -31,6 +33,8 @@
    :prepare
    :execute
    :query
+   ;; Migrations
+   :build
    ;; Table macro
    :<table>
    :deftable
