@@ -93,7 +93,7 @@ history for the table `table-name`."
                    (if (getf constraints :internal) "," "")
                    (getf constraints :internal)
                    (getf constraints :external))))
-    (execute (prepare query (crane.meta::db table-name)))))
+    (execute (prepare query (crane.meta:db table-name)))))
 
 @export
 (defun migrate (table-class diff)

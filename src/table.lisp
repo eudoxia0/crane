@@ -60,11 +60,16 @@ symbols, table options are keywords."
       (separate-slots-and-options slots-and-options)
     `(progn
        (defclass ,name ,(if superclasses superclasses `(crane.table:<table>))
-         ((,(intern "ID" *package*) :col-type integer :col-primary-p t :col-null-p nil
-              :initform (1+ (crane.query:latest-id (find-class ',name)))
-              :accessor ,(intern "ID" *package*)
-              :initarg :id)
-          ,@slots)
+         ,(append
+           (unless superclasses
+             `((,(intern "ID" *package*)
+                :col-type integer
+                :col-primary-p t
+                :col-null-p nil
+                :initform (1+ (crane.query:latest-id (find-class ',name)))
+                :accessor ,(intern "ID" *package*)
+                :initarg :id)))
+           slots)
          ,@options
          (:metaclass crane.meta:table-class))
        (closer-mop:finalize-inheritance (find-class ',name))
