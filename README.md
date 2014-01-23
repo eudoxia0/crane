@@ -44,6 +44,8 @@ management.
                 :pass "pass")))))
 
 (setf (env-var "MYAPP_ENV") "conf")
+
+(crane:connect)
 ```
 
 # Creating, Saving, and Deleting Objects
