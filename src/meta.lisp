@@ -48,7 +48,9 @@
 
 @export
 (defmethod db ((class table-class))
-  (car (table-class-db class)))
+  (aif (car (table-class-db class))
+       it
+       (crane.connect:*default-db*)))
 
 (defmethod db ((class-name symbol))
   (db (find-class class-name)))
