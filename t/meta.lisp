@@ -31,8 +31,7 @@
 (test create-another-table
   (finishes
     (deftable table-c (table-a)
-      (field-b :type integer :nullp nil :indexp t)
-      (:abstractp t)
+      (field-b :type integer :nullp nil)
       (:table-name table--c))))
     
 (test find-tables
