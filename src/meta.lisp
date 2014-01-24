@@ -19,7 +19,7 @@
   ((table-name :reader table-class-name :initarg :table-name)
    (abstractp :reader table-class-abstract-p :initarg :abstractp :initform (list nil))
    (deferredp :reader table-class-deferred-p :initarg :deferredp :initform (list nil))
-   (db :reader table-class-db :initarg :db :initform (list crane.connect:*default-db*))))
+   (db :reader table-class-db :initarg :db)))
 
 @export
 (defmethod table-name ((class table-class))
@@ -50,7 +50,7 @@
 (defmethod db ((class table-class))
   (aif (car (table-class-db class))
        it
-       (crane.connect:*default-db*)))
+       crane.connect:*default-db*))
 
 (defmethod db ((class-name symbol))
   (db (find-class class-name)))
