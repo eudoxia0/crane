@@ -24,4 +24,4 @@
   `(:debug t
     ,@|common|))
 
-(setf (env-var "CRANE_TEST_ENV") "dev")
+(setf (osicat:environment-variable "CRANE_TEST_ENV") "dev")
