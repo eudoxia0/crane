@@ -162,3 +162,9 @@ history for the table `table-name`."
         (let ((digest (digest table-name)))
           (insert-migration table-name digest)
           (create-table table-name digest)))))
+
+@export
+(defun delete-migrations (&optional force)
+  (when (or force (yes-or-no-p "Really delete migrations?"))
+    (fad:delete-directory-and-files
+     (get-migration-dir))))

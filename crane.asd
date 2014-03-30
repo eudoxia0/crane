@@ -13,7 +13,9 @@
                :envy
                :dbi
                :iterate
-               :cl-annot)
+               :cl-annot
+               :cl-fad
+               :osicat)
   :components ((:module "src"
                 :serial t
                 :components

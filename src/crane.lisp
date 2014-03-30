@@ -9,7 +9,8 @@
                 :execute
                 :query)
   (:import-from :crane.migration
-                :build)
+                :build
+                :delete-migrations)
   (:import-from :crane.table
                 :<table>
                 :deftable)
@@ -35,6 +36,7 @@
    :query
    ;; Migrations
    :build
+   :delete-migrations
    ;; Table macro
    :<table>
    :deftable
