@@ -3,8 +3,7 @@
 (handler-case
     (progn
       ;; Clean slate
-      (fad:delete-directory-and-files
-       (crane.migration::get-migration-dir))
+      (delete-migrations t)
       
       (dolist (table '(table-a table-b table-c table-d
                        a b c parent-table child-table))

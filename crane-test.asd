@@ -7,8 +7,7 @@
   :author "Fernando Borretti"
   :license "MIT"
   :depends-on (:crane
-               :fiveam
-               :cl-fad)
+               :fiveam)
   :components ((:module "t"
                 :serial t
                 :components
