@@ -54,6 +54,9 @@ symbols, table options are keywords."
 (defclass <table> () ()
   (:metaclass crane.meta:table-class))
 
+(defun any-concrete-superclasses (superclasses)
+  (remove-if #'crane.meta:abstractp superclasses))
+
 @export
 (defmacro deftable (name (&rest superclasses) &rest slots-and-options)
   (destructuring-bind (slots options)
@@ -61,15 +64,19 @@ symbols, table options are keywords."
     `(progn
        (defclass ,name ,(if superclasses superclasses `(crane.table:<table>))
          ,(append
-           (when (and (not superclasses)
-                      (cadr (assoc :abstractp options))
+           (when (or
+                  ;; If it's abstract, it doesn't have an ID
+                  (not (cadr (assoc :abstractp options)))
+                  ;; If it's concrete, it has an ID, unless it has a concrete
+                  ;; superclass
+                  (any-concrete-superclasses superclasses))
                `((,(intern "ID" *package*)
                   :col-type integer
                   :col-primary-p t
                   :col-null-p nil
                   :initform (1+ (crane.query:latest-id (find-class ',name)))
                   :accessor ,(intern "ID" *package*)
-                  :initarg :id))))
+                  :initarg :id)))
            slots)
          ,@options
          (:metaclass crane.meta:table-class))
