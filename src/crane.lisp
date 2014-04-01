@@ -1,5 +1,7 @@
 (defpackage :crane
   (:use :cl)
+  (:import-from :crane.config
+                :setup)
   (:import-from :crane.connect
                 :*default-db*
                 :connect
@@ -26,6 +28,8 @@
                 :single-or-create
                 :deref)
   (:export
+   ;; Configuration
+   :setup
    ;; Connections
    :*default-db*
    :connect
