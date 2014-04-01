@@ -52,6 +52,8 @@ management.
 
 ```lisp
 (let ((ins (create 'user :name "Eudoxia")))
+  ;; CREATE implicity saves the object
+  ;; <some changes here>
   (save ins)
   (del ins))
 ```
