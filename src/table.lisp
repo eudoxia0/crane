@@ -61,15 +61,15 @@ symbols, table options are keywords."
     `(progn
        (defclass ,name ,(if superclasses superclasses `(crane.table:<table>))
          ,(append
-           (if superclasses
-               nil
+           (when (and (not superclasses)
+                      (cadr (assoc :abstractp options))
                `((,(intern "ID" *package*)
                   :col-type integer
                   :col-primary-p t
                   :col-null-p nil
                   :initform (1+ (crane.query:latest-id (find-class ',name)))
                   :accessor ,(intern "ID" *package*)
-                  :initarg :id)))
+                  :initarg :id))))
            slots)
          ,@options
          (:metaclass crane.meta:table-class))
