@@ -26,25 +26,6 @@ the result as a list of ([property] [old value] [new value])"
       seq)))
 
 @export
-(defun debugp ()
-  (getf (envy:config *package*) :debug))
-
-@export
-(defun get-configuration ()
-  (aif (getf (envy:config *package*) :crane)
-       it
-       (error 'crane.errors:no-configuration-error)))
-
-@export
-(defun get-config-value (key)
-  (aif (getf (get-configuration) key)
-       it
-       (error 'crane.errors:configuration-error
-              :key key
-              :text "This key is not configured."
-              key)))
-
-@export
 (defun plist-keys (plist)
   (iter (for key in plist by #'cddr)
         (collecting key)))
