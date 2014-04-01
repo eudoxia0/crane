@@ -2,21 +2,23 @@
   (:use :cl :anaphora :iter :cl-annot.doc)
   (:import-from :crane.meta
                 :table-name
-                :db))
+                :db)
+  (:import-from :crane.config
+                :debugp))
 (in-package :crane.query)
 (annot:enable-annot-syntax)
 
 @doc "Prepare a query for execution"
 @export
 (defun prepare (query &optional (database-name crane.connect:*default-db*))
-  (when (crane.utils:debugp)
+  (when (debugp)
     (print query))
   (dbi:prepare (crane.connect:get-connection database-name) query))
 
 @doc "Execute a query."
 @export
 (defun execute (query &rest args)
-  (when (and (crane.utils:debugp) args)
+  (when (and (debugp) args)
     (print args))
   (apply #'dbi:execute (cons query args)))
 

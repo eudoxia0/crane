@@ -5,7 +5,7 @@
 
 (defpackage :crane.migration
   (:use :cl :anaphora :cl-annot.doc :iter)
-  (:import-from :crane.utils
+  (:import-from :crane.config
                 :get-config-value
                 :debugp)
   (:import-from :crane.query

@@ -79,7 +79,7 @@ spec for the database '~A' have not been provided: ~A" db it))
 @doc "Connect to all the databases specified in the configuration."
 @export
 (defun connect ()
-  (aif (crane.utils:get-config-value :databases)
+  (aif (crane.config:get-config-value :databases)
        (progn
          (iter (for (db spec) on it by #'cddr)
                (setf (gethash db *db*) (connect-spec db spec)))
