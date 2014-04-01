@@ -10,7 +10,6 @@
   :depends-on (:closer-mop
                :anaphora
                :sxql
-               :envy
                :dbi
                :iterate
                :cl-annot
@@ -20,6 +19,7 @@
                 :serial t
                 :components
                 ((:file "errors")
+                 (:file "config")
                  (:module "utils"
                   :components
                   ((:file "utils")))
