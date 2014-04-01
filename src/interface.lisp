@@ -12,6 +12,8 @@
                 :sqlize
                 :sqlize-all)
   (:import-from :crane.query
+                :prepare
+                :execute
                 :query))
 (in-package :crane.interface)
 (annot:enable-annot-syntax)
