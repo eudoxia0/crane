@@ -35,4 +35,4 @@
                                  (sxql:from (table-name class)))
                                (db class)))
                       :|max|)))
-    (if (eql result :null) 0 result)))
+    (if (null result) 0 result)))
