@@ -90,5 +90,5 @@ spec for the database '~A' have not been provided: ~A" db it))
 
 @doc "Return the connection handler for a given database."
 @export
-(defun get-connection (&optional (database-name *default-db*))
-  (gethash database-name *db*))
+(defun get-connection (&optional database-name)
+  (gethash (aif database-name it *default-db*) *db*))
