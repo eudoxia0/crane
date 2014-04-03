@@ -1,6 +1,6 @@
 (in-package :crane-test)
 
-(crane.config:setup
+(crane:setup
  `(:migrations-directory
    ,(merge-pathnames
      #p"t/migrations/"

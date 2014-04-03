@@ -29,21 +29,17 @@ Crane uses [Envy](https://github.com/fukamachi/envy) for configuration
 management.
 
 ```lisp
-(setf (config-env-var) "MYAPP_ENV")
-
-(defconfig |conf|
-  `(:crane (:migrations-directory
-             ,(merge-pathnames
-               #p"t/migrations/"
-               (asdf:component-pathname (asdf:find-system :crane-test)))
-            :databases
-              (:main
-               (:type :postgres
-                :name "myapp_db"
-                :user "user"
-                :pass "pass")))))
-
-(setf (env-var "MYAPP_ENV") "conf")
+(crane:setup
+ `(:migrations-directory
+   ,(merge-pathnames
+     #p"t/migrations/"
+     (asdf:component-pathname (asdf:find-system :crane-test)))
+   :databases
+   (:main
+    (:type :postgres
+     :name "crane_test_db"
+     :user "crane_test_user"
+     :pass "crane_test_user"))))
 
 (crane:connect)
 ```
