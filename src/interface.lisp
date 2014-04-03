@@ -140,7 +140,7 @@
 
 @export
 (defmacro deref (obj field)
-  `(filter
+  `(single
     (first (crane.meta:col-foreign (crane.interface::find-slot
                                     ,obj ,field)))
     :id (slot-value ,obj (closer-mop:slot-definition-name

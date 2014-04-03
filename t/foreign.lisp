@@ -17,7 +17,7 @@
   (is (equal
        (let* ((parent-instance (create 'parent-table :something 99))
               (child-instance  (create 'child-table :ref (id parent-instance))))
-         (something (first (deref child-instance 'ref))))
+         (something (deref child-instance 'ref)))
        99)))
 
 (run! 'foreign)
