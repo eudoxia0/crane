@@ -25,9 +25,6 @@ Just make the changes, and Crane will compute the diffs and perform all the
 
 ## Connecting
 
-Crane uses [Envy](https://github.com/fukamachi/envy) for configuration
-management.
-
 ```lisp
 (crane:setup
  `(:migrations-directory
@@ -43,6 +40,9 @@ management.
 
 (crane:connect)
 ```
+
+For configuration management and switching databases in development/production
+environments, you might want to use [Envy](https://github.com/fukamachi/envy).
 
 # Creating, Saving, and Deleting Objects
 
