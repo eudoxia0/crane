@@ -40,14 +40,13 @@ Application:
 +----------+ +--------+ +-------+ +--------+ +---------------+
 #+end_src
 
-Crane mainly uses three libraries:
+Crane mainly uses two libraries:
 
 - [[https://github.com/fukamachi/sxql][sxql]] :: A DSL for safely generating SQL.
 - [[https://github.com/fukamachi/cl-dbi][CL-DBI]] :: A backend-independent interface to relational DBMSs. At
             present, only PostgreSQL, SQLite version 3, and MySQL are
             supported, but support for Oracle and MS SQL Server
             can be added.
-- [[https://github.com/fukamachi/envy][Envy]] :: A configuration manager.
      
 * Connecting
 
@@ -186,6 +185,7 @@ Note: A migration is a set of reversible transformations that take place at a
 particular point in the database's history. A migration plan is a blueprint for
 a migration, and is not tied to the migration history. Migration plans can be
 applied repeatedly to create many migrations.
+
 * Appendix A: Connecting
 
 ** PostgreSQL
