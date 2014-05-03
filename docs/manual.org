@@ -56,7 +56,7 @@ configuration when the =crane:connect= function is called (No parameters).
 Configuration for the databases might look like this:
 
 #+begin_src lisp
-#+include: "../t/config.lisp" :lines "5-20"
+#+include: "../t/config.lisp" :lines "3-16"
 #+end_src
 
 The value of =:databases= is a plist that maps a database's name (Not that
