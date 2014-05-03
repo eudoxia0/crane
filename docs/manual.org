@@ -2,7 +2,7 @@
 #+author: Fernando Borretti
 
 * Overview
-
+  
 Crane is an ORM for Common Lisp. It's intended to provide a simple,
 object-oriented interface to relational databases, and is inspired
 by the SQLAlchemy ORM for Python.
@@ -185,6 +185,52 @@ Note: A migration is a set of reversible transformations that take place at a
 particular point in the database's history. A migration plan is a blueprint for
 a migration, and is not tied to the migration history. Migration plans can be
 applied repeatedly to create many migrations.
+
+* Creating, Saving, and Deleting Objects
+
+** =create=
+
+*Syntax*: =(create [class name] &rest [parameters])=
+
+*Examples:*
+
+#+begin_src lisp
+  (create 'user :name "Eudoxia")
+
+  (create 'company :name "Initech" :founded 1994)
+#+end_src
+
+** =save=
+
+*Syntax*: =(save [instance])=
+
+*Examples:*
+
+#+begin_src lisp
+  (let ((point (create 'point :x 556.3 :y 26.7)))
+    ;; Make some changes
+    (setf (point-distance-from-origin point)
+          (euclidean-distance point '(0 0)))
+    ;; Save
+    (save point))
+#+end_src
+
+** =del=
+
+*Syntax*: =(del [instance])=
+
+*Examples:*
+
+#+begin_src lisp
+  (defun delete-user (username)
+    (del (single 'user :name username)))
+#+end_src
+
+* Making Queries
+
+** High Level API
+
+** Functional SQL
 
 * Appendix A: Connecting
 
