@@ -172,7 +172,7 @@ by Crane.
 
 A less-than-trivial migration is changing the type of a column: In simple cases,
 like moving from a float to an integer, Crane will handle this change automatically.
-
+rest
 ** Manual Migrations
 
 More complex cases of changing a column's type can't be handled automatically
@@ -190,7 +190,9 @@ applied repeatedly to create many migrations.
 
 ** =create=
 
-*Syntax*: =(create [class name] &rest [parameters])=
+*Syntax*: =(create [class] &rest [parameters])=
+
+Create an instance of a class on the database.
 
 *Examples:*
 
@@ -203,6 +205,8 @@ applied repeatedly to create many migrations.
 ** =save=
 
 *Syntax*: =(save [instance])=
+
+Save an instance's fields to the database.
 
 *Examples:*
 
@@ -219,6 +223,8 @@ applied repeatedly to create many migrations.
 
 *Syntax*: =(del [instance])=
 
+Delete an instance from the database.
+
 *Examples:*
 
 #+begin_src lisp
@@ -230,7 +236,33 @@ applied repeatedly to create many migrations.
 
 ** High Level API
 
+*** =filter=
+
+*Syntax*: =(filter [class] &rest [params])=
+
+Return a list of objects that satisfy the =params=.
+
+*Examples:*
+
+#+begin_src lisp
+  (filter 'company :country "US"
+                   (:< nemployees 40))
+#+end_src
+
+*** =single=
+
+*Syntax*: =(filter [class] &rest [params])=
+
+Return a singel object that satisfies the parameters.
+
+A variant, =single!=, will signal a condition when no object satisfies the
+parameters.
+
+*** =get-or-create=
+
 ** Functional SQL
+
+
 
 * Appendix A: Connecting
 
