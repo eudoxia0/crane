@@ -1,8 +1,3 @@
-(in-package :cl-user)
-(defpackage crane-test-asd
-  (:use :cl :asdf))
-(in-package :crane-test-asd)
-
 (defsystem crane-test
   :author "Fernando Borretti"
   :license "MIT"

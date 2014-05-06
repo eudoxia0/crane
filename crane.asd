@@ -1,8 +1,3 @@
-(in-package :cl-user)
-(defpackage crane-asd
-  (:use :cl :asdf))
-(in-package :crane-asd)
-
 (defsystem crane
   :version "0.2"
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
