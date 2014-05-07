@@ -44,7 +44,7 @@ Just make the changes, and Crane will compute the diffs and perform all the
 For configuration management and switching databases in development/production
 environments, you might want to use [Envy](https://github.com/fukamachi/envy).
 
-# Creating, Saving, and Deleting Objects
+## Creating, Saving, and Deleting Objects
 
 ```lisp
 (let ((ins (create 'user :name "Eudoxia")))
@@ -54,7 +54,7 @@ environments, you might want to use [Envy](https://github.com/fukamachi/envy).
   (del ins))
 ```
 
-# Filtering
+## Filtering
 
 ```lisp
 (filter 'user) ;; Returns everything
