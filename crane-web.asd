@@ -8,4 +8,5 @@
   :components ((:module "web"
                 :serial t
                 :components
-                ((:file "gen")))))
+                ((:sass "style")
+                 (:file "gen")))))
