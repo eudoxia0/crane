@@ -54,6 +54,187 @@ and ensures that all required parameters and no parameters other than the
 required and optional ones are passed. Connection specs for all supported
 backends are listed in [Appendix A: Connecting](#appendix-a-connecting).
 
+# Tables
+
+Crane uses the metaobject protocol to bind SQL tables and CLOS objects through a
+`TABLE-CLASS` metaclass. Table classes can be defined simply through the
+`deftable` macro:
+
+```lisp
+(deftable [name] ([super]*)
+  [field-or-option]*)
+```
+
+Compare the following code to the previous example:
+
+```lisp
+(deftable enemy ()
+  (name :type string :pk t)
+  (age :type integer :check '(:> 'age 12))
+  (address :type 'string :nullp t :foreign (important-addresses :cascade :cascade))
+  (fatal-weakness :type text :default "None")
+  (identifying-color 'type (string 20) :unique t :foreign (colors name)))
+```
+
+## Internals
+
+When a table is created, its digest is separated into two parts: Columns, and
+constraints. Columns are basically a map of slot names to SQL types. Constraints
+are automatically-named SQL constraints created by extracting slot options. That
+is, no constraints from the `deftable` macro are nameless, they are all named
+and at the column level.
+
+Consider the following table:
+
+```lisp
+(deftable user
+  (name :type string :pk t :nullp nil)
+  (age :type integer :nullp nil))
+```
+
+A human would write SQL like the following:
+
+```sql
+CREATE TABLE user (
+  name STRING NOT NULL PRIMARY KEY,
+  age INTEGER NOT NULL
+)
+```
+
+Crane, however, would generate the following SQL:
+
+```sql
+CREATE TABLE user (
+  name STRING CONSTRAINT user_name_nullity NOT NULL
+              CONSTRAINT user_name_primary PRIMARY KEY,
+  age INTEGER CONSTRAINT user_age_nullity NOT NULL
+)
+```
+
+Naming all constraints makes it possible for them to be dropped simply through
+`ALTER TABLE` statements when migrating from an old schema.
+
+# Creating, Saving, and Deleting Objects
+
+## `create`
+
+**Syntax**: `(create [class] &rest [parameters])`
+
+Create an instance of a class on the database.
+
+**Examples:**
+
+```lisp
+(create 'user :name "Eudoxia")
+
+(create 'company :name "Initech" :founded 1994)
+```
+
+## `save`
+
+**Syntax**: `(save [instance])`
+
+Save an instance's fields to the database.
+
+**Examples:**
+
+```lisp
+(let ((point (create 'point :x 556.3 :y 26.7)))
+  ;; Make some changes
+  (setf (point-distance-from-origin point)
+        (euclidean-distance point '(0 0)))
+  ;; Save
+  (save point))
+```
+
+## `del`
+
+**Syntax**: `(del [instance])`
+
+Delete an instance from the database.
+
+**Examples:**
+
+```lisp
+(defun delete-user (username)
+  (del (single 'user :name username)))
+```
+
+# Making Queries
+
+## High Level API
+
+### `filter`
+
+**Syntax**: `(filter [class] &rest [params])`
+
+Return a list of objects that satisfy the `params`.
+
+**Examples:**
+
+```lisp
+  (filter 'company :country "US"
+                   (:< nemployees 40))
+```
+
+### `single`
+
+**Syntax**: `(filter [class] &rest [params])`
+
+Return a single object that satisfies the parameters.
+
+A variant, `single!`, will signal a condition when no object satisfies the
+parameters.
+
+### `get-or-create`
+
+## Functional SQL
+
+# Migrations
+
+Your schema will change, and this is a fact. Most ORMs hope the users will be
+happy running manual `ALTER TABLEs` or provide migration functionality through
+an external plugin
+([Alembic](https://alembic.readthedocs.org/en/latest/front.html) for SQLAlchemy,
+[South](http://south.aeracode.org/) for the Django ORM).
+
+Migrations are completely built into Crane, and are designed to be intrusive:
+You redefine the schema, reload, and Crane takes care of everything. If your
+migration plan is too complicated for Crane, then you write a simple function
+that does some transformations and Crane puts that in its migration history, all
+that without ever having to leave your Lisp environment or accessing the shell.
+
+## Example
+
+```lisp
+(deftable employees
+  (name :type string :null nil)
+  (age  :type integer)
+  (address :type string :null nil))
+```
+
+Now, if you decide that addresses can be nullable, you just redefine the class
+(Make the change, and either `C-c C-c` on Emacs or Quickload your project):
+
+```lisp
+(deftable employees
+  (name :type string :null nil)
+  (age  :type integer)
+  (address :type string))
+```
+
+And Crane will spot the difference and perform the migration automatically.
+
+## Trivial Migrations
+
+Things like adding and dropping contraints (Making a field `NOT NULLable`,
+dropping the default value of a column, et cetera) will be handled automatically
+by Crane.
+
+A less-than-trivial migration is changing the type of a column: In simple cases,
+like moving from a float to an integer, Crane will handle this change
+automatically.
+
 # Appendix A: Connecting
 
 ## PostgreSQL
