@@ -8,10 +8,12 @@
    (asdf:component-pathname (asdf:find-system :crane))))
 
 (defparameter *css*
-  (list "//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"
-        "//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"))
+  (list "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"
+        "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"
+        "web/style.css"))
+
 (defparameter *js*
-  (list "//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"))
+  (list "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"))
 
 (defmacro save (&rest body)
   `(with-open-file (stream +index-path+
@@ -27,4 +29,4 @@
   (loop for uri in *js* collecting
         (markup (:script :src uri ""))))
  (:body
-  "The body should be here, but I have no creativity"))
+  (:h1 "Crane")))
