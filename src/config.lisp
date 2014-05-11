@@ -1,5 +1,6 @@
 ;;;; Read and write the configuration
 
+(in-package :cl-user)
 (defpackage :crane.config
   (:use :cl :cl-annot.doc :anaphora))
 (in-package :crane.config)

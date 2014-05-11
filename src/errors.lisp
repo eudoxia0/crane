@@ -1,3 +1,4 @@
+(in-package :cl-user)
 (defpackage :crane.errors
   (:use :cl))
 (in-package :crane.errors)
