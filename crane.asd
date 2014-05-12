@@ -9,7 +9,8 @@
                :iterate
                :cl-annot
                :cl-fad
-               :osicat)
+               :osicat
+               :clos-fixtures)
   :components ((:module "src"
                 :serial t
                 :components
@@ -25,6 +26,7 @@
                  (:file "migration")
                  (:file "table")
                  (:file "interface")
+                 (:file "fixture")
                  (:file "crane"))))
   :description "An ORM for Common Lisp."
   :long-description
