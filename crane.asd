@@ -9,7 +9,6 @@
                :iterate
                :cl-annot
                :cl-fad
-               :osicat
                :clos-fixtures)
   :components ((:module "src"
                 :serial t
