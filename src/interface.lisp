@@ -45,6 +45,7 @@
                        ;; instance of an object, store that object's id
                        (slot-value obj slot))))))
 
+@export
 (defmethod create% ((obj crane.table:<table>))
   (query (sxql:insert-into
              (table-name (class-of obj))
