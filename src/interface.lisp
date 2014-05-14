@@ -43,6 +43,7 @@
                                :keyword)
                        ;; TODO: If the slot is a foreign key, and is storing an
                        ;; instance of an object, store that object's id
+                       ;; TODO: Inflate Lisp value to database
                        (slot-value obj slot))))))
 
 @export
@@ -75,6 +76,8 @@
       (db (class-of obj))))
 
 
+@doc "Process a tuple created by a CL-DBI into a format that can be accepted by
+make-instance."
 (defun clean-tuple (tuple)
   (flet ((process-key (key)
            (intern (string-upcase
@@ -83,11 +86,15 @@
                    :keyword)))
     (iter (for (key value) on tuple by #'cddr)
           (appending
+           ;; TODO: Deflate CL-DBI value to database
            (list (process-key key) value)))))
 
-(defmethod tuple->object ((class-name symbol) tuple)
-  (apply #'make-instance (cons class-name (clean-tuple tuple))))
+@doc "Convert a tuple produced by CL-DBI to a CLOS instance."
+(defmethod tuple->object ((table table-class) tuple)
+  (apply #'make-instance (cons table (clean-tuple tuple))))
 
+(defmethod tuple->object ((table-name symbol) tuple)
+  (tuple->object (find-class table-name) tuple))
 
 @export
 (defmacro filter (class &rest params)
