@@ -1,7 +1,25 @@
 (defpackage :crane.connect
-  (:use :cl :anaphora :iter :cl-annot.doc))
+  (:use :cl :anaphora :iter :cl-annot.doc)
+  (:import-from :alexandria
+                :remove-from-plist)
+  (:import-from :sxql
+                :*quote-character*))
 (in-package :crane.connect)
 (annot:enable-annot-syntax)
+
+;; Postgres and SQLite both use the double-quote as an escape character. MySQL
+;; lets you do it as well, but requires setting `SQL_MODE=ANSI_QUOTES;`. MS SQL
+;; Server uses brackets, but can be made to accept double-quotes by setting
+;; QUOTED_IDENTIFIER ON
+(setf *quote-character* #\")
+
+(defun set-proper-quote-character (connection database-type)
+  (cond
+    ((eq database-type :mysql)
+     (dbi:execute (dbi:prepare connection "SET SQL_MODE=ANSI_QUOTES")))
+    (t
+     ;; Postgres or SQLite, do nothing
+     t)))
 
 (defparameter +system-mapping+
   (list :postgres :dbd-postgres
@@ -62,19 +80,23 @@ spec for the database '~A' have not been provided: ~A" db it))
 (defparameter *default-db* nil)
 
 (defun connect-spec (db spec)
-  (aif (getf +system-mapping+ (getf spec :type))
-       (progn
-         (load-driver it)
-         (apply #'dbi:connect
-                (cons (getf spec :type)
-                      (validate-connection-spec db
-                                                (getf spec :type)
-                                                (alexandria:remove-from-plist spec :type)))))
-       (error 'crane.errors:configuration-error
-              :key (list :databases :-> db)
-              :text (format nil
-                            "The database type '~A' is not supported by DBI yet."
-                            (getf spec :type)))))
+  (let ((type (getf spec :type)))
+    (aif (getf +system-mapping+ type)
+         (progn
+           (load-driver it)
+           (let ((connection
+                   (apply #'dbi:connect
+                          (cons type
+                                (validate-connection-spec db
+                                                          type
+                                                          (remove-from-plist spec :type))))))
+             (set-proper-quote-character connection type)
+             connection))
+         (error 'crane.errors:configuration-error
+                :key (list :databases :-> db)
+                :text (format nil
+                              "The database type '~A' is not supported by DBI yet."
+                              type)))))
 
 @doc "Connect to all the databases specified in the configuration."
 @export
