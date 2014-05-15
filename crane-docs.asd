@@ -13,6 +13,11 @@
                   :type "md"
                   :input-type "markdown"
                   :output "manual"
-                  :output-type "html5"
-                  :output-extension "html"
-                  :options "-S")))))
+                  :output-type "pdf"
+                  :output-extension "pdf")
+                 (:pandoc "internals"
+                  :type "md"
+                  :input-type "markdown"
+                  :output "internals"
+                  :output-type "pdf"
+                  :output-extension "pdf")))))
