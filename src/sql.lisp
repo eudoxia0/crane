@@ -5,7 +5,9 @@
 ;;;; strings. How horrifying.
 
 (defpackage :crane.sql
-  (:use :cl :anaphora :crane.utils :cl-annot.doc :iter))
+  (:use :cl :anaphora :crane.utils :cl-annot.doc :iter)
+  (:import-from :sxql
+                :*quote-character*))
 (in-package :crane.sql)
 (annot:enable-annot-syntax)
 
@@ -15,11 +17,10 @@
     (symbol
      (sqlize (symbol-name obj)))
     (string
-     (string-downcase
-      (remove-if #'(lambda (char) (or (char= #\< char)
-                                      (char= #\> char)))
-                 (map 'string #'(lambda (char) (if (char= char #\-) #\_ char))
-                      obj))))))
+     (format nil "~A~A~A"
+             (or *quote-character* "")
+             obj
+             (or *quote-character* "")))))
 
 (defparameter *sxql-operators*
   (list :not :is-null :not-null :desc :asc :distinct :include :constructor :type :=
