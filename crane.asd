@@ -27,6 +27,7 @@
                  (:file "inflate-deflate")
                  (:file "interface")
                  (:file "fixture")
+                 (:file "transaction")
                  (:file "crane"))))
   :description "An ORM for Common Lisp."
   :long-description

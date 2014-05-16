@@ -27,6 +27,10 @@
                 :single!
                 :single-or-create
                 :deref)
+  (:import-from :crane.transaction
+                :with-transaction
+                :commit
+                :rollback)
   (:export
    ;; Configuration
    :setup
