@@ -7,7 +7,9 @@
 (defpackage :crane.inflate-deflate
   (:use :cl :anaphora)
   (:export :inflate
-           :definflate))
+           :definflate
+           :deflate
+           :defdeflate))
 (in-package :crane.inflate-deflate)
 
 (defgeneric inflate (obj)
