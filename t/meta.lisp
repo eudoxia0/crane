@@ -9,7 +9,7 @@
                        a b c parent-table child-table))
         (handler-case
             ;; Make sure no single failed delete takes down the whole thing
-            (query (sxql:drop-table (intern (crane.sql:sqlize table) :keyword)))
+            (query (crane:drop-table table))
           (t () t))))
   (t () t))
 
