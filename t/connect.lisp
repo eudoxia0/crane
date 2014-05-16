@@ -26,6 +26,7 @@
           '((:name "foo" :user "john" :pass "1234"))))
     (process-specs db-type test-cases)))
 
+
 (def-suite postgres
   :description "SQLite3 connection spec tests.")
 (in-suite postgres)
@@ -37,6 +38,7 @@
 (test good-specs
   (finishes
     (shared-good-specs :postgres)))
+
 
 (def-suite sqlite3
   :description "SQLite3 connection spec tests.")

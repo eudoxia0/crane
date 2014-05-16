@@ -1,7 +1,8 @@
 (in-package :crane-test)
 
 (crane:setup
- `(:migrations-directory
+ `(:debug t
+   :migrations-directory
    ,(merge-pathnames
      #p"t/migrations/"
      (asdf:component-pathname (asdf:find-system :crane-test)))
