@@ -9,7 +9,7 @@
                        a b c parent-table child-table))
         (handler-case
             ;; Make sure no single failed delete takes down the whole thing
-            (query (crane:drop-table table))
+            (crane:drop-table table)
           (t () t))))
   (t () t))
 
