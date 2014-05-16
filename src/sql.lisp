@@ -113,7 +113,7 @@ NULL constraint)."
            (concatenate 'string
                         (sqlize (getf column :name))
                         " "
-                        (sqlize-type (getf column :type))))
+                        (sqlize (getf column :type))))
          (constraints
            (create-column-constraints table-name column))
          (internal-constraints
@@ -181,9 +181,3 @@ NULL constraint)."
 @export
 (defun drop-column (table-name column-name)
   (format nil "ALTER TABLE ~A DROP COLUMN ~A" table-name column-name))
-
-;;;; Utility functions
-
-@export
-(defun sqlize-type (type)
-  (format nil "~A" type))
