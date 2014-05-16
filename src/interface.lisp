@@ -20,9 +20,8 @@
 (annot:enable-annot-syntax)
 
 (defmethod drop-table ((table table-class))
-  (execute
-   (prepare (sxql:drop-table (table-name table))
-            (db table))))
+  (query (sxql:drop-table (table-name table))
+         (db table)))
 
 @export
 (defmethod drop-table ((table-name symbol))
@@ -38,8 +37,7 @@
 (defun make-set (obj)
   (let ((slot-names (slot-tuple obj)))
     (iter (for slot in slot-names)
-      (appending (list (intern (sqlize (symbol-name slot))
-                               :keyword)
+      (appending (list (make-keyword slot)
                        ;; TODO: If the slot is a foreign key, and is storing an
                        ;; instance of an object, store that object's id
                        ;; TODO: Inflate Lisp value to database
@@ -65,13 +63,13 @@
     (query (sxql:update (table-name (class-of obj))
                         (apply #'sxql.clause:make-clause
                                (cons :set= set))
-                        (sxql:where (:= :id (getf set :|id|))))
+                        (sxql:where (:= :id (getf set :id))))
         (db (class-of obj)))))
 
 @export
 (defmethod del ((obj crane.table:<table>))
   (query (sxql:delete-from (table-name (class-of obj))
-           (sxql:where (:= :id (getf (make-set obj) :|id|))))
+           (sxql:where (:= :id (getf (make-set obj) :id))))
       (db (class-of obj))))
 
 

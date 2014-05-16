@@ -12,6 +12,7 @@
                 :prepare
                 :execute)
   (:import-from :crane.meta
+                :table-name
                 :digest
                 :diff-digest))
 (in-package :crane.migration)
@@ -88,7 +89,7 @@ history for the table `table-name`."
                        digest))
          (query
            (format nil +create-table-format-string+
-                   (crane.sql:sqlize table-name)
+                   (crane.sql:sqlize (table-name (find-class table-name)))
                    (getf constraints :definition)
                    (if (getf constraints :internal) "," "")
                    (getf constraints :internal)

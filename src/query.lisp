@@ -13,7 +13,8 @@
 (defun prepare (query &optional database-name)
   (when (debugp)
     (print query))
-  (dbi:prepare (crane.connect:get-connection database-name) query))
+  (dbi:prepare (crane.connect:get-connection database-name)
+               query))
 
 @doc "Execute a query."
 @export

@@ -19,40 +19,41 @@
     (string
      (format nil "~A~A~A"
              (or *quote-character* "")
-             obj
+             (string-downcase obj)
              (or *quote-character* "")))))
 
 @doc "Give constraints Crane-specific names"
 (defun constraint-name (table-name column-name type)
-  (concatenate 'string "crane_" table-name "_" column-name "_" type))
+  (sqlize (concatenate 'string "crane_" (symbol-name table-name) "_"
+                       (symbol-name column-name) "_" (symbol-name type))))
 
 @doc "Toggle NULL constraint."
 (defun set-null (column-name value)
   (unless value
-    (concatenate 'string "CHECK (" column-name " IS NOT NULL)")))
+    (concatenate 'string "CHECK (" (sqlize column-name) " IS NOT NULL)")))
 
 @doc "Toggle UNIQUE constraint."
 (defun set-unique (column-name value)
   (when value
-    (concatenate 'string "UNIQUE (" column-name ")")))
+    (concatenate 'string "UNIQUE (" (sqlize column-name) ")")))
 
 @doc "Toggle PRIMARY KEY constraint."
 (defun set-primary (column-name value)
   (when value
-    (concatenate 'string "PRIMARY KEY (" column-name ")")))
+    (concatenate 'string "PRIMARY KEY (" (sqlize column-name) ")")))
 
 @doc "Toggle INDEX pseudo-constraint."
 (defun set-index (table-name column-name value)
   (if value
     (list :external
           (format nil "CREATE INDEX ~A ON ~A (~A)"
-                  (constraint-name table-name column-name "INDEX")
-                  table-name
-                  column-name))
+                  (constraint-name table-name column-name :index)
+                  (sqlize table-name)
+                  (sqlize column-name)))
     (list :external
           (format nil "DROP INDEX ~A ON ~A"
-                  (constraint-name table-name column-name "INDEX")
-                  table-name))))
+                  (constraint-name table-name column-name :index)
+                  (sqlize table-name)))))
 
 (defparameter +referential-actions+
   (list :cascade "CASCADE"
@@ -68,7 +69,7 @@
 
 (defun foreign (local foreign-table &key (on-delete :no-action) (on-update :no-action))
   (format nil "FOREIGN KEY (~A) REFERENCES ~A(id) ON DELETE ~A ON UPDATE ~A"
-          local
+          (sqlize local)
           (sqlize foreign-table)
           (map-ref-action on-delete)
           (map-ref-action on-update)))
@@ -93,17 +94,16 @@ NULL constraint)."
               (when value (apply #'foreign (cons column-name value)))))
            (concatenate 'string
                         "CONSTRAINT "
-                        (constraint-name table-name column-name (sqlize type))
+                        (constraint-name table-name column-name type)
                         " "
                         it))))
-
 
 (defun create-column-constraints (table-name column)
   (let ((column-name (getf column :name)))
     (remove-if #'null
                (iter (for key in '(:nullp :uniquep :primaryp :indexp :foreign))
                  (collecting (make-constraint table-name
-                                              (sqlize column-name)
+                                              column-name
                                               key
                                               (getf column key)))))))
 
@@ -113,7 +113,7 @@ NULL constraint)."
            (concatenate 'string
                         (sqlize (getf column :name))
                         " "
-                        (sqlize (getf column :type))))
+                        (symbol-name (getf column :type))))
          (constraints
            (create-column-constraints table-name column))
          (internal-constraints
@@ -144,13 +144,13 @@ NULL constraint)."
 @export
 (defun add-constraint (table-name column-name body)
   (format nil "ALTER TABLE ~A ADD ~A"
-          table-name
+          (sqlize table-name)
           body))
 
 @export
 (defun drop-constraint (table-name column-name type)
   (format nil "ALTER TABLE ~A DROP CONSTRAINT ~A"
-          table-name
+          (sqlize table-name)
           (constraint-name table-name column-name type)))
 
 @export
@@ -165,7 +165,7 @@ NULL constraint)."
           ;; The constraint has been dropped
           (drop-constraint table-name
                            column-name
-                           (sqlize type)))
+                           type))
       ;; NULL constraint
       (if value
           ;; Set null
@@ -176,7 +176,7 @@ NULL constraint)."
           ;; Remove null constraint
           (drop-constraint table-name
                            column-name
-                           (sqlize type)))))
+                           type))))
 
 @export
 (defun drop-column (table-name column-name)
