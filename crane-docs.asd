@@ -1,7 +1,7 @@
 (defsystem crane-docs
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
-  :description "Generate documentation."
+  :description "Generate documentation in PDF format."
   :defsystem-depends-on (:asdf-linguist)
   :components ((:module "docs"
                 :serial t
