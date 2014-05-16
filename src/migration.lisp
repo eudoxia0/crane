@@ -136,7 +136,7 @@ history for the table `table-name`."
            (mapcar #'(lambda (column-name)
                        (crane.sql:drop-column table-name
                                               column-name))
-                   (getf diff :deletions)))
+                   (getf diff :deletions))))
     (when (debugp)
       (pprint table-class)
       (pprint (reduce #'(lambda (a b) (concatenate 'string a ";" b))

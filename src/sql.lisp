@@ -180,4 +180,5 @@ NULL constraint)."
 
 @export
 (defun drop-column (table-name column-name)
-  (format nil "ALTER TABLE ~A DROP COLUMN ~A" table-name column-name))
+  (sxql:yield (sxql:alter-table table-name
+                (sxql:drop-column column-name))))
