@@ -11,8 +11,7 @@
                 :db
                 :col-foreign)
   (:import-from :crane.sql
-                :sqlize
-                :sqlize-all)
+                :sqlize)
   (:import-from :crane.query
                 :prepare
                 :execute
@@ -115,7 +114,7 @@ make-instance."
                                                              (make-keyword slot-name)
                                                              (getf params slot-name)))
                                                    equal-params)
-                                         ,@(sqlize-all fn-params))))))))))
+                                         ,@fn-params)))))))))
 
 @export
 (defmacro exists (class &rest params)
