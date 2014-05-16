@@ -29,3 +29,7 @@ the result as a list of ([property] [old value] [new value])"
 (defun plist-keys (plist)
   (iter (for key in plist by #'cddr)
         (collecting key)))
+
+@export
+(defun make-keyword (symbol)
+  (intern (symbol-name symbol) :keyword))
