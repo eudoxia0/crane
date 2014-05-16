@@ -84,7 +84,7 @@ history for the table `table-name`."
 @export
 (defun create-table (table-name digest)
   (let* ((constraints (crane.sql:create-and-sort-constraints
-                       (crane.sql:sqlize table-name)
+                       table-name
                        digest))
          (query
            (format nil +create-table-format-string+
@@ -97,7 +97,7 @@ history for the table `table-name`."
 
 @export
 (defun migrate (table-class diff)
-  (let* ((table-name (crane.sql:sqlize (crane.meta:table-name table-class)))
+  (let* ((table-name (crane.meta:table-name table-class))
          (alterations
           (iter (for column in (getf diff :changes))
             (appending
@@ -105,7 +105,7 @@ history for the table `table-name`."
                (collecting
                 (crane.sql:alter-constraint
                   table-name
-                  (crane.sql:sqlize (getf column :name))
+                  (getf column :name)
                   type
                   (cadr (getf (getf column :diff) type))))))))
          (new-columns
@@ -135,8 +135,8 @@ history for the table `table-name`."
          (deletions
            (mapcar #'(lambda (column-name)
                        (crane.sql:drop-column table-name
-                                              (crane.sql:sqlize column-name)))
-                   (getf diff :deletions))))
+                                              column-name))
+                   (getf diff :deletions)))
     (when (debugp)
       (pprint table-class)
       (pprint (reduce #'(lambda (a b) (concatenate 'string a ";" b))
