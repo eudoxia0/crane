@@ -24,11 +24,9 @@
 
 @export
 (defmethod table-name ((class table-class))
-  (intern (crane.sql:sqlize
-           (if (slot-boundp class 'table-name)
-               (car (table-class-name class))
-               (class-name class)))
-           :keyword))
+  (if (slot-boundp class 'table-name)
+      (car (table-class-name class))
+      (class-name class)))
 
 (defmethod table-name ((class-name symbol))
   (table-name (find-class class-name)))
