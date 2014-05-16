@@ -14,8 +14,6 @@
   (:import-from :crane.sql
                 :sqlize)
   (:import-from :crane.query
-                :prepare
-                :execute
                 :query)
   (:import-from :crane.inflate-deflate
                 :inflate))

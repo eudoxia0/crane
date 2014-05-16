@@ -8,9 +8,6 @@
   (:import-from :crane.config
                 :get-config-value
                 :debugp)
-  (:import-from :crane.query
-                :prepare
-                :execute)
   (:import-from :crane.meta
                 :table-name
                 :digest
