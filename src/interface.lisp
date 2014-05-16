@@ -1,6 +1,7 @@
 ;;;; This file contains the methods used to access and alter database records in
 ;;;; an object-oriented way.
 
+(in-package :cl-user)
 (defpackage :crane.interface
   (:use :cl :anaphora :cl-annot.doc :iter)
   (:import-from :crane.utils
@@ -15,7 +16,9 @@
   (:import-from :crane.query
                 :prepare
                 :execute
-                :query))
+                :query)
+  (:import-from :crane.inflate-deflate
+                :inflate))
 (in-package :crane.interface)
 (annot:enable-annot-syntax)
 
@@ -41,7 +44,7 @@
                        ;; TODO: If the slot is a foreign key, and is storing an
                        ;; instance of an object, store that object's id
                        ;; TODO: Inflate Lisp value to database
-                       (slot-value obj slot))))))
+                       (inflate (slot-value obj slot)))))))
 
 @export
 (defmethod create% ((obj crane.table:<table>))

@@ -16,6 +16,8 @@
   (:import-from :crane.table
                 :<table>
                 :deftable)
+  (:import-from :crane.inflate-deflate
+                :definflate)
   (:import-from :crane.interface
                 :drop-table
                 :create
