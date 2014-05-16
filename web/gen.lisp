@@ -10,6 +10,7 @@
 (defparameter *css*
   (list "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"
         "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"
+        "http//cdn.jsdelivr.net/typeplate/1.1.2/typeplate.min.css"
         "web/style.css"))
 
 (defparameter *js*
