@@ -3,6 +3,8 @@
 
 (defpackage :crane.interface
   (:use :cl :anaphora :cl-annot.doc :iter)
+  (:import-from :crane.utils
+                :make-keyword)
   (:import-from :crane.meta
                 :table-class
                 :table-name
@@ -20,9 +22,7 @@
 
 (defmethod drop-table ((table table-class))
   (execute
-   (prepare (concatenate 'string
-                         "DROP TABLE "
-                         (sqlize (table-name table)))
+   (prepare (sxql:drop-table (table-name table))
             (db table))))
 
 @export
@@ -112,8 +112,7 @@ make-instance."
                    (when params
                      `((sxql:where (:and ,@(mapcar #'(lambda (slot-name)
                                                        (list :=
-                                                             (intern (sqlize slot-name)
-                                                                     :keyword)
+                                                             (make-keyword slot-name)
                                                              (getf params slot-name)))
                                                    equal-params)
                                          ,@(sqlize-all fn-params))))))))))
