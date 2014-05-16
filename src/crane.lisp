@@ -7,8 +7,6 @@
                 :connect
                 :get-connection)
   (:import-from :crane.query
-                :prepare
-                :execute
                 :query)
   (:import-from :crane.migration
                 :build
