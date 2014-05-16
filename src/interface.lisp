@@ -36,7 +36,8 @@
                  (mapcar #'closer-mop:slot-definition-name
                          (closer-mop:class-slots (class-of obj)))))
 
-@doc "Transform an object into a call to the set= function used by SxQL."
+@doc "Transform an object into a call to the set= function used by
+SxQL. Inflation happens here."
 (defun make-set (obj)
   (let ((slot-names (slot-tuple obj)))
     (iter (for slot in slot-names)
@@ -77,17 +78,15 @@
 
 
 @doc "Process a tuple created by a CL-DBI into a format that can be accepted by
-make-instance."
+make-instance. Deflation happens here."
 (defun clean-tuple (tuple)
   (flet ((process-key (key)
-           (intern (string-upcase
-                    (map 'string #'(lambda (char) (if (eql char #\_) #\- char))
-                         (symbol-name key)))
+           (intern (string-upcase (symbol-name key))
                    :keyword)))
     (iter (for (key value) on tuple by #'cddr)
           (appending
-           ;; TODO: Deflate CL-DBI value to database
-           (list (process-key key) value)))))
+           (let ((processed-key (process-key key)))
+             (list processed-key value))))))
 
 @doc "Convert a tuple produced by CL-DBI to a CLOS instance."
 (defmethod tuple->object ((table table-class) tuple)

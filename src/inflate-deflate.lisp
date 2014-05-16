@@ -24,6 +24,6 @@
   (:documentation "Turn a string into a CLOS object."))
 
 (defmacro defdeflate ((obj-name obj-type-name) &rest body)
-  `(defmethod crane.inflate-deflate:deflate ((,obj-name string)
+  `(defmethod crane.inflate-deflate:deflate (,obj-name
                                              (type (eql ,obj-type-name)))
      ,@body))
