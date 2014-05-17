@@ -83,7 +83,8 @@ history for the table `table-name`."
 (defun create-table (table-name digest)
   (let* ((constraints (crane.sql:create-and-sort-constraints
                        table-name
-                       digest))
+                       digest
+                       (crane.meta:db table-name)))
          (query
            (format nil +create-table-format-string+
                    (crane.sql:sqlize (table-name (find-class table-name)))
@@ -111,7 +112,8 @@ history for the table `table-name`."
            (mapcar #'(lambda (column)
                        (crane.sql:define-column
                            table-name
-                           column))
+                           column
+                           (crane.meta:db table-name)))
                    (getf diff :additions)))
          (additions
            (iter (for def in new-columns)

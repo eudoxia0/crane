@@ -8,7 +8,9 @@
 (defpackage :crane.sql
   (:use :cl :anaphora :crane.utils :cl-annot.doc :iter)
   (:import-from :sxql
-                :*quote-character*))
+                :*quote-character*)
+  (:import-from :crane.connect
+                :autoincrement-sql))
 (in-package :crane.sql)
 (annot:enable-annot-syntax)
 
@@ -109,12 +111,17 @@ NULL constraint)."
                                               (getf column key)))))))
 
 @export
-(defun define-column (table-name column)
+(defun define-column (table-name column database-name)
   (let* ((column-definition
-           (concatenate 'string
-                        (sqlize (getf column :name))
-                        " "
-                        (symbol-name (getf column :type))))
+           (format nil "~A ~A ~A"
+                   (sqlize (getf column :name))
+                   (symbol-name (getf column :type))
+                   (if (eq (getf column :name) 'id)
+                       ;; Autoincrement
+                       (autoincrement-sql (crane.connect:database-type
+                                           (crane.connect:get-db
+                                            database-name)))
+                       "")))
          (constraints
            (create-column-constraints table-name column))
          (internal-constraints
@@ -127,10 +134,10 @@ NULL constraint)."
           :external external-constraints)))
 
 @export
-(defun create-and-sort-constraints (table-name digest)
+(defun create-and-sort-constraints (table-name digest database-name)
   (let ((definitions
           (mapcar #'(lambda (col)
-                      (define-column table-name col))
+                      (define-column table-name col database-name))
                   (getf digest :columns))))
     (list :definition (mapcar #'(lambda (def) (getf def :definition)) definitions)
           :internal (reduce #'append
