@@ -29,6 +29,7 @@
                 :deref)
   (:import-from :crane.transaction
                 :with-transaction
+                :begin-transaction
                 :commit
                 :rollback)
   (:export
@@ -58,4 +59,9 @@
    :single
    :single!
    :single-or-create
-   :deref))
+   :deref
+   ;; Transactions
+   :with-transaction
+   :begin-transaction
+   :commit
+   :rollback))

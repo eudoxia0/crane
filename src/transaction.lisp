@@ -2,6 +2,7 @@
 (defpackage :crane.transaction
   (:use :cl :anaphora)
   (:export :with-transaction
+           :begin-transaction
            :commit
            :rollback))
 (in-package :crane.transaction)
@@ -10,6 +11,9 @@
                             &rest body)
   `(cl-dbi:with-transaction (crane.connect:get-connection ,db)
      ,@body))
+
+(defun begin-transaction (&optional (db *default-db*))
+  (dbi:begin-transaction (crane.connect:get-connection db)))
 
 (defun commit (&optional (db *default-db*))
   (dbi:commit (crane.connect:get-connection db)))
