@@ -2,7 +2,7 @@
 
 (in-package :cl-user)
 (defpackage :crane.config
-  (:use :cl :cl-annot.doc :anaphora))
+  (:use :cl :annot.doc :anaphora))
 (in-package :crane.config)
 (annot:enable-annot-syntax)
 
@@ -14,16 +14,19 @@
 (defun setup (config)
   (setf *config* config))
 
+@doc "Determine if Crane is in debug mode."
 @export
 (defun debugp ()
   (getf *config* :debug))
 
+@doc "Return the configuration object, or signal a no-configuration error."
 @export
 (defun get-configuration ()
   (aif *config*
        it
        (error 'crane.errors:no-configuration-error)))
 
+@doc "Get the value of `key` in the configuration."
 @export
 (defun get-config-value (key)
   (aif (getf (get-configuration) key)
