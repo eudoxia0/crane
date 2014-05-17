@@ -3,7 +3,11 @@
   (:import-from :alexandria
                 :remove-from-plist)
   (:import-from :sxql
-                :*quote-character*))
+                :*quote-character*)
+  (:export :<database>
+           :database-name
+           :database-type
+           :database-connection))
 (in-package :crane.connect)
 (annot:enable-annot-syntax)
 
@@ -75,6 +79,11 @@ spec for the database '~A' have not been provided: ~A" db it))
 @doc "A map from database names to connections."
 (defparameter *db* (make-hash-table))
 
+(defclass <database> ()
+  ((type :reader database-type :initarg :type)
+   (name :reader database-name :initarg :name)
+   (conn :reader database-connection :initarg :connection)))
+
 @doc "The name of the default database"
 @export
 (defparameter *default-db* nil)
@@ -104,13 +113,22 @@ spec for the database '~A' have not been provided: ~A" db it))
   (aif (crane.config:get-config-value :databases)
        (progn
          (iter (for (db spec) on it by #'cddr)
-               (setf (gethash db *db*) (connect-spec db spec)))
+               (setf (gethash db *db*)
+                     (make-instance '<database>
+                                    :name (getf spec :name)
+                                    :type (getf spec :type)
+                                    :connection (connect-spec db spec))))
          (setf *default-db* (car it)))
        (error 'crane.errors:configuration-error
               :key :databases
               :text "No databases found.")))
 
+@doc "Return the database matching a specific name"
+@export
+(defun get-db (&optional database-name)
+  (gethash (aif database-name it *default-db*) *db*))
+
 @doc "Return the connection handler for a given database."
 @export
 (defun get-connection (&optional database-name)
-  (gethash (aif database-name it *default-db*) *db*))
+  (database-connection (get-db database-name)))

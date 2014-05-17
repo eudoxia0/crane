@@ -77,7 +77,7 @@ symbols, table options are keywords."
                   :col-null-p nil
                   :initform (1+ (crane.query:latest-id (find-class ',name)))
                   :accessor ,(intern "ID" *package*)
-                  :autoincrement t
+                  :col-autoincrement-p t
                   :initarg :id)))
            slots)
          ,@options
