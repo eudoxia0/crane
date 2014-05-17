@@ -76,9 +76,9 @@ environments, you might want to use [Envy](https://github.com/fukamachi/envy).
 
 # Documentation
 
-The manual is provided in [org-mode](http://orgmode.org/) format in
-`docs/manual.org`. It can be compiled to HTML or PDF, or you can grab a copy
-from the site (Soon).
+The manual is provided in Markdown format in `docs/manual.md`. A document on the
+internals is also provided. The `crane-docs` system compiles those to PDF, and
+`crane-web` compiles them to HTML in addition to generating the site.
 
 # Notes
 
