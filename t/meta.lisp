@@ -1,17 +1,23 @@
 (in-package :crane-test)
 
-(handler-case
-    (progn
-      ;; Clean slate
-      (delete-migrations t)
-      
-      (dolist (table '(table-a table-b table-c table-d
-                       a b c parent-table child-table))
-        (handler-case
-            ;; Make sure no single failed delete takes down the whole thing
-            (crane:drop-table table)
-          (t () t))))
-  (t () t))
+(def-suite preliminary
+  :description "Start with a clean slate")
+(in-suite preliminary)
+
+(test drop-tables
+  (finishes
+    (format t "Dropping tables...~&")
+    (handler-case
+        (progn
+          (delete-migrations t)
+          
+          (dolist (table '(table-a table-b table-c table-d
+                           a b c child-table parent-table))
+            (handler-case
+                ;; Make sure no single failed delete takes down the whole thing
+                (crane:drop-table table)
+              (t () (format t "~&Failed to drop table '~A'.~&" table)))))
+      (t () t))))
 
 (def-suite table-slots
   :description "Test that table metaclass slots work.")

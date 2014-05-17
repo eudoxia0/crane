@@ -5,13 +5,14 @@
 (annot:enable-annot-syntax)
 
 (defparameter +slot-mapping+
-  (list :type     :col-type
-        :nullp    :col-null-p
-        :uniquep  :col-unique-p
-        :primaryp :col-primary-p
-        :indexp   :col-index-p
-        :check    :col-check
-        :foreign  :col-foreign))
+  (list :type           :col-type
+        :nullp          :col-null-p
+        :uniquep        :col-unique-p
+        :primaryp       :col-primary-p
+        :indexp         :col-index-p
+        :check          :col-check
+        :autoincrementp :col-autoincrement-p
+        :foreign        :col-foreign))
 
 (defparameter +standard-class-options+
   (list :initarg :initform :accessor :reader :writer))
@@ -76,6 +77,7 @@ symbols, table options are keywords."
                   :col-null-p nil
                   :initform (1+ (crane.query:latest-id (find-class ',name)))
                   :accessor ,(intern "ID" *package*)
+                  :autoincrement t
                   :initarg :id)))
            slots)
          ,@options

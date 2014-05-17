@@ -11,6 +11,7 @@
    :col-primary-p
    :col-index-p
    :col-foreign
+   :col-autoincrement-p
    :col-check))
 (in-package :crane.meta)
 (annot:enable-annot-syntax)
@@ -78,6 +79,9 @@
    (col-foreign :initarg :col-foreign
                 :reader  col-foreign
                 :initform nil)
+   (col-autoincrement-p :initarg :col-autoincrement-p
+                        :reader  col-autoincrement-p
+                        :initform nil)
    (col-check :initarg :col-check
               :reader col-check
               :initarg nil)))
@@ -95,6 +99,8 @@
                 :reader  col-index-p)
    (col-foreign :initarg :col-foreign
                 :reader  col-foreign)
+   (col-autoincrement-p :initarg :col-autoincrement-p
+                        :reader  col-autoincrement-p)
    (col-check :initarg :col-check
               :reader col-check)))
 
@@ -131,6 +137,9 @@
 
           (slot-value effective-slot-definition 'col-foreign)
           (col-foreign (first direct-slot-definitions))
+
+          (slot-value effective-slot-definition 'col-autoincrement-p)
+          (col-autoincrement-p (first direct-slot-definitions))
           
           (slot-value effective-slot-definition 'col-check)
           (if (slot-boundp (first direct-slot-definitions) 'col-check)
@@ -146,6 +155,7 @@
         :primaryp (col-primary-p slot)
         :indexp (col-index-p slot)
         :check (col-check slot)
+        :autoincrementp (col-autoincrement-p slot)
         :foreign (col-foreign slot)))
 
 @export
