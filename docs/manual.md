@@ -61,8 +61,8 @@ Crane uses the metaobject protocol to bind SQL tables and CLOS objects through a
 `deftable` macro:
 
 ```lisp
-(deftable [name] ([super]*)
-  [field-or-option]*)
+(deftable <name> (<superclass>*)
+  <field-or-option>*)
 ```
 
 Compare the following code to the previous example:
@@ -80,7 +80,8 @@ Compare the following code to the previous example:
 
 ## `create`
 
-**Syntax**: `(create [class] &rest [parameters])`
+Syntax:
+  ~ `(create <class> <params>*)`
 
 Create an instance of a class on the database.
 
@@ -94,7 +95,8 @@ Create an instance of a class on the database.
 
 ## `save`
 
-**Syntax**: `(save [instance])`
+Syntax:
+  ~ `(save <instance>)`
 
 Save an instance's fields to the database.
 
@@ -111,7 +113,8 @@ Save an instance's fields to the database.
 
 ## `del`
 
-**Syntax**: `(del [instance])`
+Syntax:
+  ~ `(del <instance>)`
 
 Delete an instance from the database.
 
@@ -128,7 +131,8 @@ Delete an instance from the database.
 
 ### `filter`
 
-**Syntax**: `(filter [class] &rest [params])`
+Syntax:
+  ~ `(filter <class> <params>*)`
 
 Return a list of objects that satisfy the `params`.
 
@@ -141,7 +145,8 @@ Return a list of objects that satisfy the `params`.
 
 ### `single`
 
-**Syntax**: `(filter [class] &rest [params])`
+Syntax:
+  ~ `(filter <class> <params>*)`
 
 Return a single object that satisfies the parameters.
 
