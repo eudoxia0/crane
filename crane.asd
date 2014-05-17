@@ -1,5 +1,5 @@
 (defsystem crane
-  :version "0.2"
+  :version "0.3"
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
   :depends-on (:closer-mop
