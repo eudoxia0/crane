@@ -93,6 +93,7 @@ history for the table `table-name`."
                    (getf constraints :internal)
                    (getf constraints :external)))
          (conn (crane.connect:get-connection (crane.meta:db table-name))))
+    (format t "~&Query: ~A~&" query)
     (dbi:execute (dbi:prepare conn query))))
 
 @export

@@ -39,26 +39,35 @@ SxQL. Inflation happens here."
 (defun make-set (obj)
   (let ((slot-names (slot-tuple obj)))
     (iter (for slot in slot-names)
-      (appending (list (make-keyword slot)
-                       ;; TODO: If the slot is a foreign key, and is storing an
-                       ;; instance of an object, store that object's id
-                       ;; TODO: Inflate Lisp value to database
-                       (inflate (slot-value obj slot)))))))
+      (appending
+       (if (slot-boundp obj slot)
+           (list (make-keyword slot)
+                 ;; TODO: If the slot is a foreign key, and is storing an
+                 ;; instance of an object, store that object's id
+                 ;; TODO: Inflate Lisp value to database
+                 (inflate (slot-value obj slot))))))))
 
 @export
-(defmethod create% ((obj crane.table:<table>))
-  (query (sxql:insert-into
-             (table-name (class-of obj))
-           (apply #'sxql.clause:make-clause
-                  (cons :set=
-                        (make-set obj))))
-      (db (class-of obj)))
-  obj)
+(defmacro create% (obj)
+  `(let* ((obj ,obj)
+          (table-name (table-name (class-of obj)))
+          (results
+            (query (sxql:insert-into
+                       table-name
+                     (apply #'sxql.clause:make-clause
+                            (cons :set=
+                                  (make-set obj)))
+                     (sxql:make-op :returning :id))
+                   (db (class-of obj))))
+          (id (getf (first results) :|id|)))
+     ;; Query its ID
+     (setf (,(intern "ID" *package*) obj) id)
+     obj))
 
 @export
 (defmacro create (class-name &rest args)
   `(crane.interface::create% (make-instance ,class-name ,@args)))
-     
+
 @export
 (defmethod save ((obj crane.table:<table>))
   (let ((set (make-set obj)))

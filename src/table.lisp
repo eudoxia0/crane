@@ -75,7 +75,6 @@ symbols, table options are keywords."
                   :col-type integer
                   :col-primary-p t
                   :col-null-p nil
-                  :initform (1+ (crane.query:latest-id (find-class ',name)))
                   :accessor ,(intern "ID" *package*)
                   :col-autoincrement-p t
                   :initarg :id)))

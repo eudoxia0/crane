@@ -113,15 +113,22 @@ NULL constraint)."
 @export
 (defun define-column (table-name column database-name)
   (let* ((column-definition
-           (format nil "~A ~A ~A"
-                   (sqlize (getf column :name))
-                   (symbol-name (getf column :type))
-                   (if (eq (getf column :name) 'id)
-                       ;; Autoincrement
-                       (autoincrement-sql (crane.connect:database-type
-                                           (crane.connect:get-db
-                                            database-name)))
-                       "")))
+           (let ((column-type (symbol-name (getf column :type))))
+             (format nil "~A ~A"
+                     (sqlize (getf column :name))
+                     (if (equal (symbol-name (getf column :name)) "ID")
+                         ;; Autoincrement: Postgres requieres the 'SERIAL' keyword
+                         ;; only, without the database type, so we have to choose
+                         ;; here whether to display the include the type in the
+                         ;; CREATE TABLE statement on that basis
+                         (let* ((db-type (crane.connect:database-type
+                                          (crane.connect:get-db
+                                           database-name)))
+                                (sql (autoincrement-sql db-type)))
+                           (if (eq db-type :postgres)
+                               sql
+                               (format nil "~A ~A" column-type sql)))
+                         column-type))))
          (constraints
            (create-column-constraints table-name column))
          (internal-constraints

@@ -52,8 +52,8 @@
 (defun autoincrement-sql (database-type)
   (case database-type
     (:postgres "SERIAL")
-    (:mysql    "AUTO_INCREMENT")
-    (:sqlite3  "AUTOINCREMENT")))
+    (:mysql    "INTEGER AUTO_INCREMENT")
+    (:sqlite3  "INTEGER AUTOINCREMENT")))
 
 (defun validate-connection-spec (db database-type spec)
   (let* ((reference-spec (getf +db-params+ database-type))

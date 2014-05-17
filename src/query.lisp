@@ -19,15 +19,3 @@
             (result (apply #'dbi:execute
                            (cons prepared args))))
        (when result (dbi:fetch-all result)))))
-
-@export
-(defun latest-id (class)
-  (let ((result (getf (car (query
-                               (sxql:select ((:max :id))
-                                 (sxql:from (table-name class)))
-                               (db class)))
-                      :|max|)))
-    (if (or (null result)
-            (eql result :null))
-        0
-        result)))
