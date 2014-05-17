@@ -8,9 +8,7 @@
 (defpackage :crane.sql
   (:use :cl :anaphora :crane.utils :cl-annot.doc :iter)
   (:import-from :sxql
-                :*quote-character*)
-  (:import-from :crane.connect
-                :autoincrement-sql))
+                :*quote-character*))
 (in-package :crane.sql)
 (annot:enable-annot-syntax)
 
@@ -109,6 +107,12 @@ NULL constraint)."
                                               column-name
                                               key
                                               (getf column key)))))))
+
+(defun autoincrement-sql (database-type)
+  (case database-type
+    (:postgres "SERIAL")
+    (:mysql    "INTEGER AUTO_INCREMENT")
+    (:sqlite3  "INTEGER AUTOINCREMENT")))
 
 @export
 (defun define-column (table-name column database-name)

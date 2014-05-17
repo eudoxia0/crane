@@ -1,13 +1,9 @@
 (defpackage :crane.connect
-  (:use :cl :anaphora :iter :cl-annot.doc)
+  (:use :cl :anaphora :iter :annot.doc :annot.class)
   (:import-from :alexandria
                 :remove-from-plist)
   (:import-from :sxql
-                :*quote-character*)
-  (:export :<database>
-           :database-name
-           :database-type
-           :database-connection))
+                :*quote-character*))
 (in-package :crane.connect)
 (annot:enable-annot-syntax)
 
@@ -49,12 +45,6 @@
             (:host :host "localhost")
             (:port :port 3306))))
 
-(defun autoincrement-sql (database-type)
-  (case database-type
-    (:postgres "SERIAL")
-    (:mysql    "INTEGER AUTO_INCREMENT")
-    (:sqlite3  "INTEGER AUTOINCREMENT")))
-
 (defun validate-connection-spec (db database-type spec)
   (let* ((reference-spec (getf +db-params+ database-type))
          (normalized-spec
@@ -82,9 +72,11 @@ the connection spec of the database '~A'" key db))))
 spec for the database '~A' have not been provided: ~A" db it))
          final-spec)))
 
-@doc "A map from database names to connections."
+@doc "A map from database names to <database> objects."
 (defparameter *db* (make-hash-table))
 
+@export
+@export-accessors
 (defclass <database> ()
   ((type :reader database-type :initarg :type)
    (name :reader database-name :initarg :name)
