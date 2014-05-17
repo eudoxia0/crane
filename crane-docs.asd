@@ -13,11 +13,9 @@
                   :type "md"
                   :input-type "markdown"
                   :output "manual"
-                  :output-type "pdf"
                   :output-extension "pdf")
                  (:pandoc "internals"
                   :type "md"
                   :input-type "markdown"
                   :output "internals"
-                  :output-type "pdf"
                   :output-extension "pdf")))))
