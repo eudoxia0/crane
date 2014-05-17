@@ -14,10 +14,10 @@
   `(multiple-value-bind (sql args) (sxql:yield ,body)
      (when (crane.config:debugp)
        (format t "~&Query: ~A~&" sql))
-     (let ((prepared (dbi:prepare (crane.connect:get-connection ,database-name)
-                                  sql))
-           (result (apply #'dbi:execute
-                          (cons prepared args))))
+     (let* ((prepared (dbi:prepare (crane.connect:get-connection ,database-name)
+                                   sql))
+            (result (apply #'dbi:execute
+                           (cons prepared args))))
        (when result (dbi:fetch-all result)))))
 
 @export

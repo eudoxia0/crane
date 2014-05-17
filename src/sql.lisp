@@ -4,6 +4,7 @@
 ;;;; now, CREATE TABLE and MIGRATE TABLE statements will be produced as raw
 ;;;; strings. How horrifying.
 
+(in-package :cl-user)
 (defpackage :crane.sql
   (:use :cl :anaphora :crane.utils :cl-annot.doc :iter)
   (:import-from :sxql
