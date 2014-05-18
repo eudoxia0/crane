@@ -4,18 +4,33 @@
                 :table-name
                 :db)
   (:import-from :crane.config
-                :debugp))
+                :debugp)
+  (:export :meta-query))
 (in-package :crane.query)
 (annot:enable-annot-syntax)
 
-@doc "A combination of EXECUTE and SxQL's YIELD."
-@export
-(defmacro query (body &optional database-name)
-  `(multiple-value-bind (sql args) (sxql:yield ,body)
+(defmacro meta-query (query database-name body)
+  `(multiple-value-bind (sql args) (sxql:yield ,query)
      (when (crane.config:debugp)
        (format t "~&Query: ~A~&" sql))
      (let* ((prepared (dbi:prepare (crane.connect:get-connection ,database-name)
                                    sql))
             (result (apply #'dbi:execute
                            (cons prepared args))))
-       (when result (dbi:fetch-all result)))))
+       (when result ,body))))
+
+
+@doc "Execute an SxQL query on the database `database-name`."
+@export
+(defmacro query (query &optional database-name)
+  `(crane.query:meta-query ,query ,database-name (dbi:fetch-all result)))
+
+@doc "Execute code for each result in the query, without aggregating them all
+into a list."
+@export
+(defmacro do-query ((result-name query &optional database-name)
+                    &rest body)
+  `(crane.query:meta-query ,query ,database-name
+                           (loop for ,result-name = (dbi:fetch result)
+                                 while ,result-name do
+                                 ,@body)))

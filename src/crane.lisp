@@ -7,7 +7,8 @@
                 :connect
                 :get-connection)
   (:import-from :crane.query
-                :query)
+                :query
+                :do-query)
   (:import-from :crane.migration
                 :build
                 :delete-migrations)
@@ -40,9 +41,8 @@
    :connect
    :get-connection
    ;; Low-level interface
-   :prepare
-   :execute
    :query
+   :do-query
    ;; Migrations
    :build
    :delete-migrations
