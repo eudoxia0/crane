@@ -1,5 +1,14 @@
 (in-package :crane-test)
 
+(def-suite preliminary
+  :description "Start with a clean slate")
+(in-suite preliminary)
+
+(test delete-migrations
+  (finishes
+    (delete-migrations t)))
+
+
 (def-suite table-slots
   :description "Test that table metaclass slots work.")
 (in-suite table-slots)
@@ -40,5 +49,6 @@
     (closer-mop:class-slots (find-class 'table-d)))
   (finishes (crane.meta:digest (find-class 'table-d))))
 
+(run! 'preliminary)
 (run! 'table-slots)
 (run! 'column-slots)
