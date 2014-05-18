@@ -121,7 +121,32 @@ make-instance. Deflation happens here."
                                                              (make-keyword slot-name)
                                                              (getf params slot-name)))
                                                    equal-params)
-                                         ,@fn-params)))))))))
+                                         ,@fn-params)))))
+                 (crane.meta:db ,class)))))
+
+@export
+(defmacro do-filter ((result-name class &rest params) &rest body)
+  (let* ((equal-params (remove-if-not #'keywordp params))
+         (fn-params
+           (remove-if #'keywordp
+                      (iter (for item in params)
+                        (for prev previous item back 1 initially nil)
+                        (unless (keywordp prev) (collect item))))))
+    `(crane.query:do-query
+         (,result-name
+          ,(append
+            `(sxql:select :*
+               (sxql:from (table-name (find-class ,class))))
+            (when params
+              `((sxql:where (:and ,@(mapcar #'(lambda (slot-name)
+                                                (list :=
+                                                      (make-keyword slot-name)
+                                                      (getf params slot-name)))
+                                            equal-params)
+                                  ,@fn-params)))))
+          (crane.meta:db ,class))
+         (let ((,result-name (tuple->object ,class ,result-name)))
+           ,@body))))
 
 @export
 (defmacro exists (class &rest params)
