@@ -139,10 +139,6 @@ history for the table `table-name`."
                        (crane.sql:drop-column table-name
                                               column-name))
                    (getf diff :deletions))))
-    (when (debugp)
-      (pprint table-class)
-      (pprint (reduce #'(lambda (a b) (concatenate 'string a ";" b))
-                      (append alterations additions deletions))))
     (reduce #'(lambda (a b) (concatenate 'string a ";" b))
             (append alterations additions deletions))))
 
@@ -157,7 +153,8 @@ history for the table `table-name`."
                   (getf diff :deletions)
                   (getf diff :changes))
               (progn
-                (pprint diff)
+                (when (debugp)
+                  (format t "~&Diff for '~A': ~A~&" table-name diff))
                 (migrate (find-class table-name) diff)
                 (insert-migration table-name
                                   (digest table-name)))))
