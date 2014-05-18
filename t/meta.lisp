@@ -1,24 +1,5 @@
 (in-package :crane-test)
 
-(def-suite preliminary
-  :description "Start with a clean slate")
-(in-suite preliminary)
-
-(test drop-tables
-  (finishes
-    (format t "Dropping tables...~&")
-    (handler-case
-        (progn
-          (delete-migrations t)
-          
-          (dolist (table '(table-a table-b table-c table-d
-                           a b c child-table parent-table))
-            (handler-case
-                ;; Make sure no single failed delete takes down the whole thing
-                (crane:drop-table table)
-              (t () (format t "~&Failed to drop table '~A'.~&" table)))))
-      (t () t))))
-
 (def-suite table-slots
   :description "Test that table metaclass slots work.")
 (in-suite table-slots)
@@ -59,6 +40,5 @@
     (closer-mop:class-slots (find-class 'table-d)))
   (finishes (crane.meta:digest (find-class 'table-d))))
 
-(run! 'preliminary)
 (run! 'table-slots)
 (run! 'column-slots)
