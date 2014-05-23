@@ -80,10 +80,6 @@ The manual is provided in Markdown format in `docs/manual.md`. A document on the
 internals is also provided. The `crane-docs` system compiles those to PDF, and
 `crane-web` compiles them to HTML in addition to generating the site.
 
-# Notes
-
-Testing requires Postgres and running `t/setup.sh`.
-
 # License
 
 Copyright (c) 2013 Fernando Borretti (eudoxiahp@gmail.com)
