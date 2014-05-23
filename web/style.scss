@@ -1,4 +1,96 @@
 body {
   margin: 0 auto;
   padding: 0 20px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+header {
+    font-size: 23px;
+    margin: 35px auto;
+    width: 70%;
+
+    #name {
+        font-weight: 400;
+    }
+
+    #subtitle {
+        font-weight: 300;
+    }
+}
+
+@mixin border-top-radius($radius) {
+  -webkit-border-top-left-radius: $radius;
+  -webkit-border-top-right-radius: $radius;
+  -moz-border-top-left-radius: $radius;
+  -moz-border-top-right-radius: $radius;
+  -ms-border-top-left-radius: $radius;
+  -ms-border-top-right-radius: $radius;
+  border-top-left-radius: $radius;
+  border-top-right-radius: $radius;
+}
+
+@mixin border-radius($radius) {
+    -moz-border-radius: $radius;
+    -webkit-border-radius: $radius;
+    -ms-border-radius: $radius;
+    border-radius: $radius;
+}
+
+#editor {
+    font-size: 13px;
+    width: 40%;
+    margin-top: 30px;
+
+    $bar-height: 20px;
+    $circle-diam: 10px;
+
+    #bar {
+        height: $bar-height;
+        background: #F5F5F5;
+        position: relative;
+
+        @include border-top-radius(13px);
+
+        .circle {
+	    @include border-radius(50%);
+	    width: $circle-diam;
+	    height: $circle-diam;
+            position: absolute;
+            top: 5px;
+        }
+
+        ul {
+            padding: 0;
+        }
+        
+        li {
+            list-style: none;
+        }
+    }
+
+    #text {
+        border: 1px solid black;
+
+        pre {
+            padding: 10px;
+        }
+
+        code {
+        }
+    }
+}
+
+#close {
+    background: red;
+    left: 10px;
+}
+
+#minimize {
+    background: yellow;
+    left: 25px;
+}
+
+#maximize {
+    background: green;
+    left: 40px;
 }

@@ -6,9 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{$title}</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="http//cdn.jsdelivr.net/typeplate/1.1.2/typeplate.min.css">
     <link rel="stylesheet" href="web/style.css">
   </head>
+{/template}
+
+{template code}
+(deftable user ()<br>
+  (name :type string :uniquep t)<br>
+  (age  :type integer :nullp nil))<br>
 {/template}
 
 {template index}
@@ -17,6 +24,26 @@
       {param title: 'Crane: An ORM for Common Lisp' /}
     {/call}
     <body>
+      <header>
+        <span id="name">Crane</span>
+        <span id="subtitle">An ORM for Common Lisp</span>
+        <div id="editor">
+          <div id="bar">
+            <ul>
+              <li><div id="close" class="circle"></div></li>
+              <li><div id="minimize" class="circle"></div></li>
+              <li><div id="maximize" class="circle"></div></li>
+            </ul>
+          </div>
+          <div id="text">
+            <pre>
+              <code class="lisp">
+                {call code /}
+              </code>
+            </pre>
+          </div>
+        </div>
+      </header>
     </body>
   </html>
 {/template}
