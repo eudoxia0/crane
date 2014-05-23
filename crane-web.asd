@@ -2,9 +2,9 @@
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
   :description "Generate a static site for the project, and HTML docs."
-  :defsystem-depends-on (:asdf-linguist)
-  :depends-on (:crane-docs
-               :cl-markup)
+  :defsystem-depends-on (:asdf-linguist
+                         :closure-template)
+  :depends-on (:crane-docs)
   :components ((:module "docs"
                 :serial t
                 :components
@@ -25,4 +25,5 @@
                 :serial t
                 :components
                 ((:sass "style")
+                 (:closure-template "templates")
                  (:file "gen")))))
