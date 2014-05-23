@@ -1,6 +1,22 @@
 {namespace view}
 
 {template head}
-  <link rel="stylesheet" href="http//cdn.jsdelivr.net/typeplate/1.1.2/typeplate.min.css">
-  <link rel="stylesheet" href="web/style.css">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{$title}</title>
+    <link rel="stylesheet" href="http//cdn.jsdelivr.net/typeplate/1.1.2/typeplate.min.css">
+    <link rel="stylesheet" href="web/style.css">
+  </head>
+{/template}
+
+{template index}
+  <html lang="en">
+    {call head}
+      {param title: 'Crane: An ORM for Common Lisp' /}
+    {/call}
+    <body>
+    </body>
+  </html>
 {/template}

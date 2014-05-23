@@ -7,8 +7,10 @@
    #p"index.html"
    (asdf:component-pathname (asdf:find-system :crane))))
 
-(defmacro save (string)
-  `(with-open-file (stream +index-path+
+(defmacro save (string path)
+  `(with-open-file (stream ,path
                            :direction :output
                            :if-exists :supersede)
      (write-string ,string stream)))
+
+(save (view:index) +index-path+)
