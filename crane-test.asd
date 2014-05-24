@@ -8,9 +8,7 @@
                 :components
                 ((:file "crane")
                  (:file "config")
-                 (:module "utils"
-                  :components
-                  ((:file "utils")))
+                 (:file "utils")
                  (:file "connect")
                  (:file "meta")
                  (:file "migration")
