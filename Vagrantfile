@@ -3,6 +3,8 @@
 ROOT = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_"
 SUFFIX = "_chef-provisionerless.box"
 
+PROVISION_PATH = "t/provision/"
+
 BOXES = {
   "debian" => "7.4",
   "centos" => "6.5",
@@ -12,6 +14,10 @@ BOXES = {
 
 def url(box_name)
   return ROOT + box_name + SUFFIX
+end
+
+def provision(box_name)
+  return PROVISION_PATH + box_name + ".sh"
 end
 
 Vagrant.configure("2") do |config|
@@ -25,6 +31,7 @@ Vagrant.configure("2") do |config|
       fullname = name + '-' + version
       m.vm.box = fullname
       m.vm.box_url = url(fullname)
+      config.vm.provision "shell", path: provision(name)
     end
   end
 
