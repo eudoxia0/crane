@@ -13,9 +13,40 @@
 {/template}
 
 {template code}
+  <pre>
+    <code class="lisp">
 (deftable user ()<br>
   (name :type string :uniquep t)<br>
   (age  :type integer :nullp nil))<br>
+    </code>
+  </pre>
+{/template}
+
+{template snippet}
+  <div id="editor">
+    <div id="bar">
+      <ul>
+        <li><div id="close" class="circle"></div></li>
+        <li><div id="minimize" class="circle"></div></li>
+        <li><div id="maximize" class="circle"></div></li>
+      </ul>
+    </div>
+    <div id="text">
+      {call code /}
+    </div>
+  </div>
+{/template}
+
+{template features}
+  <section id="features">
+
+  </section>
+{/template}
+
+{template footer}
+  <footer>
+    © 2014 <a href="http://github.com/eudoxia0">Fernando Borretti</a>
+  </footer>
 {/template}
 
 {template index}
@@ -27,23 +58,10 @@
       <header>
         <span id="name">Crane</span>
         <span id="subtitle">An ORM for Common Lisp</span>
-        <div id="editor">
-          <div id="bar">
-            <ul>
-              <li><div id="close" class="circle"></div></li>
-              <li><div id="minimize" class="circle"></div></li>
-              <li><div id="maximize" class="circle"></div></li>
-            </ul>
-          </div>
-          <div id="text">
-            <pre>
-              <code class="lisp">
-                {call code /}
-              </code>
-            </pre>
-          </div>
-        </div>
+        <!-- {call snippet /} -->
       </header>
+      {call features /}
+      {call footer /}
     </body>
   </html>
 {/template}

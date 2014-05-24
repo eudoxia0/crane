@@ -1,11 +1,10 @@
 body {
-  margin: 0 auto;
-  padding: 0 20px;
-  font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
 }
 
 header {
-    font-size: 23px;
+    font-size: 26px;
     margin: 35px auto;
     width: 70%;
 
@@ -72,7 +71,6 @@ header {
         border: 1px solid black;
 
         pre {
-            padding: 10px;
         }
 
         code {
@@ -93,4 +91,14 @@ header {
 #maximize {
     background: green;
     left: 40px;
+}
+
+footer {
+    text-align: center;
+    font-size: 14px;
+    width: 100%;
+    margin-top: 30px;
+    height: 50px;
+    position: absolute;
+    bottom: 0;
 }
