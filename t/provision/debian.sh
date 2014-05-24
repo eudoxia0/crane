@@ -2,7 +2,7 @@
 
 ### Download the sources
 
-sudo apt-get install -y git
+sudo apt-get install -y git curl
 
 if [[ ! -d crane ]]; then
     git clone https://github.com/eudoxia0/crane.git
@@ -21,7 +21,7 @@ sudo apt-get install -y sbcl clisp
 sudo apt-get install -y postgresql
 
 # MySQL
-sudo apt-get install -y mysql-server mysql-client
+sudo apt-get install -y mysql-server mysql-server-5.5 mysql-client
 
 # SQLite
 sudo apt-get install -y sqlite3
