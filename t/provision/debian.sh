@@ -28,3 +28,6 @@ sudo apt-get install -y sqlite3
 
 ### Install Quicklisp
 bash quicklisp.sh
+
+### Write configuration files
+bash files.sh
