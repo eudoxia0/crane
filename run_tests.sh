@@ -2,4 +2,4 @@
 
 vagrant up ubuntu
 vagrant provision ubuntu
-#vagrant halt ubuntu
+vagrant halt ubuntu

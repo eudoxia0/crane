@@ -24,6 +24,8 @@ Vagrant.configure("2") do |config|
   config.vm.network :private_network, ip: "192.168.58.100"
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
+  config.vm.boot_timeout = 60
+
   # Machines
 
   BOXES.each_pair do |name, version|
@@ -31,7 +33,10 @@ Vagrant.configure("2") do |config|
       fullname = name + '-' + version
       m.vm.box = fullname
       m.vm.box_url = url(fullname)
-      config.vm.provision "shell", path: provision(name)
+
+      config.vm.synced_folder ".", "/home/vagrant/crane", type: "nfs"
+
+      config.vm.provision "shell", path: provision(name), privileged: false
     end
   end
 
