@@ -28,4 +28,11 @@ read -d '' LISP_INIT <<"EOF"
     (load quicklisp-init)))
 EOF
 
+read -d '' SOURCE_REGISTRY <<"EOF"
+(:source-registry
+    (:tree (:home "code"))
+    :inherit-configuration)
+EOF
+
 echo $LISP_INIT > ~/.sbclrc
+echo $SOURCE_REGISTRY > ~/.config/common-lisp/source-registry.conf
