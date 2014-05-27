@@ -1,19 +1,11 @@
 #!/bin/bash
 
-### Download the sources
-
-sudo apt-get install -y git curl
-
-if [[ ! -d crane ]]; then
-    git clone https://github.com/eudoxia0/crane.git
-fi
-
 cd crane/t/provision
 
 ### Install dependencies
 
 ## Lisp
-sudo apt-get install -y sbcl clisp
+sudo apt-get install -y sbcl clisp curl
 
 ## Databases
 
@@ -26,8 +18,5 @@ sudo apt-get install -y mysql-server mysql-server-5.5 mysql-client
 # SQLite
 sudo apt-get install -y sqlite3
 
-### Install Quicklisp
-bash quicklisp.sh
-
-### Write configuration files
-bash files.sh
+### Common setup
+bash common.sh
