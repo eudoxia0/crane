@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cd crane/t/provision
-
 ### Install dependencies
 
 ## Lisp
@@ -19,4 +17,4 @@ sudo apt-get install -y mysql-server mysql-server-5.5 mysql-client
 sudo apt-get install -y sqlite3
 
 ### Common setup
-bash common.sh
+bash crane/t/provision/common.sh

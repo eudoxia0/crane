@@ -15,7 +15,6 @@ if [[ ! -f ~/quicklisp/setup.lisp ]]; then
 fi
 
 ### Add configuration files
-
 echo "Copying configuration files"
 
 read -d '' LISP_INIT <<"EOF"
@@ -38,6 +37,7 @@ echo $LISP_INIT > ~/.sbclrc
 echo $SOURCE_REGISTRY > ~/.config/common-lisp/source-registry.conf
 
 ### Set up databases
+echo "Setting up databases"
 
 ## Postgres
 
@@ -50,8 +50,8 @@ sudo -u postgres psql -c \
 ## MySQL
 
 ### Run the tests
-
-###...
+echo "Running tests"
+sbcl --eval '(ql:quickload :crane-test)' --quit
 
 ### Tear down
 sudo -u postgres dropdb crane_test_db
