@@ -15,7 +15,7 @@
   (:documentation "Turn a CLOS object into a string for insertion in the database."))
 
 (defmacro defdeflate ((obj-name obj-type) &rest body)
-  `(defmethod crane.inflate-deflate:inflate ((,obj-name ,obj-type))
+  `(defmethod crane.inflate-deflate:deflate ((,obj-name ,obj-type))
      ,@body))
 
 (defdeflate (str string) str)
