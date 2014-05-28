@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :private_network, ip: "192.168.58.100"
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
-  config.vm.boot_timeout = 60
+  config.vm.boot_timeout = 90
 
   # Machines
 
