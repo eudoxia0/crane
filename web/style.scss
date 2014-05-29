@@ -5,15 +5,18 @@ body {
 
 header {
     font-size: 26px;
-    margin: 35px auto;
-    width: 70%;
+    margin: 35px 0;
 
-    #name {
-        font-weight: 400;
-    }
+    #names {
+        text-align: center;
 
-    #subtitle {
-        font-weight: 300;
+        #title {
+            font-weight: 400;
+        }
+        
+        #subtitle {
+            font-weight: 300;
+        }
     }
 }
 
@@ -43,13 +46,14 @@ header {
 }
 
 #editor {
-    font-size: 13px;
-    width: 40%;
-    margin-top: 30px;
-
     $bar-height: 20px;
+    $width: 380px;
     $circle-diam: 10px;
     $titlebar-color: #F5F5F5;
+
+    font-size: 13px;
+    width: $width;
+    margin: 0 auto;
 
     #bar {
         height: $bar-height;
@@ -65,10 +69,6 @@ header {
             position: absolute;
             top: 5px;
         }
-
-        ul {
-            padding: 0;
-        }
         
         li {
             list-style: none;
@@ -77,11 +77,9 @@ header {
 
     #text {
         border: 1px solid black;
-
         pre {
-        }
-
-        code {
+            margin: 5px;
+            padding: 5px;
         }
     }
 }
@@ -120,6 +118,5 @@ footer {
     width: 100%;
     margin-top: 30px;
     height: 50px;
-    position: absolute;
     bottom: 0;
 }

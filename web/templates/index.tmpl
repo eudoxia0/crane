@@ -3,8 +3,10 @@
   <% @call head %>
   <body>
     <header>
-      <span id="name">Crane</span>
-      <span id="subtitle">An ORM for Common Lisp</span>
+      <div id="names">
+        <span id="title">Crane</span>
+        <span id="subtitle">An ORM for Common Lisp</span>
+      </div>
       <div id="editor">
         <div id="bar">
           <ul>
@@ -14,13 +16,9 @@
           </ul>
         </div>
         <div id="text">
-          <pre>
-            <code class="lisp">
-(deftable user ()
+          <pre><code class="lisp">(deftable user ()
   (name :type string :uniquep t)
-  (age  :type integer :nullp nil))
-            </code>
-          </pre>
+  (age  :type integer :nullp nil))</code></pre>
         </div>
       </div>
     </header>
