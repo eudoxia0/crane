@@ -18,6 +18,12 @@
     border-radius: $radius;
 }
 
+@mixin column($width, $padding) {
+    float: left;
+    width: $width;
+    padding: 0 $padding;
+}
+
 /* Styles */
 
 body {
@@ -108,18 +114,24 @@ section {
     width: 80%;
     margin: 0 auto;
 
-    .feature-column {
-        float: left;
-        width: 40%;
-        padding: 0 5%;
+    .section-column {
+        @include column(40%, 5%);
     }
     
-    div {
-        span {
-            font-size: 28px;
+    p {
+        text-align: justify;
+    }
+
+    .example {
+        overflow: hidden;
+        width: 100%;
+        margin: 0 auto;
+
+        .description {
+            @include column(50%, 0%);
         }
-        p {
-            text-align: justify;
+        .code {
+            @include column(40%, 5%);
         }
     }
 }
