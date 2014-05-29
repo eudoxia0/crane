@@ -101,6 +101,19 @@ header {
     left: 40px;
 }
 
+#features {
+    div {
+        padding-left: 45px;
+        span {
+            font-size: 28px;
+        }
+        p {
+            width: 50%;
+            text-align: justify;
+        }
+    }
+}
+
 footer {
     text-align: center;
     font-size: 14px;
