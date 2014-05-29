@@ -50,6 +50,7 @@ header {
     $width: 420px;
     $circle-diam: 10px;
     $titlebar-color: #F5F5F5;
+    $background-color: #fff;
 
     font-size: 13px;
     width: $width;
@@ -77,9 +78,13 @@ header {
 
     #text {
         border: 1px solid black;
+        background-color: $background-color;
+
         pre {
             margin: 5px;
             padding: 5px;
+            border: 0px;
+            background-color: $background-color;
         }
     }
 }
@@ -99,7 +104,7 @@ header {
     left: 40px;
 }
 
-#features {
+section {
     div {
         padding-left: 45px;
         span {
