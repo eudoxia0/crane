@@ -38,13 +38,13 @@
                        #p"web/templates/head.tmpl"
                        +crane-path+))
 (register-emb "snippet" (merge-pathnames
-                       #p"web/templates/snippet.lisp"
+                       #p"web/examples/snippet.lisp"
                        +crane-path+))
 (register-emb "config" (merge-pathnames
-                       #p"web/templates/config.lisp"
+                       #p"web/examples/config.lisp"
                        +crane-path+))
 (register-emb "table-def" (merge-pathnames
-                       #p"web/templates/table-def.lisp"
+                       #p"web/examples/table-def.lisp"
                        +crane-path+))
 (register-emb "features" (merge-pathnames
                           #p"web/templates/features.tmpl"
