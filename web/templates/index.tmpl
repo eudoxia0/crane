@@ -23,7 +23,7 @@
 
 (loop for user in (filter 'user (:< :age 25)) do
   (format t "Company: ~A~&"
-          (name (deref (company user)))))</code></pre>
+          (name (deref user 'company))))</code></pre>
         </div>
       </div>
     </header>
