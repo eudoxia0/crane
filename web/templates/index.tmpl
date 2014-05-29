@@ -16,14 +16,7 @@
           </ul>
         </div>
         <div id="text">
-          <pre><code class="lisp">(deftable user ()
-  (name :type string :uniquep t)
-  (age  :type integer :indexp t)
-  (company :foreign-key 'company :nullp nil))
-
-(loop for user in (filter 'user (:< :age 25)) do
-  (format t "Company: ~A~&"
-          (name (deref user 'company))))</code></pre>
+          <pre><code class="lisp"><% @call snippet %></code></pre>
         </div>
       </div>
     </header>

@@ -37,6 +37,9 @@
 (register-emb "head" (merge-pathnames
                        #p"web/templates/head.tmpl"
                        +crane-path+))
+(register-emb "snippet" (merge-pathnames
+                       #p"web/templates/snippet.lisp"
+                       +crane-path+))
 (register-emb "features" (merge-pathnames
                           #p"web/templates/features.tmpl"
                           +crane-path+))
