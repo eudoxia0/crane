@@ -9,7 +9,6 @@ BOXES = {
   "debian" => "7.4",
   "centos" => "6.5",
   "ubuntu" => "14.04",
-  "freebsd" => "10.0"
 }
 
 def url(box_name)
@@ -24,8 +23,6 @@ Vagrant.configure("2") do |config|
   config.vm.network :private_network, ip: "192.168.58.100"
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
-  config.vm.boot_timeout = 90
-
   # Machines
 
   BOXES.each_pair do |name, version|
@@ -34,7 +31,7 @@ Vagrant.configure("2") do |config|
       m.vm.box = fullname
       m.vm.box_url = url(fullname)
 
-      config.vm.synced_folder ".", "/home/vagrant/crane", type: "nfs"
+      m.vm.synced_folder ".", "/home/vagrant/crane/"
 
       config.vm.provision "shell", path: provision(name), privileged: false
     end
