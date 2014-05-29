@@ -4,7 +4,9 @@
   :description "Generate a static site for the project, and HTML docs."
   :defsystem-depends-on (:asdf-linguist
                          :closure-template)
-  :depends-on (:crane-docs)
+  :depends-on (:crane-docs
+               :trivial-download
+               :zip)
   :components ((:module "docs"
                 :serial t
                 :components
