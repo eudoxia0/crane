@@ -1,24 +1,4 @@
-body {
-    margin: 0;
-    font-family: 'Open Sans', sans-serif;
-}
-
-header {
-    font-size: 26px;
-    margin: 60px 0;
-
-    #names {
-        text-align: center;
-
-        #title {
-            font-weight: 400;
-        }
-        
-        #subtitle {
-            font-weight: 300;
-        }
-    }
-}
+/* Mixins */
 
 @mixin border-top-radius($radius) {
   -webkit-border-top-left-radius: $radius;
@@ -38,11 +18,30 @@ header {
     border-radius: $radius;
 }
 
-@mixin uniform-shadow($offset, $color) {
-    -moz-box-shadow: $offset $offset $offset $offset $color;
-    -webkit-box-shadow: $offset $offset $offset $offset $color;
-    -ms-border-radius: $offset $offset $offset $offset $color;
-    box-shadow: $offset $offset $offset $offset $color;
+/* Styles */
+
+body {
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1 { margin-left: 40px; }
+
+header {
+    font-size: 26px;
+    margin: 60px 0;
+
+    #names {
+        text-align: center;
+
+        #title {
+            font-weight: 400;
+        }
+        
+        #subtitle {
+            font-weight: 300;
+        }
+    }
 }
 
 #editor {
@@ -105,13 +104,21 @@ header {
 }
 
 section {
+    overflow: hidden;
+    width: 80%;
+    margin: 0 auto;
+
+    .feature-column {
+        float: left;
+        width: 40%;
+        padding: 0 5%;
+    }
+    
     div {
-        padding-left: 45px;
         span {
             font-size: 28px;
         }
         p {
-            width: 50%;
             text-align: justify;
         }
     }
