@@ -35,6 +35,13 @@ header {
     border-radius: $radius;
 }
 
+@mixin uniform-shadow($offset, $color) {
+    -moz-box-shadow: $offset $offset $offset $offset $color;
+    -webkit-box-shadow: $offset $offset $offset $offset $color;
+    -ms-border-radius: $offset $offset $offset $offset $color;
+    box-shadow: $offset $offset $offset $offset $color;
+}
+
 #editor {
     font-size: 13px;
     width: 40%;
@@ -42,10 +49,11 @@ header {
 
     $bar-height: 20px;
     $circle-diam: 10px;
+    $titlebar-color: #F5F5F5;
 
     #bar {
         height: $bar-height;
-        background: #F5F5F5;
+        background: $titlebar-color;
         position: relative;
 
         @include border-top-radius(13px);
@@ -79,17 +87,17 @@ header {
 }
 
 #close {
-    background: red;
+    background: #FF504D;
     left: 10px;
 }
 
 #minimize {
-    background: yellow;
+    background: #E8C460;
     left: 25px;
 }
 
 #maximize {
-    background: green;
+    background: #70FF6E;
     left: 40px;
 }
 
