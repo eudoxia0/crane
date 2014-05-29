@@ -26,5 +26,10 @@
                (:module "web"
                 :serial t
                 :components
-                ((:sass "style")
+                ((:module "templates"
+                  :components
+                  ((:static-file "head.tmpl")
+                   (:static-file "features.tmpl")
+                   (:static-file "index.tmpl")))
+                 (:sass "style")
                  (:file "gen")))))
