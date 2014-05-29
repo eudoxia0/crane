@@ -9,8 +9,6 @@ the Django ORM and the flexible, non-opinionated philosophy of SQLAlchemy.
 
 ## Structure
 
-![Structure](img/dia.png)
-
 Crane mainly uses two libraries:
 
 [sxql](https://github.com/fukamachi/sxql)

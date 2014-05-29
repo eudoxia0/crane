@@ -6,10 +6,7 @@
   :components ((:module "docs"
                 :serial t
                 :components
-                ((:module "img"
-                  :components
-                  ((:ditaa "dia")))
-                 (:pandoc "manual"
+                ((:pandoc "manual"
                   :type "md"
                   :input-type "markdown"
                   :output "manual"
