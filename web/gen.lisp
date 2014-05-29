@@ -1,7 +1,10 @@
 (defpackage :crane.web
   (:use :cl)
   (:import-from :trivial-download
-                :download))
+                :download)
+  (:import-from :cl-emb
+                :register-emb
+                :execute-emb))
 (in-package :crane.web)
 
 (defparameter +crane-path+
@@ -31,4 +34,16 @@
                            :if-exists :supersede)
      (write-string ,string stream)))
 
-(save (view:index) +index-path+)
+(register-emb "head" (merge-pathnames
+                       #p"web/templates/head.tmpl"
+                       +crane-path+))
+(register-emb "features" (merge-pathnames
+                          #p"web/templates/features.tmpl"
+                          +crane-path+))
+(register-emb "index" (merge-pathnames
+                       #p"web/templates/index.tmpl"
+                       +crane-path+))
+
+
+(save (execute-emb "index" :env '(:title "Crane: An ORM for Common Lisp"))
+      +index-path+)
