@@ -5,7 +5,7 @@ body {
 
 header {
     font-size: 26px;
-    margin: 35px 0;
+    margin: 60px 0;
 
     #names {
         text-align: center;
@@ -47,13 +47,13 @@ header {
 
 #editor {
     $bar-height: 20px;
-    $width: 380px;
+    $width: 420px;
     $circle-diam: 10px;
     $titlebar-color: #F5F5F5;
 
     font-size: 13px;
     width: $width;
-    margin: 0 auto;
+    margin: 40px auto;
 
     #bar {
         height: $bar-height;
