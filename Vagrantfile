@@ -33,7 +33,7 @@ Vagrant.configure("2") do |config|
 
       m.vm.synced_folder ".", "/home/vagrant/crane/"
 
-      config.vm.provision "shell", path: provision(name), privileged: false
+      config.vm.provision "shell", path: provision(name)
     end
   end
 
