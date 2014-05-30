@@ -77,10 +77,17 @@
                       ""
                       "objects")
         (make-example "High-Level Interface"
-                      ""
+                      "Simple things should be simple, and the interface is no
+exception. The majority of database queries in your application will probably be
+simple <code>filter</code> filter calls."
                       "high-level")
         (make-example "<a href='https://github.com/fukamachi/sxql'>SxQL</a>: Functional, Composable SQL"
-                      ""
+                      "Most ORMs provide a single interface that looks simple
+enough in the examples &mdash; but quickly becomes painful to use in real-world
+cases. The Django ORM tries to get around this by adding various extensions to
+its basic <code>filter</code> method that allow it to express more complicated
+queries, but this rapidly becomes cumbersome. Crane's philosophy is: <strong>If
+it's more complicated than a <code>filter</code>, use the SQL DSL.</strong>"
                       "sxql")
         (make-example "Transactions"
                       ""
