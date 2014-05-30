@@ -48,4 +48,6 @@ list of ([property] [old value] [new value])"
 
 @doc "Find slot by keyword name"
 @export
-(defun get-slot (obj name))
+(defun get-slot (obj name)
+  (find-slot obj (intern (symbol-name name)
+                         (symbol-package (class-of obj)))))
