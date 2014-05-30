@@ -34,16 +34,6 @@
                            :if-exists :supersede)
      (write-string ,string stream)))
 
-;;; Code snippets
-(defun get-example (name)
-  (uiop:read-file-string
-   (merge-pathnames
-    (parse-namestring
-     (format nil
-             "web/examples/~A.lisp"
-             name))
-    +crane-path+)))
-
 ;;; Templates
 (register-emb "head" (merge-pathnames
                        #p"web/templates/head.tmpl"
@@ -55,20 +45,44 @@
                        #p"web/templates/index.tmpl"
                        +crane-path+))
 
+;;; Code snippets
+(defun get-example (name)
+  (uiop:read-file-string
+   (merge-pathnames
+    (parse-namestring
+     (format nil
+             "web/examples/~A.lisp"
+             name))
+    +crane-path+)))
+
+(defun make-example (name desc usage-name)
+  (list :id usage-name
+        :name name
+        :desc desc
+        :code (get-example usage-name)))
+
 (defparameter +usage+
-  (list (list :name "Configuring and Connecting"
-              :code (get-example "config"))
-        (list :name "Defining Tables"
-              :code (get-example "table-def"))
-        (list :name "Creating, Saving, and Deleting Objects"
-              :code (get-example "objects"))
-        (list :name "High-Level Interface"
-              :code (get-example "high-level"))
-        (list :name "SxQL: Functional, Composable SQL")
-        (list :name "Transactions"
-              :code (get-example "transactions"))
-        (list :name "Fixtures"
-              :code (get-example "fixtures"))))
+  (list (make-example "Configuring and Connecting"
+                      ""
+                      "config")
+        (make-example "Defining Tables"
+                      ""
+                      "table-def")
+        (make-example "Creating, Saving, and Deleting Objects"
+                      ""
+                      "objects")
+        (make-example "High-Level Interface"
+                      ""
+                      "high-level")
+        (make-example "SxQL: Functional, Composable SQL"
+                      ""
+                      "sxql")
+        (make-example "Transactions"
+                      ""
+                      "transactions")
+        (make-example "Fixtures"
+                      ""
+                      "fixtures")))
 
 (save (execute-emb "index"
                    :env
