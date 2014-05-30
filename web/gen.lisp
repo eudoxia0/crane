@@ -62,7 +62,12 @@
         :code (get-example usage-name)))
 
 (defparameter +usage+
-  (list (make-example "Configuring and Connecting"
+  (list
+   (make-example "Getting it"
+                 "Crane is available on <a href='http://quicklisp.org/'>Quicklisp</a>,
+                  just one quick <code>quickload</code> away."
+                 "obtaining")
+        (make-example "Configuring and Connecting"
                       ""
                       "config")
         (make-example "Defining Tables"
