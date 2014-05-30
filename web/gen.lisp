@@ -74,7 +74,7 @@
         (make-example "High-Level Interface"
                       ""
                       "high-level")
-        (make-example "SxQL: Functional, Composable SQL"
+        (make-example "<a href='https://github.com/fukamachi/sxql'>SxQL</a>: Functional, Composable SQL"
                       ""
                       "sxql")
         (make-example "Transactions"
