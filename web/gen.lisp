@@ -63,7 +63,12 @@
         (list :name "Creating, Saving, and Deleting Objects"
               :code (get-example "objects"))
         (list :name "High-Level Interface"
-              :code (get-example "high-level"))))
+              :code (get-example "high-level"))
+        (list :name "SxQL: Functional, Composable SQL")
+        (list :name "Transactions"
+              :code (get-example "transactions"))
+        (list :name "Fixtures"
+              :code (get-example "fixtures"))))
 
 (save (execute-emb "index"
                    :env
