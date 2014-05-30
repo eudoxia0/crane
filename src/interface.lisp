@@ -168,17 +168,10 @@ make-instance. Deflation happens here."
                  anaphora:it
                  (create ,class ,@params)))
 
-(defun find-slot (obj name)
-  (aif (remove-if-not #'(lambda (slot-name)
-                          (eql name
-                               (closer-mop:slot-definition-name slot-name)))
-                      (closer-mop:class-slots (class-of obj)))
-       (first it)))
-
 @export
 (defmacro deref (obj field)
   `(single
-    (first (crane.meta:col-foreign (crane.interface::find-slot
+    (first (crane.meta:col-foreign (crane.utils::find-slot
                                     ,obj ,field)))
     :id (slot-value ,obj (closer-mop:slot-definition-name
-                          (crane.interface::find-slot ,obj ',(intern "ID" *package*))))))
+                          (crane.utils::find-slot ,obj ',(intern "ID" *package*))))))

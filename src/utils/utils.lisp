@@ -36,3 +36,16 @@ list of ([property] [old value] [new value])"
 @export
 (defun make-keyword (symbol)
   (intern (symbol-name symbol) :keyword))
+
+@doc "Find a slot by name"
+@export
+(defun find-slot (obj name)
+  (aif (remove-if-not #'(lambda (slot-name)
+                          (eql name
+                               (closer-mop:slot-definition-name slot-name)))
+                      (closer-mop:class-slots (class-of obj)))
+       (first it)))
+
+@doc "Find slot by keyword name"
+@export
+(defun get-slot (obj name))
