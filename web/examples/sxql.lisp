@@ -1,0 +1,1 @@
+(query (select :* (:from 'user)))
