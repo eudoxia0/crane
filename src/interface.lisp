@@ -16,7 +16,7 @@
   (:import-from :crane.query
                 :query)
   (:import-from :crane.inflate-deflate
-                :inflate))
+                :deflate))
 (in-package :crane.interface)
 (annot:enable-annot-syntax)
 
@@ -35,7 +35,7 @@
                          (closer-mop:class-slots (class-of obj)))))
 
 @doc "Transform an object into a call to the set= function used by
-SxQL. Inflation happens here."
+SxQL. Deflation happens here."
 (defun make-set (obj)
   (let ((slot-names (slot-tuple obj)))
     (iter (for slot in slot-names)
@@ -44,8 +44,7 @@ SxQL. Inflation happens here."
            (list (make-keyword slot)
                  ;; TODO: If the slot is a foreign key, and is storing an
                  ;; instance of an object, store that object's id
-                 ;; TODO: Inflate Lisp value to database
-                 (inflate (slot-value obj slot))))))))
+                 (deflate (slot-value obj slot))))))))
 
 @export
 (defmacro create% (obj)
@@ -86,7 +85,7 @@ SxQL. Inflation happens here."
 
 @doc "Process a tuple created by a CL-DBI into a format that can be accepted by
 make-instance. Deflation happens here."
-(defun clean-tuple (tuple)
+(defmethod clean-tuple ((table table-class) tuple)
   (flet ((process-key (key)
            (intern (string-upcase (symbol-name key))
                    :keyword)))
