@@ -77,6 +77,12 @@ directory where it will store migrations."
 by that of the Django ORM. This, combined with automatic migrations, lets you
 rapidly prototype and experiment with table definitions."
                       "table-def")
+        (make-example "Automatic Migrations"
+                      "Migrations are just another part of your development
+cycle &mdash; not an exceptional situation. Just change your table definitions
+and let Crane figure things out. You don't even have to leave your editor to run
+a command, locally or in a remote server."
+                      "migrations")
         (make-example "Creating, Saving, and Deleting Objects"
                       ""
                       "objects")
