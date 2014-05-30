@@ -4,12 +4,14 @@
 
 (filter 'user (:> :age 21))
 
-(single 'user :name "Eudoxia") ;; Returns a single object
+ ;; Returns a single object
+(single 'user :name "Eudoxia")
 
-(single! 'user (:< age 35)) ;; Throws an error if this returns more than one
-                            ;; object
+;; Throws an error if this returns more than one object
+(single! 'user (:< age 35))
 
-(exists 'user :name "Eudoxia") ;; t if a match exists, nil otherwise
+;; t if a match exists, nil otherwise
+(exists 'user :name "Eudoxia") 
 
-(get-or-create 'user :name "Eudoxia" :age 19) ;; If this record doesn't exist
-                                              ;; create it
+;; If this record doesn't exist create it
+(get-or-create 'user :name "Eudoxia" :age 19) 
