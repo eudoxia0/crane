@@ -46,6 +46,9 @@
 (register-emb "table-def" (merge-pathnames
                        #p"web/examples/table-def.lisp"
                        +crane-path+))
+(register-emb "objects" (merge-pathnames
+                       #p"web/examples/objects.lisp"
+                       +crane-path+))
 (register-emb "features" (merge-pathnames
                           #p"web/templates/features.tmpl"
                           +crane-path+))
