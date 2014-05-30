@@ -71,7 +71,9 @@
                       ""
                       "config")
         (make-example "Defining Tables"
-                      ""
+                      "Crane has a very simple table definition syntax, inspired
+by that of the Django ORM. This, combined with automatic migrations, lets you
+rapidly prototype and experiment with table definitions."
                       "table-def")
         (make-example "Creating, Saving, and Deleting Objects"
                       ""
@@ -82,7 +84,7 @@ exception. The majority of database queries in your application will probably be
 simple <code>filter</code> filter calls."
                       "high-level")
         (make-example "<a href='https://github.com/fukamachi/sxql'>SxQL</a>: Functional, Composable SQL"
-                      "Most ORMs provide a single interface that looks simple
+                      "Most ORMs provide a simple interface that looks simple
 enough in the examples &mdash; but quickly becomes painful to use in real-world
 cases. The Django ORM tries to get around this by adding various extensions to
 its basic <code>filter</code> method that allow it to express more complicated
@@ -90,7 +92,11 @@ queries, but this rapidly becomes cumbersome. Crane's philosophy is: <strong>If
 it's more complicated than a <code>filter</code>, use the SQL DSL.</strong>"
                       "sxql")
         (make-example "Transactions"
-                      ""
+                      "Crane provides a macro &ndash;
+<code>with-transaction</code> &ndash; that automatically takes care of setting
+up a transaction and aborting when conditions (Exceptions) are signalled. A
+manual interface is also provided to provide more fine-grained control over your
+transactions."
                       "transactions")
         (make-example "Fixtures"
                       ""
