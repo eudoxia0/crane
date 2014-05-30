@@ -68,7 +68,9 @@
                   just one quick <code>quickload</code> away."
                  "obtaining")
         (make-example "Configuring and Connecting"
-                      ""
+                      "First things first: Setup. All Crane needs to get going
+is a list of databases to connect to, authentication information, and a
+directory where it will store migrations."
                       "config")
         (make-example "Defining Tables"
                       "Crane has a very simple table definition syntax, inspired
@@ -99,7 +101,10 @@ manual interface is also provided to provide more fine-grained control over your
 transactions."
                       "transactions")
         (make-example "Fixtures"
-                      ""
+                      "Fixtures are provided through the <a
+href='https://github.com/eudoxia0/clos-fixtures'>clos-fixtures</a> library, and
+can be used for anything from loading mostly unchanging data (A list of
+countries, for example) to setting up massive datasets for testing."
                       "fixtures")))
 
 (save (execute-emb "index"
