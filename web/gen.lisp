@@ -57,8 +57,13 @@
 
 (defparameter +usage+
   (list (list :name "Configuring and Connecting"
-              :desc "Lorem ipsum"
-              :code (get-example "config"))))
+              :code (get-example "config"))
+        (list :name "Defining Tables"
+              :code (get-example "table-def"))
+        (list :name "Creating, Saving, and Deleting Objects"
+              :code (get-example "objects"))
+        (list :name "High-Level Interface"
+              :code (get-example "high-level"))))
 
 (save (execute-emb "index"
                    :env
