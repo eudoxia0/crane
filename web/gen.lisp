@@ -34,20 +34,19 @@
                            :if-exists :supersede)
      (write-string ,string stream)))
 
+;;; Code snippets
+(defun get-example (name)
+  (uiop:read-file-string
+   (merge-pathnames
+    (parse-namestring
+     (format nil
+             "web/examples/~A.lisp"
+             name))
+    +crane-path+)))
+
+;;; Templates
 (register-emb "head" (merge-pathnames
                        #p"web/templates/head.tmpl"
-                       +crane-path+))
-(register-emb "snippet" (merge-pathnames
-                       #p"web/examples/snippet.lisp"
-                       +crane-path+))
-(register-emb "config" (merge-pathnames
-                       #p"web/examples/config.lisp"
-                       +crane-path+))
-(register-emb "table-def" (merge-pathnames
-                       #p"web/examples/table-def.lisp"
-                       +crane-path+))
-(register-emb "objects" (merge-pathnames
-                       #p"web/examples/objects.lisp"
                        +crane-path+))
 (register-emb "features" (merge-pathnames
                           #p"web/templates/features.tmpl"
@@ -56,6 +55,14 @@
                        #p"web/templates/index.tmpl"
                        +crane-path+))
 
+(defparameter +usage+
+  (list (list :name "Configuring and Connecting"
+              :desc "Lorem ipsum"
+              :code (get-example "config"))))
 
-(save (execute-emb "index" :env '(:title "Crane: An ORM for Common Lisp"))
+(save (execute-emb "index"
+                   :env
+                   (list :title "Crane: An ORM for Common Lisp"
+                         :snippet (get-example "snippet")
+                         :usage +usage+))
       +index-path+)

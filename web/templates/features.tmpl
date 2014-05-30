@@ -23,40 +23,15 @@
 </section>
 <h1>Usage</h1>
 <section id="usage">
-  <div class="example">
-    <h2>Configuring and Connecting</h2>  
-    <div class="description">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-      ea commodo consequat.</p>
+  <% @loop usage %>
+    <div class="example">
+      <h2><% @var name %></h2>  
+      <div class="description">
+        <p><% @var desc %></p>
+      </div>
+      <div class="code">
+        <pre><code class="lisp"><% @var code %></code></pre>
+      </div>
     </div>
-    <div class="code">
-      <pre><code class="lisp"><% @call config %></code></pre>
-    </div>
-  </div>
-  <div class="example">
-    <h2>Defining Tables</h2>  
-    <div class="description">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-      ea commodo consequat.</p>
-    </div>
-    <div class="code">
-      <pre><code class="lisp"><% @call table-def %></code></pre>
-    </div>
-  </div>
-  <div class="example">
-    <h2>Creating, Saving, and Deleting Objects</h2>  
-    <div class="description">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-      ea commodo consequat.</p>
-    </div>
-    <div class="code">
-      <pre><code class="lisp"><% @call objects %></code></pre>
-    </div>
-  </div>
+  <% @endloop %>
 </section>
