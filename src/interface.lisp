@@ -96,7 +96,7 @@ make-instance. Deflation happens here."
 
 @doc "Convert a tuple produced by CL-DBI to a CLOS instance."
 (defmethod tuple->object ((table table-class) tuple)
-  (apply #'make-instance (cons table (clean-tuple tuple))))
+  (apply #'make-instance (cons table (clean-tuple table tuple))))
 
 (defmethod tuple->object ((table-name symbol) tuple)
   (tuple->object (find-class table-name) tuple))
