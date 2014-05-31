@@ -50,4 +50,4 @@ list of ([property] [old value] [new value])"
 @export
 (defun get-slot (obj name)
   (find-slot obj (intern (symbol-name name)
-                         (symbol-package (class-of obj)))))
+                         (symbol-package (class-name (class-of obj))))))
