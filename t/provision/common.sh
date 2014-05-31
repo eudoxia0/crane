@@ -50,7 +50,7 @@ sudo -u postgres psql -c \
 
 ### Run the tests
 chown -R vagrant $HOME
-sbcl --eval '(ql:quickload :crane-test)' --quit
+sbcl --eval '(ql:quickload :crane-test)' --quit > $HOME/crane/report.txt
 
 ### Tear down
 sudo -u postgres dropdb crane_test_db
