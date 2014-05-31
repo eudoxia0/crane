@@ -111,7 +111,13 @@ transactions."
 href='https://github.com/eudoxia0/clos-fixtures'>clos-fixtures</a> library, and
 can be used for anything from loading mostly unchanging data (A list of
 countries, for example) to setting up massive datasets for testing."
-                      "fixtures")))
+                      "fixtures")
+        (make-example "Inflation/Deflation"
+                      "Crane supports <em>inflating</em> values returned by the
+database into more complex CLOS objects, and <em>deflating</em> those same
+objects back to an SQL representation. This can be useful for accessing database
+extensions, like Postgres' <a href='http://postgis.net/'>PostGIS</a>."
+                      "inflate-deflate")))
 
 (save (execute-emb "index"
                    :env
