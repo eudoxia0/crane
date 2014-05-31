@@ -11,8 +11,10 @@
 
 @doc "Set the configuration."
 @export
-(defun setup (config)
-  (setf *config* config))
+(defun setup (&key migrations-directory databases (debug nil))
+  (setf *config* (list :migrations-directory migrations-directory
+                       :databases databases
+                       :debug)))
 
 @doc "Determine if Crane is in debug mode."
 @export
