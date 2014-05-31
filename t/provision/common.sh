@@ -39,6 +39,7 @@ echo $SOURCE_REGISTRY > $HOME/.config/common-lisp/source-registry.conf
 
 ## Postgres
 
+sudo -u postgres dropdb crane_test_db
 sudo -u postgres createdb crane_test_db
 sudo -u postgres psql -c \
     "CREATE USER crane_test_user WITH PASSWORD 'crane_test_user'"
@@ -48,6 +49,7 @@ sudo -u postgres psql -c \
 ## MySQL
 
 ### Run the tests
+chown -R vagrant $HOME
 sbcl --eval '(ql:quickload :crane-test)' --quit
 
 ### Tear down
