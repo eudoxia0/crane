@@ -4,13 +4,12 @@
 
 QLFILE=/tmp/ql.lisp
 QLURL=http://beta.quicklisp.org/quicklisp.lisp
-HOME=/home/vagrant
 
-if [[ ! -f $HOME/quicklisp/setup.lisp ]]; then
+if [[ ! -f ~/quicklisp/setup.lisp ]]; then
     curl -o $QLFILE $QLURL
     sbcl --noinform --noprint --no-sysinit --no-userinit \
          --load $QLFILE \
-         --eval "(quicklisp-quickstart:install :path \"$HOME/quicklisp\")" \
+         --eval "(quicklisp-quickstart:install)" \
          --quit
 fi
 
@@ -20,20 +19,21 @@ read -d '' LISP_INIT <<"EOF"
 (setf *print-case* :downcase)
 
 #-quicklisp
-(let ((quicklisp-init (parse-namestring "/home/vagrant/quicklisp/setup.lisp")))
+(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
 EOF
 
 read -d '' SOURCE_REGISTRY <<"EOF"
 (:source-registry
-    (:tree (:home "code"))
-    :inherit-configuration)
+  (:directory "/home/vagrant/crane/")
+  :inherit-configuration)
 EOF
 
-echo $LISP_INIT > $HOME/.sbclrc
-mkdir -p $HOME/.config/common-lisp
-echo $SOURCE_REGISTRY > $HOME/.config/common-lisp/source-registry.conf
+echo $LISP_INIT > ~/.sbclrc
+mkdir -p ~/.config/common-lisp
+echo $SOURCE_REGISTRY > ~/.config/common-lisp/source-registry.conf
 
 ### Set up databases
 
@@ -49,8 +49,7 @@ sudo -u postgres psql -c \
 ## MySQL
 
 ### Run the tests
-chown -R vagrant $HOME
-sbcl --eval '(ql:quickload :crane-test)' --quit > $HOME/crane/report.txt
+sbcl --eval '(ql:quickload :crane-test)' --quit > /home/vagrant/crane/report.txt
 
 ### Tear down
 sudo -u postgres dropdb crane_test_db

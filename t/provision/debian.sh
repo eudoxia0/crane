@@ -1,9 +1,10 @@
 #!/bin/bash
 
 ### Install dependencies
+export DEBIAN_FRONTEND=noninteractive # So MySQL won't prompt me for a password
+apt-get update
 
 ## Lisp
-apt-get update
 apt-get install -y sbcl clisp curl
 
 ## Databases
