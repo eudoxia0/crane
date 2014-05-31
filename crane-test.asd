@@ -2,7 +2,8 @@
   :author "Fernando Borretti"
   :license "MIT"
   :depends-on (:crane
-               :fiveam)
+               :fiveam
+               :local-time)
   :components ((:module "t"
                 :serial t
                 :components
@@ -11,5 +12,6 @@
                  (:file "connect")
                  (:file "table")
                  (:file "migration")
-                 (:file "queries"))))
+                 (:file "queries")
+                 (:file "inflate-deflate"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))
