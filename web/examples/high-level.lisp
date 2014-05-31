@@ -7,7 +7,8 @@
  ;; Returns a single object
 (single 'user :name "Eudoxia")
 
-;; Throws an error if this returns more than one object
+;; Throws an error if this returns more
+;;  than one object
 (single! 'user (:< age 35))
 
 ;; t if a match exists, nil otherwise
