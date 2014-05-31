@@ -6,8 +6,7 @@
   :components ((:module "t"
                 :serial t
                 :components
-                ((:file "crane")
-                 (:file "config")
+                ((:file "config")
                  (:file "utils")
                  (:file "connect")
                  (:file "meta")
