@@ -1,3 +1,3 @@
-(deftable employee ()
+(deftable ship ()
   (name :type text :uniquep t)
-  (age :type integer :nullp nil :initform 18))
+  (tonnage :type integer))
