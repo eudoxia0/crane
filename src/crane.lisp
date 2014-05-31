@@ -16,7 +16,8 @@
                 :<table>
                 :deftable)
   (:import-from :crane.inflate-deflate
-                :definflate)
+                :definflate
+                :defdeflate)
   (:import-from :crane.interface
                 :drop-table
                 :create
@@ -49,6 +50,9 @@
    ;; Table macro
    :<table>
    :deftable
+   ;; Inflate/deflate
+   :definflate
+   :defdeflate
    ;; High-level interface
    :drop-table
    :create
