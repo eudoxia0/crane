@@ -174,4 +174,4 @@ make-instance. Deflation happens here."
     (first (crane.meta:col-foreign (crane.utils::find-slot
                                     ,obj ,field)))
     :id (slot-value ,obj (closer-mop:slot-definition-name
-                          (crane.utils::find-slot ,obj ',(intern "ID" *package*))))))
+                          (crane.utils::get-slot ,obj :id)))))
