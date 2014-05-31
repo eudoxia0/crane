@@ -34,6 +34,26 @@
                 :begin-transaction
                 :commit
                 :rollback)
+  ;; Import a whole bunch of SxQL stuff
+  (:import-from :sxql
+                :compose-statements
+                :delete-from
+                :fields
+                :from
+                :full-join
+                :group-by
+                :inner-join
+                :join
+                :left-join
+                :limit
+                :offset
+                :order-by
+                :right-join
+                :select
+                :union-all-queries
+                :union-queries
+                :where
+                :yield)
   (:export
    ;; Configuration
    :setup
@@ -68,4 +88,23 @@
    :with-transaction
    :begin-transaction
    :commit
-   :rollback))
+   :rollback
+   ;; SxQL
+   :compose-statements
+   :delete-from
+   :fields
+   :from
+   :full-join
+   :group-by
+   :inner-join
+   :join
+   :left-join
+   :limit
+   :offset
+   :order-by
+   :right-join
+   :select
+   :union-all-queries
+   :union-queries
+   :where
+   :yield))
