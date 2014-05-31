@@ -28,3 +28,6 @@
   `(defmethod crane.inflate-deflate:inflate (,obj-name
                                              (type (eql ,obj-type-name)))
      ,@body))
+
+(definflate (obj 'string) obj)
+(definflate (obj 'integer) obj)

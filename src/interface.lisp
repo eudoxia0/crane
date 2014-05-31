@@ -5,7 +5,8 @@
 (defpackage :crane.interface
   (:use :cl :anaphora :cl-annot.doc :iter)
   (:import-from :crane.utils
-                :make-keyword)
+                :make-keyword
+                :get-class-slot)
   (:import-from :crane.meta
                 :table-class
                 :table-name
@@ -16,7 +17,8 @@
   (:import-from :crane.query
                 :query)
   (:import-from :crane.inflate-deflate
-                :deflate))
+                :deflate
+                :inflate))
 (in-package :crane.interface)
 (annot:enable-annot-syntax)
 
@@ -84,15 +86,17 @@ SxQL. Deflation happens here."
 
 
 @doc "Process a tuple created by a CL-DBI into a format that can be accepted by
-make-instance. Deflation happens here."
+make-instance. Inflation happens here."
 (defmethod clean-tuple ((table table-class) tuple)
   (flet ((process-key (key)
            (intern (string-upcase (symbol-name key))
                    :keyword)))
     (iter (for (key value) on tuple by #'cddr)
           (appending
-           (let ((processed-key (process-key key)))
-             (list processed-key value))))))
+           (let* ((processed-key (process-key key))
+                  (slot (get-class-slot table processed-key))
+                  (type (crane.meta:col-type slot)))
+             (list processed-key (inflate value type)))))))
 
 @doc "Convert a tuple produced by CL-DBI to a CLOS instance."
 (defmethod tuple->object ((table table-class) tuple)

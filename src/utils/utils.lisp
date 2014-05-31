@@ -39,15 +39,25 @@ list of ([property] [old value] [new value])"
 
 @doc "Find a slot by name"
 @export
-(defun find-slot (obj name)
+(defun find-class-slot (class name)
   (aif (remove-if-not #'(lambda (slot-name)
                           (eql name
                                (closer-mop:slot-definition-name slot-name)))
-                      (closer-mop:class-slots (class-of obj)))
+                      (closer-mop:class-slots class))
        (first it)))
+
+@doc "Find a slot by name"
+@export
+(defun find-slot (obj name)
+  (find-class-slot (class-of obj) name))
+
+@doc "Find a slot in a class by keyword name"
+@export
+(defun get-class-slot (class name)
+  (find-class-slot class (intern (symbol-name name)
+                                 (symbol-package (class-name class)))))
 
 @doc "Find slot by keyword name"
 @export
 (defun get-slot (obj name)
-  (find-slot obj (intern (symbol-name name)
-                         (symbol-package (class-name (class-of obj))))))
+  (get-class-slot (class-of obj) name))
