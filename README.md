@@ -46,7 +46,8 @@ environments, you might want to use [Envy](https://github.com/fukamachi/envy).
 
 ## Creating, Saving, and Deleting Objects
 
-```lisp(let ((instance (create 'ship :name "River of Stars"
+```lisp
+(let ((instance (create 'ship :name "River of Stars"
                               :tonnage "77")))
   ;; FIXME: It's back luck to rename a ship
   (setf (name instance) "Serenity")
