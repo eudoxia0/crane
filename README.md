@@ -82,6 +82,26 @@ environments, you might want to use [Envy](https://github.com/fukamachi/envy).
 (get-or-create 'user :name "Eudoxia" :age 19)
 ```
 
+## Transactions
+
+```lisp
+;;;; Automatic
+(with-transaction ()
+  (let ((restaurants (filter 'restaurant ...)))
+    (loop for restaurant in restaurants do
+          ...
+          (save restaurant))))
+
+;;;; Manual
+(progn
+  (begin-transaction)
+  (let ((restaurants (filter 'restaurant ...)))
+    (loop for restaurant in restaurants do
+          ...
+          (save restaurant)))
+  (commit))
+```
+
 ## Fixtures
 
 ```lisp
