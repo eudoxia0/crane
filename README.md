@@ -26,19 +26,19 @@ Just make the changes, and Crane will compute the diffs and perform all the
 ## Connecting
 
 ```lisp
-(crane:setup
- `(:migrations-directory
-   ,(merge-pathnames
-     #p"t/migrations/"
-     (asdf:component-pathname (asdf:find-system :crane-test)))
-   :databases
-   (:main
-    (:type :postgres
-     :name "crane_test_db"
-     :user "crane_test_user"
-     :pass "crane_test_user"))))
+(setup
+ :migrations-directory
+ (merge-pathnames
+  #p"migrations/"
+  (asdf:system-source-directory :myapp))
+ :databases
+ '(:main
+   (:type :postgres
+    :name "myapp_db"
+    :user "user"
+    :pass "user")))
 
-(crane:connect)
+(connect)
 ```
 
 For configuration management and switching databases in development/production
@@ -46,12 +46,16 @@ environments, you might want to use [Envy](https://github.com/fukamachi/envy).
 
 ## Creating, Saving, and Deleting Objects
 
-```lisp
-(let ((ins (create 'user :name "Eudoxia")))
-  ;; CREATE implicity saves the object
-  ;; <some changes here>
-  (save ins)
-  (del ins))
+```lisp(let ((instance (create 'ship :name "River of Stars"
+                              :tonnage "77")))
+  ;; FIXME: It's back luck to rename a ship
+  (setf (name instance) "Serenity")
+  ;; Expand the cargo hold
+  (incf (tonnage instance) 25)
+  ;; Save these changes!
+  (save instance)
+  ;; Time to retire
+  (del instance))
 ```
 
 ## Filtering
@@ -63,15 +67,18 @@ environments, you might want to use [Envy](https://github.com/fukamachi/envy).
 
 (filter 'user (:> :age 21))
 
-(single 'user :name "Eudoxia") ;; Returns a single object
+ ;; Returns a single object
+(single 'user :name "Eudoxia")
 
-(single! 'user (:< age 35)) ;; Throws an error if this returns more than one
-                            ;; object
+;; Throws an error if this returns more
+;;  than one object
+(single! 'user (:< age 35))
 
-(exists 'user :name "Eudoxia") ;; t if a match exists, nil otherwise
+;; t if a match exists, nil otherwise
+(exists 'user :name "Eudoxia") 
 
-(get-or-create 'user :name "Eudoxia" :age 19) ;; If this record doesn't exist
-                                              ;; create it
+;; If this record doesn't exist create it
+(get-or-create 'user :name "Eudoxia" :age 19) 
 ```
 
 ## Fixtures
