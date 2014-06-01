@@ -4,4 +4,4 @@ cl-user> (query (select :tonnage
                                (:<= :tonnage 500)))
                   (order-by :tonnage)
                   (limit 10)))
-((:|tonnage| 445))
+;; => ((:|tonnage| 445))
