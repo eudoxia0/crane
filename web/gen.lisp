@@ -84,7 +84,9 @@ and let Crane figure things out. You don't even have to leave your editor to run
 a command, locally or in a remote server."
                       "migrations")
         (make-example "Creating, Saving, and Deleting Objects"
-                      ""
+                      "Just these three functions. To create an object, use the
+<code>create</code> function. <code>save</code> and <code>del</code> do exactly
+what you'd expect."
                       "objects")
         (make-example "High-Level Interface"
                       "Simple things should be simple, and the interface is no
@@ -116,7 +118,8 @@ countries, for example) to setting up massive datasets for testing."
                       "Crane supports <em>inflating</em> values returned by the
 database into more complex CLOS objects, and <em>deflating</em> those same
 objects back to an SQL representation. This can be useful for accessing database
-extensions, like Postgres' <a href='http://postgis.net/'>PostGIS</a>."
+extensions that provide complex types for columns, like Postgres' <a
+href='http://postgis.net/'>PostGIS</a>."
                       "inflate-deflate")))
 
 (save (execute-emb "index"
