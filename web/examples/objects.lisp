@@ -1,4 +1,4 @@
-(let ((instance (create 'ship :name "River of Stars"
+(let ((instance (create 'ship :name "Dalliance"
                               :tonnage "77")))
   ;; FIXME: It's back luck to rename a ship
   (setf (name instance) "Serenity")
