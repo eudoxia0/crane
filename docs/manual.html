@@ -13,27 +13,26 @@
 <h1 id="connecting">Connecting</h1>
 <p>Crane autoconnects to all the databases specified in the <code>:databases</code> key of the configuration when the <code>crane:connect</code> function is called (No parameters).</p>
 <p>Configuration for the databases might look like this:</p>
-<pre class="lisp"><code>(crane:setup
- `(:migrations-directory
-   ,(merge-pathnames
-     #p&quot;t/migrations/&quot;
-     (asdf:component-pathname (asdf:find-system :crane-test)))
-   :databases
-   (:main
-    (:type :postgres
-     :name &quot;crane_test_db&quot;
-     :user &quot;crane_test_user&quot;
-     :pass &quot;crane_test_user&quot;)
-    :interface
-    (:type :sqlite3
-     :name &quot;:memory:&quot;))))</code></pre>
-<p>The value of <code>:databases</code> is a plist that maps a database's name (Not that actual name, but rather a way to identify it, like <code>:main</code> or <code>:users-db</code>) to a list of connection parameters, called the <em>connection spec</em>.</p>
+<pre class="lisp"><code>(setup
+ :migrations-directory
+ (merge-pathnames
+  #p&quot;migrations/&quot;
+  (asdf:system-source-directory :myapp))
+ :databases
+ &#39;(:main
+   (:type :postgres
+    :name &quot;myapp_db&quot;
+    :user &quot;user&quot;
+    :pass &quot;user&quot;)))
+
+(connect)</code></pre>
+<p>The value of <code>:databases</code> is a plist that maps a database's name (Not the actual name, but rather an identifier, like <code>:main</code> or <code>:users-db</code>) to a list of connection parameters, called the <em>connection spec</em>.</p>
 <p>Crane maintains a list of connection specs for every supported database backend, and ensures that all required parameters and no parameters other than the required and optional ones are passed. Connection specs for all supported backends are listed in <a href="#appendix-a-connecting">Appendix A: Connecting</a>.</p>
 <h1 id="tables">Tables</h1>
-<p>Crane uses the metaobject protocol to bind SQL tables and CLOS objects through a <code>TABLE-CLASS</code> metaclass. Table classes can be defined simply through the <code>deftable</code> macro:</p>
+<p>Crane uses the metaobject protocol to bind SQL tables and CLOS objects through a <code>TABLE-CLASS</code> metaclass. Table classes can be defined simply through the <code>deftable</code> macro, the syntax being:</p>
 <pre class="lisp"><code>(deftable &lt;name&gt; (&lt;superclass&gt;*)
   &lt;field-or-option&gt;*)</code></pre>
-<p>Compare the following code to the previous example:</p>
+<p>For example:</p>
 <pre class="lisp"><code>(deftable enemy ()
   (name :type string :pk t)
   (age :type integer :check &#39;(:&gt; &#39;age 12))
@@ -112,9 +111,6 @@
   (age  :type integer)
   (address :type string))</code></pre>
 <p>And Crane will spot the difference and perform the migration automatically.</p>
-<h2 id="trivial-migrations">Trivial Migrations</h2>
-<p>Things like adding and dropping contraints (Making a field <code>NOT NULLable</code>, dropping the default value of a column, et cetera) will be handled automatically by Crane.</p>
-<p>A less-than-trivial migration is changing the type of a column: In simple cases, like moving from a float to an integer, Crane will handle this change automatically.</p>
 <h1 id="transactions">Transactions</h1>
 <p>Crane supports a thin wrapper over CL-DBI's transaction capabilities.</p>
 <h2 id="with-transaction"><code>with-transaction</code></h2>
@@ -151,6 +147,33 @@
 </dd>
 </dl>
 <p>Abort the current transaction on the database <code>db-name</code>.</p>
+<h1 id="fixtures">Fixtures</h1>
+<pre class="lisp"><code>;;;; initial-data.lisp
+(app:user
+  (:name &quot;eudoxia&quot;
+   :groups (:admin :staff))
+  (:name &quot;joe&quot;
+   :groups (:admin)))
+(app:company
+  (:name &quot;Initech&quot;
+   :city &quot;Denver&quot;))
+
+;;;; myapp.asd
+(asdf:defsystem myapp
+  :defsystem-depends-on (:clos-fixtures)
+  :components ((:module &quot;src&quot;
+                :components
+                ((:fixture &quot;initial-data&quot;)))))</code></pre>
+<h1 id="inflatedeflate">Inflate/Deflate</h1>
+<pre class="lisp"><code>(definflate (stamp &#39;timestamp)
+  ;; Inflate a timestamp value
+  ;; into a timestamp object
+  (local-time:universal-to-timestamp stamp))
+
+(defdeflate (stamp local-time:timestamp)
+  ;; Deflate a timestamp object
+  ;; into a string
+  (local-time:format-timestring nil stamp))</code></pre>
 <h1 id="appendix-a-connecting">Appendix A: Connecting</h1>
 <h2 id="postgresql">PostgreSQL</h2>
 <p><strong>Required:</strong></p>
