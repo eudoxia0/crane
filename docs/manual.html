@@ -39,6 +39,49 @@
   (address :type &#39;string :nullp t :foreign (important-addresses :cascade :cascade))
   (fatal-weakness :type text :default &quot;None&quot;)
   (identifying-color &#39;type (string 20) :unique t :foreign (colors name)))</code></pre>
+<h2 id="slot-options">Slot Options</h2>
+<dl>
+<dt><code>:type</code></dt>
+<dd><p>The type of the column. No default.</p>
+</dd>
+<dt><code>:nullp</code></dt>
+<dd><p>Whether the column is nullable or not. Default: False.</p>
+</dd>
+<dt><code>:uniquep</code></dt>
+<dd><p>Whether the column's values is unique across the table. Default: False.</p>
+</dd>
+<dt><code>:primaryp</code></dt>
+<dd><p>Whether the column is a primary key of the table. Default: False.</p>
+</dd>
+<dt><code>:indexp</code></dt>
+<dd><p>Whether the column is an index of the table. Default: False.</p>
+</dd>
+<dt><code>:autoincrementp</code></dt>
+<dd><p>If true, when adding a new column, this value will be one greater than the previous highest value in the table. Table type must be an integer. Default: False.</p>
+</dd>
+<dt><code>:foreign</code></dt>
+<dd><p>Defines a foreign key. The value of this slot can either be the name of the table to point to; or a list where the first element is the name of the table to point to, and the next two elements are, respectively, the action to perform on deletes and on updates. These are:</p>
+</dd>
+</dl>
+<ul>
+<li><code>:cascade</code></li>
+<li><code>:restrict</code></li>
+<li><code>:no-action</code></li>
+<li><code>:set-null</code></li>
+<li><code>:set-default</code></li>
+</ul>
+<h2 id="table-options">Table Options</h2>
+<dl>
+<dt><code>:table-name</code></dt>
+<dd><p>A symbol that will be converted to the table's SQL name (Not a string). Default: The class's name.</p>
+</dd>
+<dt><code>:abstractp</code></dt>
+<dd><p>Determines whether the table is abstract. Abstract table only provide slots for subclasses to inherit, and don't compile to actual SQL tables.</p>
+</dd>
+<dt><code>:deferredp</code></dt>
+<dd><p>Deferred classes are only built on demand by calling <code>crane:build</code>. Default: False.</p>
+</dd>
+</dl>
 <h1 id="creating-saving-and-deleting-objects">Creating, Saving, and Deleting Objects</h1>
 <h2 id="create"><code>create</code></h2>
 <dl>
