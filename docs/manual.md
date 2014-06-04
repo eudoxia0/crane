@@ -73,6 +73,19 @@ For example:
   (identifying-color 'type (string 20) :unique t :foreign (colors name)))
 ```
 
+## Options
+
+`:table-name`
+  ~ A symbol that will be converted to the table's SQL name (Not a string).
+    Default: The class's name.
+
+`:abstractp`
+  ~ Determines whether the table is abstract. Abstract table only provide slots
+    for subclasses to inherit, and don't compile to actual SQL tables.
+
+`:deferredp`
+  ~ Deferred classes are only built on demand by calling `crane:build`.
+
 # Creating, Saving, and Deleting Objects
 
 ## `create`
