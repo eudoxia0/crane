@@ -27,25 +27,24 @@ configuration when the `crane:connect` function is called (No parameters).
 Configuration for the databases might look like this:
 
 ```lisp
-(crane:setup
- `(:migrations-directory
-   ,(merge-pathnames
-     #p"t/migrations/"
-     (asdf:component-pathname (asdf:find-system :crane-test)))
-   :databases
-   (:main
-    (:type :postgres
-     :name "crane_test_db"
-     :user "crane_test_user"
-     :pass "crane_test_user")
-    :interface
-    (:type :sqlite3
-     :name ":memory:"))))
+(setup
+ :migrations-directory
+ (merge-pathnames
+  #p"migrations/"
+  (asdf:system-source-directory :myapp))
+ :databases
+ '(:main
+   (:type :postgres
+    :name "myapp_db"
+    :user "user"
+    :pass "user")))
+
+(connect)
 ```
 
-The value of `:databases` is a plist that maps a database's name (Not that
-actual name, but rather a way to identify it, like `:main` or `:users-db`) to a
-list of connection parameters, called the *connection spec*.
+The value of `:databases` is a plist that maps a database's name (Not the actual
+name, but rather an identifier, like `:main` or `:users-db`) to a list of
+connection parameters, called the *connection spec*.
 
 Crane maintains a list of connection specs for every supported database backend,
 and ensures that all required parameters and no parameters other than the
@@ -56,14 +55,14 @@ backends are listed in [Appendix A: Connecting](#appendix-a-connecting).
 
 Crane uses the metaobject protocol to bind SQL tables and CLOS objects through a
 `TABLE-CLASS` metaclass. Table classes can be defined simply through the
-`deftable` macro:
+`deftable` macro, the syntax being:
 
 ```lisp
 (deftable <name> (<superclass>*)
   <field-or-option>*)
 ```
 
-Compare the following code to the previous example:
+For example:
 
 ```lisp
 (deftable enemy ()
@@ -190,16 +189,6 @@ Now, if you decide that addresses can be nullable, you just redefine the class
 
 And Crane will spot the difference and perform the migration automatically.
 
-## Trivial Migrations
-
-Things like adding and dropping contraints (Making a field `NOT NULLable`,
-dropping the default value of a column, et cetera) will be handled automatically
-by Crane.
-
-A less-than-trivial migration is changing the type of a column: In simple cases,
-like moving from a float to an integer, Crane will handle this change
-automatically.
-
 # Transactions
 
 Crane supports a thin wrapper over CL-DBI's transaction capabilities.
@@ -242,6 +231,41 @@ Syntax:
   ~ `(rollback [db-name *default-db*])`
 
 Abort the current transaction on the database `db-name`.
+
+# Fixtures
+
+```lisp
+;;;; initial-data.lisp
+(app:user
+  (:name "eudoxia"
+   :groups (:admin :staff))
+  (:name "joe"
+   :groups (:admin)))
+(app:company
+  (:name "Initech"
+   :city "Denver"))
+
+;;;; myapp.asd
+(asdf:defsystem myapp
+  :defsystem-depends-on (:clos-fixtures)
+  :components ((:module "src"
+                :components
+                ((:fixture "initial-data")))))
+```
+
+# Inflate/Deflate
+
+```lisp
+(definflate (stamp 'timestamp)
+  ;; Inflate a timestamp value
+  ;; into a timestamp object
+  (local-time:universal-to-timestamp stamp))
+
+(defdeflate (stamp local-time:timestamp)
+  ;; Deflate a timestamp object
+  ;; into a string
+  (local-time:format-timestring nil stamp))
+```
 
 # Appendix A: Connecting
 
