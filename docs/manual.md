@@ -11,7 +11,7 @@ the Django ORM and the flexible, non-opinionated philosophy of SQLAlchemy.
 
 Crane mainly uses two libraries:
 
-[sxql](https://github.com/fukamachi/sxql)
+[SxQL](https://github.com/fukamachi/sxql)
   ~ A DSL for generating SQL through function composition.
 [cl-dbi](https://github.com/fukamachi/cl-dbi)
   ~ A backend-independent interface to relational DBMSs. At
@@ -200,6 +200,23 @@ parameters.
 ### `get-or-create`
 
 ## Functional SQL
+
+Crane exports the important bits of SxQL so you can write queries using this DSL
+without worrying about packages. The syntax is fairly straightforward, and has
+few surprises, so a lot of the time consulting the documentation is not
+required. It's simply SQL with Lisp syntax.
+
+**Examples:**
+
+```lisp
+cl-user> (query (select :tonnage
+                  (from :ship)
+                  (where (:and (:> :tonnage 125)
+                               (:<= :tonnage 500)))
+                  (order-by :tonnage)
+                  (limit 10)))
+;; => ((:|tonnage| 445))
+```
 
 # Migrations
 
