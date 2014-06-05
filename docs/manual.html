@@ -3,7 +3,7 @@
 <h2 id="structure">Structure</h2>
 <p>Crane mainly uses two libraries:</p>
 <dl>
-<dt><a href="https://github.com/fukamachi/sxql">sxql</a></dt>
+<dt><a href="https://github.com/fukamachi/sxql">SxQL</a></dt>
 <dd>A DSL for generating SQL through function composition.
 </dd>
 <dt><a href="https://github.com/fukamachi/cl-dbi">cl-dbi</a></dt>
@@ -140,6 +140,15 @@
 <p>A variant, <code>single!</code>, will signal a condition when no object satisfies the parameters.</p>
 <h3 id="get-or-create"><code>get-or-create</code></h3>
 <h2 id="functional-sql">Functional SQL</h2>
+<p>Crane exports the important bits of SxQL so you can write queries using this DSL without worrying about packages. The syntax is fairly straightforward, and has few surprises, so a lot of the time consulting the documentation is not required. It's simply SQL with Lisp syntax.</p>
+<p><strong>Examples:</strong></p>
+<pre class="lisp"><code>cl-user&gt; (query (select :tonnage
+                  (from :ship)
+                  (where (:and (:&gt; :tonnage 125)
+                               (:&lt;= :tonnage 500)))
+                  (order-by :tonnage)
+                  (limit 10)))
+;; =&gt; ((:|tonnage| 445))</code></pre>
 <h1 id="migrations">Migrations</h1>
 <p>Your schema will change, and this is a fact. Most ORMs hope the users will be happy running manual <code>ALTER TABLEs</code> or provide migration functionality through an external plugin (<a href="https://alembic.readthedocs.org/en/latest/front.html">Alembic</a> for SQLAlchemy, <a href="http://south.aeracode.org/">South</a> for the Django ORM).</p>
 <p>Migrations are completely built into Crane, and are designed to be intrusive: You redefine the schema, reload, and Crane takes care of everything. If your migration plan is too complicated for Crane, then you write a simple function that does some transformations and Crane puts that in its migration history, all that without ever having to leave your Lisp environment or accessing the shell.</p>
@@ -164,7 +173,7 @@
 </dl>
 <p>Execute <code>body</code> inside a transaction. If the code executes, the transaction is comitted. If a condition is signalled, the transaction is rolled back.</p>
 <p><strong>Examples:</strong></p>
-<pre><code>  (with-transaction (:my-db)
+<pre class="lisp"><code>  (with-transaction (:my-db)
     (let ((restaurants (filter &#39;&lt;restaurant&gt; ...)))
         (loop for restaurant in restaurants do
             ...
@@ -191,6 +200,8 @@
 </dl>
 <p>Abort the current transaction on the database <code>db-name</code>.</p>
 <h1 id="fixtures">Fixtures</h1>
+<p>Fixtures are provided through the <a href="https://github.com/eudoxia0/clos-fixtures">clos-fixtures</a> library, and can be used for anything from loading mostly unchanging data (A list of countries, for example) to setting up massive datasets for testing.</p>
+<p><strong>Examples:</strong></p>
 <pre class="lisp"><code>;;;; initial-data.lisp
 (app:user
   (:name &quot;eudoxia&quot;
@@ -208,6 +219,8 @@
                 :components
                 ((:fixture &quot;initial-data&quot;)))))</code></pre>
 <h1 id="inflatedeflate">Inflate/Deflate</h1>
+<p>Crane supports <em>inflating</em> values returned by the database into more complex CLOS objects, and <em>deflating</em> those same objects back to an SQL representation. This can be useful for accessing database extensions that provide complex types for columns, like Postgres' <a href="http://postgis.net/">PostGIS</a>.</p>
+<p><strong>Examples:</strong></p>
 <pre class="lisp"><code>(definflate (stamp &#39;timestamp)
   ;; Inflate a timestamp value
   ;; into a timestamp object
