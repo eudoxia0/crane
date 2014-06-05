@@ -267,7 +267,7 @@ comitted. If a condition is signalled, the transaction is rolled back.
 
 **Examples:**
 
-```
+```lisp
   (with-transaction (:my-db)
     (let ((restaurants (filter '<restaurant> ...)))
         (loop for restaurant in restaurants do
@@ -298,6 +298,13 @@ Abort the current transaction on the database `db-name`.
 
 # Fixtures
 
+Fixtures are provided through the
+[clos-fixtures](https://github.com/eudoxia0/clos-fixtures) library, and can be
+used for anything from loading mostly unchanging data (A list of countries, for
+example) to setting up massive datasets for testing.
+
+**Examples:**
+
 ```lisp
 ;;;; initial-data.lisp
 (app:user
@@ -318,6 +325,14 @@ Abort the current transaction on the database `db-name`.
 ```
 
 # Inflate/Deflate
+
+Crane supports *inflating* values returned by the database into more complex
+CLOS objects, and *deflating* those same objects back to an SQL
+representation. This can be useful for accessing database extensions that
+provide complex types for columns, like Postgres'
+[PostGIS](http://postgis.net/).
+
+**Examples:**
 
 ```lisp
 (definflate (stamp 'timestamp)
