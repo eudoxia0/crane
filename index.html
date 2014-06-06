@@ -22,21 +22,29 @@
 </head>
 
   <body>
+    <a href="https://github.com/eudoxia0/crane/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+    <div class="strip">
+      <div class="strip-one"></div>
+      <div class="strip-two"></div>
+      <div class="strip-three"></div>
+      <div class="strip-four"></div>
+    </div>
     <header>
       <div id="names">
         <span id="title">Crane</span>
         <span id="subtitle">An ORM for Common Lisp</span>
       </div>
       <div id="editor">
-        <div id="bar">
-          <ul>
-            <li><div id="close" class="circle"></div></li>
-            <li><div id="minimize" class="circle"></div></li>
-            <li><div id="maximize" class="circle"></div></li>
-          </ul>
-        </div>
-        <div id="text">
-          <pre><code class="lisp">(deftable user ()
+        <div class="drop-shadow">
+          <div id="bar">
+            <ul>
+              <li><div id="close" class="circle"></div></li>
+              <li><div id="minimize" class="circle"></div></li>
+              <li><div id="maximize" class="circle"></div></li>
+            </ul>
+          </div>
+          <div id="text">
+            <pre><code class="lisp">(deftable user ()
   (name :type string :uniquep t)
   (age  :type integer :indexp t)
   (company :foreign-key 'company :nullp nil))
@@ -45,12 +53,13 @@
   (format t "Company: ~A~&"
           (name (deref user 'company))))
 </code></pre>
+          </div>
         </div>
       </div>
       <div id="links">
         <a href="https://github.com/eudoxia0/crane">Source</a>
-        <a href="docs/manual.html">Manual HTML</a>
-        <a href="docs/manual.pdf">Manual PDF</a>
+        <a href="docs/manual.html">HTML Manual</a>
+        <a href="docs/manual.pdf">PDF Manual</a>
       </div>
     </header>
     <main>
@@ -316,7 +325,13 @@ href='http://postgis.net/'>PostGIS</a>.</p>
 
     </main>
     <footer>
-      © 2014 <a href="http://github.com/eudoxia0">Fernando Borretti</a>
+      <div class="strip">
+        <div class="strip-one"></div>
+        <div class="strip-two"></div>
+        <div class="strip-three"></div>
+        <div class="strip-four"></div>
+      </div>
+      <p>© 2014 <a href="http://github.com/eudoxia0">Fernando Borretti</a></p>
     </footer>
     <script>
      HighlightLisp.highlight_auto();
