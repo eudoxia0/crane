@@ -263,7 +263,7 @@ Syntax:
   ~ `(with-transaction ([db-name *default-db*]) <body>*)`
 
 Execute `body` inside a transaction. If the code executes, the transaction is
-comitted. If a condition is signalled, the transaction is rolled back.
+committed. If a condition is signalled, the transaction is rolled back.
 
 **Examples:**
 
@@ -362,7 +362,7 @@ provide complex types for columns, like Postgres'
 **Optional:**
 
 `:host`
-  ~ Host that runs the database server. Default: "`localhost`".
+  ~ Host that runs the database server. Default: `localhost`.
 `:port`
   ~ Port the database server listens on. Default: `5432`.
 `:ssl`
