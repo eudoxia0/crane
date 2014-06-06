@@ -34,11 +34,12 @@
   &lt;field-or-option&gt;*)</code></pre>
 <p>For example:</p>
 <pre class="lisp"><code>(deftable enemy ()
-  (name :type string :pk t)
-  (age :type integer :check &#39;(:&gt; &#39;age 12))
-  (address :type &#39;string :nullp t :foreign (important-addresses :cascade :cascade))
+  (name :type text :primaryp t)
+  (age :type integer :check (:&gt; &#39;age 12))
+  (address :nullp t
+           :foreign (important-addresses :cascade :cascade))
   (fatal-weakness :type text :default &quot;None&quot;)
-  (identifying-color &#39;type (string 20) :unique t :foreign (colors name)))</code></pre>
+  (identifying-color :unique t :foreign (colors name)))</code></pre>
 <h2 id="slot-options">Slot Options</h2>
 <dl>
 <dt><code>:type</code></dt>
@@ -171,7 +172,7 @@
 <dd><code>(with-transaction ([db-name *default-db*]) &lt;body&gt;*)</code>
 </dd>
 </dl>
-<p>Execute <code>body</code> inside a transaction. If the code executes, the transaction is comitted. If a condition is signalled, the transaction is rolled back.</p>
+<p>Execute <code>body</code> inside a transaction. If the code executes, the transaction is committed. If a condition is signalled, the transaction is rolled back.</p>
 <p><strong>Examples:</strong></p>
 <pre class="lisp"><code>  (with-transaction (:my-db)
     (let ((restaurants (filter &#39;&lt;restaurant&gt; ...)))
@@ -247,7 +248,7 @@
 <p><strong>Optional:</strong></p>
 <dl>
 <dt><code>:host</code></dt>
-<dd>Host that runs the database server. Default: &quot;<code>localhost</code>&quot;.
+<dd>Host that runs the database server. Default: <code>localhost</code>.
 </dd>
 <dt><code>:port</code></dt>
 <dd>Port the database server listens on. Default: <code>5432</code>.
