@@ -1,11 +1,11 @@
 (deftable ship ()
-  (name :type string)
-  (flag :type string)
+  (name :type text)
+  (flag :type text)
   (tonnage :type integer))
 
 ;; Oops
 
 (deftable ship ()
-  (name :type string :indexp t)
-  (flag :type string :nullp nil)
+  (name :type text :indexp t)
+  (flag :type text :nullp nil)
   (tonnage :type integer))

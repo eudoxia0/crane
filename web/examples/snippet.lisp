@@ -1,5 +1,5 @@
 (deftable user ()
-  (name :type string :uniquep t)
+  (name :type text :uniquep t)
   (age  :type integer :indexp t)
   (company :foreign-key 'company :nullp nil))
 
