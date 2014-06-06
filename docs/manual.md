@@ -66,11 +66,12 @@ For example:
 
 ```lisp
 (deftable enemy ()
-  (name :type string :pk t)
-  (age :type integer :check '(:> 'age 12))
-  (address :type 'string :nullp t :foreign (important-addresses :cascade :cascade))
+  (name :type text :primaryp t)
+  (age :type integer :check (:> 'age 12))
+  (address :nullp t
+           :foreign (important-addresses :cascade :cascade))
   (fatal-weakness :type text :default "None")
-  (identifying-color 'type (string 20) :unique t :foreign (colors name)))
+  (identifying-color :unique t :foreign (colors name)))
 ```
 
 ## Slot Options
