@@ -32,11 +32,15 @@ body {
     color: #444;
 }
 
+a {
+    color: #5DB5DE;
+}
+
 h1 { margin-left: 40px; }
 
 header {
     font-size: 26px;
-    margin-top: 60px;
+    padding-top: 60px;
     z-index: -1;
 
     #names {
@@ -53,7 +57,7 @@ header {
 
     #links {
         width: 60%;
-        margin: 15px auto;
+        margin: 20px auto;
         text-align: center;
 
         a {
@@ -85,9 +89,9 @@ header {
         @include border-top-radius(7px);
 
         .circle {
-	    @include border-radius(50%);
-	    width: $circle-diam;
-	    height: $circle-diam;
+        @include border-radius(50%);
+        width: $circle-diam;
+        height: $circle-diam;
             position: absolute;
             top: 5px;
         }
@@ -123,6 +127,14 @@ header {
             background-color: $background-color;
         }
     }
+}
+
+.drop-shadow {
+    @include border-top-radius(7px);
+
+    -webkit-box-shadow: 0px 10px 50px 1px rgba(0,0,0,0.25);
+       -moz-box-shadow: 0px 10px 50px 1px rgba(0,0,0,0.25);
+            box-shadow: 0px 10px 50px 1px rgba(0,0,0,0.25);
 }
 
 main {
@@ -162,11 +174,56 @@ section {
     }
 }
 
+
 footer {
     text-align: center;
     font-size: 14px;
     width: 100%;
-    margin-top: 30px;
-    height: 50px;
     bottom: 0;
+    background-color: #000000; 
+    color: #f9f9f9;
+    padding-top: 15px;
+    padding-bottom:  15px;
+    position: relative;
+
+    a {
+        color: #f9f9f9;
+        text-decoration: none;
+        border-bottom: 1px solid #f9f9f9;
+    }
+}
+
+.strip {
+    top: 0;
+    height: 3px;
+    width: 100%;
+    position: absolute;
+}
+
+.strip-one {
+    width: 40%;
+    height: 3px;
+    float: left;
+    background-color: #30D8F0;
+}
+
+.strip-two {
+    width: 30%;
+    height: 3px;
+    float: left;
+    background-color: #9AE4E8;
+}
+
+.strip-three {
+    width: 20%;
+    height: 3px;
+    float: left;
+    background-color: #C3F0F2;
+}
+
+.strip-four {
+    width: 10%;
+    height: 3px;
+    float: left;
+    background-color: #DDFFCC;
 }
