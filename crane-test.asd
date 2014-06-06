@@ -1,5 +1,5 @@
 (defsystem crane-test
-  :author "Fernando Borretti"
+  :author "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
   :depends-on (:crane
                :fiveam

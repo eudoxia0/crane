@@ -10,8 +10,7 @@
   :components ((:module "docs"
                 :serial t
                 :components
-                (;; The ditaa diagram is taken care of by crane-docs
-                 (:pandoc "manual"
+                ((:pandoc "manual"
                   :type "md"
                   :input-type "markdown"
                   :output "manual"
