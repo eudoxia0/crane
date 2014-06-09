@@ -44,9 +44,7 @@ To load "crane":
     <div class="code">
       <pre><code class="lisp">(setup
  :migrations-directory
- (merge-pathnames
-  #p"migrations/"
-  (asdf:system-source-directory :myapp))
+ (asdf:system-relative-pathname :myapp #p"migrations/")
  :databases
  '(:main
    (:type :postgres

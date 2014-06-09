@@ -29,9 +29,7 @@ Configuration for the databases might look like this:
 ```lisp
 (setup
  :migrations-directory
- (merge-pathnames
-  #p"migrations/"
-  (asdf:system-source-directory :myapp))
+ (asdf:system-relative-pathname :myapp #p"migrations/")
  :databases
  '(:main
    (:type :postgres
