@@ -51,15 +51,26 @@ SxQL. Deflation happens here."
 @export
 (defmacro create% (obj)
   `(let* ((obj ,obj)
-          (table-name (table-name (class-of obj)))
+          (class (class-of obj))
+          (table-name (table-name class))
+          (db-type
+            (crane.connect:database-type
+             (crane.connect:get-db (db class))))
           (results
-            (query (sxql:insert-into
-                       table-name
-                     (apply #'sxql.clause:make-clause
-                            (cons :set=
-                                  (make-set obj)))
-                     (sxql:make-op :returning :id))
-                   (db (class-of obj))))
+            (if (eq db-type :sqlite)
+                (query (sxql:insert-into
+                        table-name
+                        (apply #'sxql.clause:make-clause
+                               (cons :set=
+                                     (make-set obj))))
+                       (db (class-of obj)))
+                (query (sxql:insert-into
+                        table-name
+                        (apply #'sxql.clause:make-clause
+                               (cons :set=
+                                     (make-set obj)))
+                        (sxql:make-op :returning :id))
+                       (db (class-of obj)))))
           (id (getf (first results) :|id|)))
      ;; Query its ID
      (setf (,(intern "ID" *package*) obj) id)
