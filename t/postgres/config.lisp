@@ -7,9 +7,7 @@
 (crane:setup
  :debug t
  :migrations-directory
- (merge-pathnames
-  #p"t/migrations/"
-  (asdf:system-source-directory :crane-test))
+ (asdf:system-relative-pathname :crane-test #p"t/migrations/")
  :databases
  '(:postgres-db
    (:type :postgres
