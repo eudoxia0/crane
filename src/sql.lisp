@@ -112,8 +112,8 @@ doesn't create a constraint, but :nullp nil creates a NOT NULL constraint)."
 (defun autoincrement-sql (database-type)
   (case database-type
     (:postgres "SERIAL")
-    (:mysql    "INTEGER AUTO_INCREMENT")
-    (:sqlite3  "INTEGER AUTOINCREMENT")))
+    (:mysql    "AUTO_INCREMENT")
+    (:sqlite3  "PRIMARY KEY AUTOINCREMENT")))
 
 @doc "A column definition from the digest of its slot, name and name of
 the database it's table belongs to"
