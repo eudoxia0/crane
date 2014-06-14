@@ -1,14 +1,5 @@
 (in-package :crane-test.postgres)
 
-(def-suite preliminary
-  :description "Start with a clean slate")
-(in-suite preliminary)
-
-(test delete-migrations
-  (finishes
-    (delete-migrations t)))
-
-
 (def-suite table-slots
   :description "Test that table metaclass slots work.")
 (in-suite table-slots)
