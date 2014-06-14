@@ -14,7 +14,8 @@ sudo -u postgres psql -c \
 ## MySQL
 
 ### Run the tests
-sudo sbcl --eval '(ql:quickload :crane-test)' --quit
+sudo sbcl --noinform --eval '(ql:quickload :crane-test)' \
+  --quit
 
 ### Tear down
 sudo -u postgres dropdb crane_test_db
