@@ -397,3 +397,15 @@ databases.
 The `run_tests.sh` script in the project root takes care of bringing up the
 machines, provisioning them, and running the tests. The virtual machines are
 defined in the `Vagrantfile` file.
+
+## Tests
+
+The struture of the tests (`t`) folder is:
+
+- `packages.lisp`: Defines the Common Lisp packages for the general and
+  database-specific tests.
+- `utils.lisp`: Tests the utilities Crane implements for itself.
+- `connection-specs.lisp`: Tests the validity or invalidity of various
+  connection specifications. See [Connecting](#connecting).
+- `postgres/`: Contains the tests specific to Postgres.
+- `sqlite3/`: Contains SQLite3-specific tests.
