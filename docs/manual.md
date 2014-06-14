@@ -382,3 +382,18 @@ provide complex types for columns, like Postgres'
 
 **Required and Optional**: Same as [PostgreSQL](#postgresql), except for
 `:ssl`. The default port number `3306`.
+
+# Appendix B: How Crane is tested
+
+Crane uses Vagrant to define multiple isolated virtual machines. The machines
+are provisioned using two scripts: An OS-specific script (Such as `debian.sh` or
+`centos.sh`) in the `t/provision` folder, and then the `common.sh` script in the
+same folder which handles OS-independent things such as installing Quicklisp.
+
+The `t/test.sh` file handles setting up the databases (Where necessary, for
+example, SQLite3 doesn't need that), running the tests, and then taking down the
+databases.
+
+The `run_tests.sh` script in the project root takes care of bringing up the
+machines, provisioning them, and running the tests. The virtual machines are
+defined in the `Vagrantfile` file.
