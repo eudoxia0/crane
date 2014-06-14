@@ -10,11 +10,13 @@
   #p"t/migrations/"
   (asdf:system-source-directory :crane-test))
  :databases
- '(:main
-   (:type :postgres
-    :name "crane_test_db"
-    :user "crane_test_user"
-    :pass "crane_test_user")
-   :interface
-   (:type :sqlite3
-    :name ":memory:")))
+ (list :main
+       (cond
+         ((member :crane-use-postgres *features*)
+          '(:type :postgres
+            :name "crane_test_db"
+            :user "crane_test_user"
+            :pass "crane_test_user"))
+         ((member :crane-use-sqlite3 *features*)
+          '(:type :sqlite3
+            :name ":memory:")))))
