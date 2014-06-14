@@ -17,5 +17,9 @@
                    (:file "table")
                    (:file "migration")
                    (:file "queries")
-                   (:file "inflate-deflate"))))))
+                   (:file "inflate-deflate")))
+                 (:module "sqlite3"
+                  :serial t
+                  :components
+                  ((:file "config"))))))
   :perform (load-op :after (op c) (asdf:clear-system c)))
