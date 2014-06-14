@@ -57,7 +57,7 @@ SxQL. Deflation happens here."
             (crane.connect:database-type
              (crane.connect:get-db (db class))))
           (results
-            (if (eq db-type :sqlite)
+            (if (eq db-type :sqlite3)
                 (query (sxql:insert-into
                         table-name
                         (apply #'sxql.clause:make-clause
@@ -71,7 +71,13 @@ SxQL. Deflation happens here."
                                      (make-set obj)))
                         (sxql:make-op :returning :id))
                        (db (class-of obj)))))
-          (id (getf (first results) :|id|)))
+          (id
+            (if (eq db-type :sqlite3)
+                (let ((res (query
+                            (let ((sxql:*QUOTE-CHARACTER* nil))
+                              (query (sxql:select :|last_insert_rowid()|))))))
+                  (getf (first res) :|last_insert_rowid()|))
+                (getf (first results) :|id|))))
      ;; Query its ID
      (setf (,(intern "ID" *package*) obj) id)
      obj))
