@@ -4,6 +4,9 @@
 (in-package :cl-user)
 (defpackage :crane.meta
   (:use :cl :anaphora :cl-annot.doc :iter)
+  (:import-from :crane.connect
+                :database-type
+                :get-db)
   (:export
    :col-type
    :col-null-p
@@ -130,7 +133,12 @@
           (col-unique-p (first direct-slot-definitions))
 
           (slot-value effective-slot-definition 'col-primary-p)
-          (col-primary-p (first direct-slot-definitions))
+          (if (and (eq (database-type (get-db (db class)))
+                       :sqlite3)
+                   (eq (col-autoincrement-p (first direct-slot-definitions))
+                       t))
+              nil
+              (col-primary-p (first direct-slot-definitions)))
 
           (slot-value effective-slot-definition 'col-index-p)
           (col-index-p (first direct-slot-definitions))
