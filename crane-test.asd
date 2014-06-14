@@ -14,7 +14,6 @@
                   :serial t
                   :components
                   ((:file "config")
-                   (:file "connect")
                    (:file "table")
                    (:file "migration")
                    (:file "queries")
