@@ -29,6 +29,5 @@
                                              (type (eql ,obj-type-name)))
      ,@body))
 
-(definflate (obj 'string) obj)
 (definflate (obj 'text) obj)
 (definflate (obj 'integer) obj)
