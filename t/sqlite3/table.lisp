@@ -2,10 +2,10 @@
 
 (test create-basic-tables
   (finishes
-    (deftable table-a ()
+    (deftable sq-table-a ()
       (field-a :type integer :nullp t)))
   (finishes
-    (deftable table-b ()
-      (field-b :type text :uniquep t))))
+    (deftable sq-table-b (sq-table-a)
+      (field-b :type text))))
 
 (run! 'create-basic-tables)
