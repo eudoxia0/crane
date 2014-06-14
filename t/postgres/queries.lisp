@@ -1,4 +1,4 @@
-(in-package :crane-test)
+(in-package :crane-test.postgres)
 
 (def-suite queries
   :description "Creating, saving, and destroying objects.")

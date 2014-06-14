@@ -7,11 +7,15 @@
   :components ((:module "t"
                 :serial t
                 :components
-                ((:file "config")
+                ((:file "packages")
                  (:file "utils")
-                 (:file "connect")
-                 (:file "table")
-                 (:file "migration")
-                 (:file "queries")
-                 (:file "inflate-deflate"))))
+                 (:module "postgres"
+                  :serial t
+                  :components
+                  ((:file "config")
+                   (:file "connect")
+                   (:file "table")
+                   (:file "migration")
+                   (:file "queries")
+                   (:file "inflate-deflate"))))))
   :perform (load-op :after (op c) (asdf:clear-system c)))

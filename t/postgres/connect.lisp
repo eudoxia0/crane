@@ -1,4 +1,4 @@
-(in-package :crane-test)
+(in-package :crane-test.postgres)
 
 (defmacro validate (db-type spec)
   `(crane.connect::validate-connection-spec

@@ -1,4 +1,4 @@
-(in-package :crane-test)
+(in-package :crane-test.postgres)
 
 (def-suite migrations
   :description "Test that migrations actually work.")
