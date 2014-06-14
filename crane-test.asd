@@ -21,5 +21,6 @@
                  (:module "sqlite3"
                   :serial t
                   :components
-                  ((:file "config"))))))
+                  ((:file "config")
+                   (:file "table"))))))
   :perform (load-op :after (op c) (asdf:clear-system c)))
