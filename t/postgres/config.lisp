@@ -11,7 +11,7 @@
   #p"t/migrations/"
   (asdf:system-source-directory :crane-test))
  :databases
- '(:main
+ '(:postgres-db
    (:type :postgres
     :name "crane_test_db"
     :user "crane_test_user"
@@ -22,6 +22,6 @@
     (crane.connect:connect)))
 
 (test main-db
-  (is (equal :main crane.connect:*default-db*)))
+  (is (equal :postgres-db crane.connect:*default-db*)))
 
 (run! 'config)
