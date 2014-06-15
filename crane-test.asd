@@ -22,5 +22,6 @@
                   :serial t
                   :components
                   ((:file "config")
-                   (:file "table"))))))
+                   (:file "table")
+                   (:file "queries"))))))
   :perform (load-op :after (op c) (asdf:clear-system c)))
