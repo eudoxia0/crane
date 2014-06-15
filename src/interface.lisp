@@ -73,9 +73,8 @@ SxQL. Deflation happens here."
                        (db (class-of obj)))))
           (id
             (if (eq db-type :sqlite3)
-                (let ((res (query
-                            (let ((sxql:*QUOTE-CHARACTER* nil))
-                              (query (sxql:select :|last_insert_rowid()|))))))
+                (let ((res (let ((sxql:*QUOTE-CHARACTER* nil))
+                             (query (sxql:select :|last_insert_rowid()|)))))
                   (getf (first res) :|last_insert_rowid()|))
                 (getf (first results) :|id|))))
      ;; Query its ID
