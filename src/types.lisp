@@ -2,12 +2,11 @@
 (defpackage :crane.types
   (:import-from :cl
                 :deftype)
-  (:export :integer
+  (:export :int
            :bigint
            :smallint
            :numeric
-           :real
-           :character
+           :double
            :text
            :varchar
            :timestamp
@@ -16,15 +15,14 @@
 
 ;; Numeric types
 
-(deftype integer () `integer)
+(deftype int () `integer)
 (deftype bigint () `integer)
 (deftype smallint () `integer)
 (deftype numeric () `ratio)
-(deftype real () `double-float)
+(deftype double () `double-float)
 
 ;; Text
 
-(deftype character () `character)
 (deftype text () `string)
 (deftype varchar () `string)
 

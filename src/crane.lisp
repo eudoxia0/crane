@@ -1,5 +1,5 @@
 (defpackage :crane
-  (:use :cl)
+  (:use :cl :crane.types)
   (:import-from :crane.config
                 :setup)
   (:import-from :crane.connect
@@ -70,6 +70,16 @@
    ;; Table macro
    :<table>
    :deftable
+   ;; Types
+   :int
+   :bigint
+   :smallint
+   :numeric
+   :double
+   :text
+   :varchar
+   :timestamp
+   :datetime
    ;; Inflate/deflate
    :definflate
    :defdeflate
