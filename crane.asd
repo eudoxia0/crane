@@ -24,6 +24,7 @@
                  (:file "query")
                  (:file "migration")
                  (:file "table")
+                 (:file "types")
                  (:file "inflate-deflate")
                  (:file "interface")
                  (:file "fixture")
