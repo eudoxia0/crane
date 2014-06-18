@@ -15,18 +15,18 @@
 
 ;; Numeric types
 
-(deftype int () `integer)
-(deftype bigint () `integer)
-(deftype smallint () `integer)
-(deftype numeric () `ratio)
-(deftype double () `double-float)
+(deftype integer () `cl:integer)
+(deftype bigint () `cl:integer)
+(deftype smallint () `cl:integer)
+(deftype numeric () `cl:ratio)
+(deftype double () `cl:double-float)
 
 ;; Text
 
-(deftype text () `string)
-(deftype varchar () `string)
+(deftype text () `cl:string)
+(deftype varchar () `cl:string)
 
 ;; Extra
 
-(deftype timestamp () `string)
-(deftype datetime () `string)
+(deftype timestamp () `cl:string)
+(deftype datetime () `cl:string)

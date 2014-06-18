@@ -4,7 +4,7 @@
 ;;;; time, or mapping other more complex SQL types to CLOS objects.
 (in-package :cl-user)
 (defpackage :crane.inflate-deflate
-  (:use :cl :anaphora)
+  (:use :cl :anaphora :crane.types)
   (:export :inflate
            :definflate
            :deflate
@@ -12,7 +12,7 @@
 (in-package :crane.inflate-deflate)
 
 (defgeneric deflate (obj)
-  (:documentation "Turn a CLOS object into a string for insertion in the database."))
+  (:documentation "Turn a Lisp object into a string for insertion in the database."))
 
 (defmacro defdeflate ((obj-name obj-type) &rest body)
   `(defmethod crane.inflate-deflate:deflate ((,obj-name ,obj-type))
@@ -29,5 +29,12 @@
                                              (type (eql ,obj-type-name)))
      ,@body))
 
-(definflate (obj 'text) obj)
 (definflate (obj 'integer) obj)
+(definflate (obj 'bigint) obj)
+(definflate (obj 'smallint) obj)
+(definflate (obj 'numeric) obj)
+(definflate (obj 'double) obj)
+(definflate (obj 'text) obj)
+(definflate (obj 'varchar) obj)
+(definflate (obj 'timestamp) obj)
+(definflate (obj 'datetime) obj)
