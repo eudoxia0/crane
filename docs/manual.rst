@@ -15,3 +15,4 @@ Contents:
    queries
    migrations
    transactions
+   fixtures
