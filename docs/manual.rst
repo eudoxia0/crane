@@ -9,7 +9,6 @@ Contents:
 
    overview
    connecting
-   connecting
    tables
    objects
    queries
