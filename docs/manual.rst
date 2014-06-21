@@ -11,3 +11,4 @@ Contents:
    connecting
    connecting
    tables
+   objects
