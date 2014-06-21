@@ -12,3 +12,4 @@ Contents:
    connecting
    tables
    objects
+   queries
