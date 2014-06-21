@@ -17,3 +17,4 @@ Contents:
    transactions
    fixtures
    inflation-deflation
+   appendix-a
