@@ -16,3 +16,4 @@ Contents:
    migrations
    transactions
    fixtures
+   inflation-deflation
