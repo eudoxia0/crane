@@ -18,3 +18,4 @@ Contents:
    fixtures
    inflation-deflation
    appendix-a
+   appendix-b
