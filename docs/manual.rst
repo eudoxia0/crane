@@ -10,3 +10,4 @@ Contents:
    overview
    connecting
    connecting
+   tables
