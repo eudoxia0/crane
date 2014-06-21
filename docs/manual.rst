@@ -13,3 +13,4 @@ Contents:
    tables
    objects
    queries
+   migrations
