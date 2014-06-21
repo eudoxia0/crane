@@ -15,9 +15,7 @@
 <p>Configuration for the databases might look like this:</p>
 <pre class="lisp"><code>(setup
  :migrations-directory
- (merge-pathnames
-  #p&quot;migrations/&quot;
-  (asdf:system-source-directory :myapp))
+ (asdf:system-relative-pathname :myapp #p&quot;migrations/&quot;)
  :databases
  &#39;(:main
    (:type :postgres
@@ -267,3 +265,16 @@
 </dl>
 <h2 id="mysql">MySQL</h2>
 <p><strong>Required and Optional</strong>: Same as <a href="#postgresql">PostgreSQL</a>, except for <code>:ssl</code>. The default port number <code>3306</code>.</p>
+<h1 id="appendix-b-how-crane-is-tested">Appendix B: How Crane is tested</h1>
+<p>Crane uses Vagrant to define multiple isolated virtual machines. The machines are provisioned using two scripts: An OS-specific script (Such as <code>debian.sh</code> or <code>centos.sh</code>) in the <code>t/provision</code> folder, and then the <code>common.sh</code> script in the same folder which handles OS-independent things such as installing Quicklisp.</p>
+<p>The <code>t/test.sh</code> file handles setting up the databases (Where necessary, for example, SQLite3 doesn't need that), running the tests, and then taking down the databases.</p>
+<p>The <code>run_tests.sh</code> script in the project root takes care of bringing up the machines, provisioning them, and running the tests. The virtual machines are defined in the <code>Vagrantfile</code> file.</p>
+<h2 id="tests">Tests</h2>
+<p>The struture of the tests (<code>t</code>) folder is:</p>
+<ul>
+<li><code>packages.lisp</code>: Defines the Common Lisp packages for the general and database-specific tests.</li>
+<li><code>utils.lisp</code>: Tests the utilities Crane implements for itself.</li>
+<li><code>connection-specs.lisp</code>: Tests the validity or invalidity of various connection specifications. See <a href="#connecting">Connecting</a>.</li>
+<li><code>postgres/</code>: Contains the tests specific to Postgres.</li>
+<li><code>sqlite3/</code>: Contains SQLite3-specific tests.</li>
+</ul>

@@ -108,9 +108,7 @@ To load "crane":
     <div class="code">
       <pre><code class="lisp">(setup
  :migrations-directory
- (merge-pathnames
-  #p"migrations/"
-  (asdf:system-source-directory :myapp))
+ (asdf:system-relative-pathname :myapp #p"migrations/")
  :databases
  '(:main
    (:type :postgres
@@ -177,7 +175,7 @@ To load "crane":
     </div>
   </div>
   <div class="example">
-    <h2>High-Level Interface</h2>  
+    <h2 id="high-level">High-Level Interface</h2>  
     <div class="description">
       <p>Simple things should be simple, and the interface is no
 exception. The majority of database queries in your application will probably be
@@ -205,7 +203,7 @@ simple <code>filter</code> filter calls.</p>
     </div>
   </div>
   <div class="example">
-    <h2><a href='https://github.com/fukamachi/sxql'>SxQL</a>: Functional, Composable SQL</h2>
+    <h2 id="sxql"><a href='https://github.com/fukamachi/sxql'>SxQL</a>: Functional, Composable SQL</h2>
     <div class="description">
       <p>Most ORMs provide a simple interface that looks simple enough in the
          examples &mdash; but quickly becomes painful to use in real-world
