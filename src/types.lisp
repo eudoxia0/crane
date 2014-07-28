@@ -15,7 +15,7 @@
 
 ;; Numeric types
 
-(deftype integer () `cl:integer)
+(deftype int () `cl:integer)
 (deftype bigint () `cl:integer)
 (deftype smallint () `cl:integer)
 (deftype numeric () `cl:ratio)
