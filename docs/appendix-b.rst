@@ -19,7 +19,7 @@ defined in the :code:`Vagrantfile` file.
 Tests
 =====
 
-The struture of the tests (:code:`t`) folder is:
+The structure of the tests (:code:`t`) folder is:
 
 * :code:`packages.lisp`: Defines the Common Lisp packages for the general and
   database-specific tests.
