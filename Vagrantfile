@@ -6,8 +6,8 @@ SUFFIX = "_chef-provisionerless.box"
 PROVISION_PATH = "t/provision/"
 
 BOXES = {
-  "debian" => "7.4",
-  "centos" => "6.5",
+  #"debian" => "7.4",
+  #"centos" => "6.5",
   "ubuntu" => "14.04",
 }
 
