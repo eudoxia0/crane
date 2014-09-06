@@ -8,7 +8,9 @@
   (finishes
    (create 'a :field-a 1)
    (create 'a :field-a 2)
-   (create 'a :field-a 3)))
+   (create 'a :field-a 3))
+  (finishes
+   (create-from-plist 'a (list :field-a 4))))
 
 (test saving
   (finishes
@@ -25,7 +27,7 @@
   (finishes
     (filter 'a :field-a 55))
   (is (= (length (filter 'a))
-         4))
+         5))
   (is (= (field-a (first (filter 'a :field-a 1)))
          1))
   (is (= (field-a (single 'a :field-a 1))))
