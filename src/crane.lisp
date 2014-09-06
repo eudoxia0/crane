@@ -21,6 +21,7 @@
   (:import-from :crane.interface
                 :drop-table
                 :create
+                :create-from-plist
                 :save
                 :del
                 :filter
@@ -86,6 +87,7 @@
    ;; High-level interface
    :drop-table
    :create
+   :create-from-plist
    :save
    :del
    :filter

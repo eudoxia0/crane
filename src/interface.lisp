@@ -86,6 +86,10 @@ SxQL. Deflation happens here."
   `(crane.interface::create% (make-instance ,class-name ,@args)))
 
 @export
+(defmacro create-from-plist (class plist)
+  `(crane.interface::create% (apply #'make-instance ,class ,plist)))
+
+@export
 (defmethod save ((obj crane.table:<table>))
   (let ((set (make-set obj)))
     (query (sxql:update (table-name (class-of obj))
