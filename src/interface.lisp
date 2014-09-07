@@ -78,7 +78,8 @@ SxQL. Deflation happens here."
                   (getf (first res) :|last_insert_rowid()|))
                 (getf (first results) :|id|))))
      ;; Query its ID
-     (setf (,(intern "ID" *package*) obj) id)
+     (setf (slot-value obj (intern "ID" (symbol-package (class-name class))))
+           id)
      obj))
 
 @export
