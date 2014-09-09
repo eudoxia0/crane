@@ -119,6 +119,7 @@ make-instance. Inflation happens here."
                   (type (crane.meta:col-type slot)))
              (list processed-key (inflate value type)))))))
 
+@export
 @doc "Convert a tuple produced by CL-DBI to a CLOS instance."
 (defmethod plist->object ((table table-class) tuple)
   (apply #'make-instance (cons table (clean-tuple table tuple))))

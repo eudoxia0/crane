@@ -24,6 +24,7 @@
                 :create-from-plist
                 :save
                 :del
+                :plist->object
                 :filter
                 :exists
                 :single
@@ -90,6 +91,7 @@
    :create-from-plist
    :save
    :del
+   :plist->object
    :filter
    :exists
    :single
