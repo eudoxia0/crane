@@ -106,7 +106,7 @@ SxQL. Deflation happens here."
       (db (class-of obj))))
 
 
-@doc "Process a tuple created by a CL-DBI into a format that can be accepted by
+@doc "Process a plist returned by CL-DBI into a format that can be accepted by
 make-instance. Inflation happens here."
 (defmethod clean-tuple ((table table-class) tuple)
   (flet ((process-key (key)
@@ -120,11 +120,11 @@ make-instance. Inflation happens here."
              (list processed-key (inflate value type)))))))
 
 @doc "Convert a tuple produced by CL-DBI to a CLOS instance."
-(defmethod tuple->object ((table table-class) tuple)
+(defmethod plist->object ((table table-class) tuple)
   (apply #'make-instance (cons table (clean-tuple table tuple))))
 
-(defmethod tuple->object ((table-name symbol) tuple)
-  (tuple->object (find-class table-name) tuple))
+(defmethod plist->object ((table-name symbol) tuple)
+  (plist->object (find-class table-name) tuple))
 
 @export
 (defmacro filter (class &rest params)
@@ -134,7 +134,7 @@ make-instance. Inflation happens here."
                       (iter (for item in params)
                         (for prev previous item back 1 initially nil)
                         (unless (keywordp prev) (collect item))))))
-    `(mapcar #'(lambda (tuple) (tuple->object ,class tuple))
+    `(mapcar #'(lambda (tuple) (plist->object ,class tuple))
              (crane.query:query
                  ,(append
                    `(sxql:select :*
@@ -169,7 +169,7 @@ make-instance. Inflation happens here."
                                             equal-params)
                                   ,@fn-params)))))
           (crane.meta:db ,class))
-         (let ((,result-name (tuple->object ,class ,result-name)))
+         (let ((,result-name (plist->object ,class ,result-name)))
            ,@body))))
 
 @export
