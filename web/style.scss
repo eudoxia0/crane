@@ -49,7 +49,7 @@ header {
         #title {
             font-weight: 400;
         }
-        
+
         #subtitle {
             font-weight: 300;
         }
@@ -95,7 +95,7 @@ header {
             position: absolute;
             top: 5px;
         }
-        
+
         li {
             list-style: none;
         }
@@ -155,7 +155,7 @@ section {
     .section-column {
         @include column(40%, 5%);
     }
-    
+
     p {
         text-align: justify;
     }
@@ -180,7 +180,7 @@ footer {
     font-size: 14px;
     width: 100%;
     bottom: 0;
-    background-color: #000000; 
+    background-color: #000000;
     color: #f9f9f9;
     padding-top: 15px;
     padding-bottom:  15px;

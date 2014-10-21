@@ -19,7 +19,7 @@
     (deftable table-c (table-a)
       (field-b :type integer :nullp nil)
       (:table-name table--c))))
-    
+
 (test find-tables
   (finishes
     (find-class 'table-a)
@@ -48,7 +48,7 @@
   (finishes
     (deftable parent-table ()
       (something :type integer))
-   
+
     (deftable child-table ()
       (something-else :type text :initform "Foo")
       (ref :type integer :foreign (parent-table :on-delete :cascade)))))

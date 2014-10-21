@@ -19,7 +19,7 @@
 <h1>Usage</h1>
 <section id="usage">
   <div class="example">
-    <h2>Getting it</h2>  
+    <h2>Getting it</h2>
     <div class="description">
       <p>Crane is available on <a href='http://quicklisp.org/'>Quicklisp</a>,
          just one quick <code>quickload</code> away.</p>
@@ -35,7 +35,7 @@ To load "crane":
     </div>
   </div>
   <div class="example">
-    <h2>Configuring and Connecting</h2>  
+    <h2>Configuring and Connecting</h2>
     <div class="description">
       <p>First things first: Setup. All Crane needs to get going is a list of
          databases to connect to, authentication information, and a directory
@@ -56,7 +56,7 @@ To load "crane":
     </div>
   </div>
   <div class="example">
-    <h2>Defining Tables</h2>  
+    <h2>Defining Tables</h2>
     <div class="description">
       <p>Crane has a very simple table definition syntax, inspired by that of
          the Django ORM. This, combined with automatic migrations, lets you
@@ -69,7 +69,7 @@ To load "crane":
     </div>
   </div>
   <div class="example">
-    <h2>Automatic Migrations</h2>  
+    <h2>Automatic Migrations</h2>
     <div class="description">
       <p>Migrations are just another part of your development cycle &mdash; not
         an exceptional situation. Just change your table definitions and let
@@ -91,7 +91,7 @@ To load "crane":
     </div>
   </div>
   <div class="example">
-    <h2>Creating, Saving, and Deleting Objects</h2>  
+    <h2>Creating, Saving, and Deleting Objects</h2>
     <div class="description">
       <p>Just these three functions. To create an object, use the
          <code>create</code> function. <code>save</code> and <code>del</code> do
@@ -111,7 +111,7 @@ To load "crane":
     </div>
   </div>
   <div class="example">
-    <h2 id="high-level">High-Level Interface</h2>  
+    <h2 id="high-level">High-Level Interface</h2>
     <div class="description">
       <p>Simple things should be simple, and the interface is no
 exception. The majority of database queries in your application will probably be
@@ -160,7 +160,7 @@ simple <code>filter</code> filter calls.</p>
     </div>
   </div>
   <div class="example">
-    <h2>Transactions</h2>  
+    <h2>Transactions</h2>
     <div class="description">
       <p>Crane provides a macro &ndash; <code>with-transaction</code> &ndash;
          that automatically takes care of setting up a transaction and aborting
@@ -186,7 +186,7 @@ simple <code>filter</code> filter calls.</p>
     </div>
   </div>
   <div class="example">
-    <h2>Fixtures</h2>  
+    <h2>Fixtures</h2>
     <div class="description">
       <p>Fixtures are provided through the
         <a href='https://github.com/eudoxia0/clos-fixtures'>clos-fixtures</a>
@@ -214,7 +214,7 @@ simple <code>filter</code> filter calls.</p>
     </div>
   </div>
   <div class="example">
-    <h2>Inflation/Deflation</h2>  
+    <h2>Inflation/Deflation</h2>
     <div class="description">
       <p>Crane supports <em>inflating</em> values returned by the database into
          more complex CLOS objects, and <em>deflating</em> those same objects

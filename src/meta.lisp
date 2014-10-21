@@ -128,7 +128,7 @@
 
           (slot-value effective-slot-definition 'col-null-p)
           (col-null-p (first direct-slot-definitions))
-          
+
           (slot-value effective-slot-definition 'col-unique-p)
           (col-unique-p (first direct-slot-definitions))
 
@@ -148,7 +148,7 @@
 
           (slot-value effective-slot-definition 'col-autoincrement-p)
           (col-autoincrement-p (first direct-slot-definitions))
-          
+
           (slot-value effective-slot-definition 'col-check)
           (if (slot-boundp (first direct-slot-definitions) 'col-check)
               (col-check (first direct-slot-definitions))

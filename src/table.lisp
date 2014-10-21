@@ -27,7 +27,6 @@
         (append (list :initarg (intern (symbol-name slot-name) :keyword))
                 plist-with-accessor)
         plist-with-accessor)))
-      
 
 @doc "Take a plist like (:col-type 'string :col-null-p t) and remove the
 prefixes on the keys. Turn 'deftable slot properties' (:type, :nullp, etc.) into

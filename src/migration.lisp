@@ -121,7 +121,7 @@ history for the table `table-name`."
              (appending
               (cons (format nil "ALTER TABLE ~A ADD COLUMN ~A"
                             (crane.sql:sqlize table-name) (getf def :definition))
-                    (append 
+                    (append
                      (mapcar #'(lambda (internal-constraint)
                                  (crane.sql:add-constraint
                                   table-name
