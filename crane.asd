@@ -15,9 +15,7 @@
                 :components
                 ((:file "errors")
                  (:file "config")
-                 (:module "utils"
-                  :components
-                  ((:file "utils")))
+                 (:file "utils")
                  (:file "connect")
                  (:file "sql")
                  (:file "meta")
