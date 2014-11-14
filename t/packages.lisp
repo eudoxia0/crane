@@ -20,14 +20,10 @@
   :description "Start with a clean slate")
 (in-suite preliminary)
 
-(test configure-migrations-dir
-  (finishes
-   (crane:setup
-    :migrations-directory
-    (asdf:system-relative-pathname :crane-test #p"t/migrations/"))))
-
 (test delete-migrations
   (finishes
-    (delete-migrations t)))
+    (let ((dir (asdf:system-relative-pathname :crane-test #p"t/migrations/")))
+      (when (fad:directory-exists-p dir)
+        (fad:delete-directory-and-files dir)))))
 
 (run! 'preliminary)

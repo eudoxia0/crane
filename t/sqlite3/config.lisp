@@ -15,11 +15,11 @@
    (:type :sqlite3
     :name ":memory:")))
 
+(test main-db
+  (is (equal :sqlite-db crane.connect:*default-db*)))
+
 (test connect
   (finishes
     (crane.connect:connect)))
-
-(test main-db
-  (is (equal :sqlite-db crane.connect:*default-db*)))
 
 (run! 'config)

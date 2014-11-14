@@ -93,7 +93,10 @@ spec for the database '~A' have not been provided: ~A" db it))
          :initarg :name
          :type string
          :documentation "The database name. If it's an SQLite3 database, must be the pathname's namestring.")
-   (conn :reader database-connection
+   (conn-spec :reader database-connection-spec
+              :initarg :conn-spec
+              :documentation "The connection specification.")
+   (conn :accessor database-connection
          :initarg :connection
          :documentation "The underlying connection object."))
   (:documentation "A database."))
@@ -101,39 +104,44 @@ spec for the database '~A' have not been provided: ~A" db it))
 @doc "The name of the default database"
 (defparameter *default-db* nil)
 
-(defun connect-spec (db spec)
-  (let ((type (getf spec :type)))
-    (aif (getf +system-mapping+ type)
-         (progn
-           (load-driver it)
-           (let ((connection
-                   (apply #'dbi:connect
-                          (cons type
-                                (validate-connection-spec db
-                                                          type
-                                                          (remove-from-plist spec :type))))))
-             (set-proper-quote-character connection type)
-             connection))
-         (error 'crane.errors:configuration-error
-                :key (list :databases :-> db)
-                :text (format nil
-                              "The database type '~A' is not supported by DBI yet."
-                              type)))))
+(defun validate-all-databases ()
+  "Immediately after configuration, iterate over the list of defined databases, validating configuration parameters, creating their corresponding <database> instances, and setting the value of *default-db*."
+  (let ((databases (crane.config:get-config-value :databases)))
+    (iter (for (db spec) on databases by #'cddr)
+      (let ((name (getf spec :name))
+            (type (getf spec :type)))
+        (aif (getf +system-mapping+ type)
+             (let ((database (make-instance '<database>
+                                            :name name
+                                            :type type
+                                            :conn-spec spec)))
+               (load-driver it)
+               (setf (gethash db *db*) database))
+             (error 'crane.errors:configuration-error
+                    :key (list :databases :-> db)
+                    :text (format nil
+                                  "The database type '~A' is not supported by DBI yet."
+                                  type)))))
+    (setf *default-db* (first databases))))
+
+(setf crane.config:*after-config-hook*
+      #'validate-all-databases)
+
+(defmethod make-connection ((database <database>))
+  (let* ((spec (database-connection-spec database))
+         (type (getf spec :type))
+         (conn (apply #'dbi:connect
+                      (cons type
+                            (validate-connection-spec database
+                                                      type
+                                                      (remove-from-plist spec :type))))))
+    (set-proper-quote-character conn type)
+    (setf (database-connection database) conn)))
 
 @doc "Connect to all the databases specified in the configuration."
 (defun connect ()
-  (aif (crane.config:get-config-value :databases)
-       (progn
-         (iter (for (db spec) on it by #'cddr)
-               (setf (gethash db *db*)
-                     (make-instance '<database>
-                                    :name (getf spec :name)
-                                    :type (getf spec :type)
-                                    :connection (connect-spec db spec))))
-         (setf *default-db* (car it)))
-       (error 'crane.errors:configuration-error
-              :key :databases
-              :text "No databases found.")))
+  (loop for db being the hash-values in *db* do
+    (make-connection db)))
 
 @doc "Return the database matching a specific name"
 (defun get-db (&optional database-name)

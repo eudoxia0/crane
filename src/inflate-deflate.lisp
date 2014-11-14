@@ -17,6 +17,7 @@
 
 (defdeflate (str string) str)
 (defdeflate (num number) num)
+(defdeflate (obj t) obj)
 
 (defgeneric inflate (obj type-name)
   (:documentation "Turn a string into a CLOS object."))

@@ -1,7 +1,8 @@
 (in-package :cl-user)
 (defpackage :crane.config
   (:use :cl :annot.doc :anaphora)
-  (:export :setup
+  (:export :*after-config-hook*
+           :setup
            :debugp
            :get-configuration
            :get-config-value)
@@ -12,11 +13,16 @@
 @doc "This variable holds Crane's global configuration."
 (defparameter *config* nil)
 
+@doc "A function that gets executed after setup is called. Takes no arguments, does nothing by default."
+(defparameter *after-config-hook*
+  #'(lambda () nil))
+
 @doc "Set the configuration."
 (defun setup (&key migrations-directory databases (debug nil))
   (setf *config* (list :migrations-directory migrations-directory
                        :databases databases
-                       :debug debug)))
+                       :debug debug))
+  (funcall *after-config-hook*))
 
 @doc "Determine if Crane is in debug mode."
 (defun debugp ()
