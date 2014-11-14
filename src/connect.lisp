@@ -3,7 +3,15 @@
   (:import-from :alexandria
                 :remove-from-plist)
   (:import-from :sxql
-                :*quote-character*))
+                :*quote-character*)
+  (:export :<database>
+           :database-type
+           :database-name
+           :database-connection
+           :*default-db*
+           :connect
+           :get-db
+           :get-connection))
 (in-package :crane.connect)
 (annot:enable-annot-syntax)
 
@@ -75,15 +83,21 @@ spec for the database '~A' have not been provided: ~A" db it))
 @doc "A map from database names to <database> objects."
 (defparameter *db* (make-hash-table))
 
-@export
-@export-accessors
 (defclass <database> ()
-  ((type :reader database-type :initarg :type)
-   (name :reader database-name :initarg :name)
-   (conn :reader database-connection :initarg :connection)))
+  ((type :reader database-type
+         :initarg :type
+         :type keyword
+         :documentation "A keyword representing the database type, e.g :sqlite3, :postgres.")
+   (name :reader database-name
+         :initarg :name
+         :type string
+         :documentation "The database name. If it's an SQLite3 database, must be the pathname's namestring.")
+   (conn :reader database-connection
+         :initarg :connection
+         :documentation "The underlying connection object."))
+  (:documentation "A database."))
 
 @doc "The name of the default database"
-@export
 (defparameter *default-db* nil)
 
 (defun connect-spec (db spec)
@@ -106,7 +120,6 @@ spec for the database '~A' have not been provided: ~A" db it))
                               type)))))
 
 @doc "Connect to all the databases specified in the configuration."
-@export
 (defun connect ()
   (aif (crane.config:get-config-value :databases)
        (progn
@@ -122,11 +135,9 @@ spec for the database '~A' have not been provided: ~A" db it))
               :text "No databases found.")))
 
 @doc "Return the database matching a specific name"
-@export
 (defun get-db (&optional database-name)
   (gethash (aif database-name it *default-db*) *db*))
 
 @doc "Return the connection handler for a given database."
-@export
 (defun get-connection (&optional database-name)
   (database-connection (get-db database-name)))

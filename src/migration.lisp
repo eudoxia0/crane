@@ -11,7 +11,15 @@
   (:import-from :crane.meta
                 :table-name
                 :digest
-                :diff-digest))
+                :diff-digest)
+  (:export :migration-history-p
+           :get-last-migration
+           :insert-migration
+           :rename-migration-history
+           :create-table
+           :migrate
+           :build
+           :delete-migrations))
 (in-package :crane.migration)
 (annot:enable-annot-syntax)
 
@@ -26,7 +34,6 @@ history for the table `table-name`."
    (get-migration-dir)))
 
 @doc "T if the table has a migration history, NIL otherwise"
-@export
 (defun migration-history-p (table-name)
   (probe-file (migration-history-pathname table-name)))
 
@@ -35,7 +42,6 @@ history for the table `table-name`."
    (crane.utils:slurp-file
     (migration-history-pathname table-name))))
 
-@export
 (defun get-last-migration (table-name)
   (first (last (read-migration-history table-name))))
 
@@ -55,7 +61,6 @@ history for the table `table-name`."
   (format stream ")"))
 
 @doc "Insert a new diff to the migration history"
-@export
 (defun insert-migration (table-name digest)
   (with-open-file (stream (migration-history-pathname table-name)
                           :direction :output
@@ -67,7 +72,6 @@ history for the table `table-name`."
         (serialize stream (append (read-migration-history table-name)
                                   (list digest))))))
 
-@export
 (defun rename-migration-history (table-name new-name)
   (rename-file (migration-history-pathname table-name) new-name))
 
@@ -79,7 +83,6 @@ history for the table `table-name`."
   ;; Is that clear?
   )
 
-@export
 (defun create-table (table-name digest)
   (let* ((constraints (crane.sql:create-and-sort-constraints
                        table-name
@@ -96,7 +99,6 @@ history for the table `table-name`."
     (format t "~&Query: ~A~&" query)
     (dbi:execute (dbi:prepare conn query))))
 
-@export
 (defun migrate (table-class diff)
   (let* ((table-name (crane.meta:table-name table-class))
          (alterations
@@ -162,7 +164,6 @@ history for the table `table-name`."
           (insert-migration table-name digest)
           (create-table table-name digest)))))
 
-@export
 (defun delete-migrations (&optional force)
   (when (or force (yes-or-no-p "Really delete migrations?"))
     (fad:delete-directory-and-files

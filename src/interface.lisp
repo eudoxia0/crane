@@ -18,7 +18,21 @@
                 :query)
   (:import-from :crane.inflate-deflate
                 :deflate
-                :inflate))
+                :inflate)
+  (:export :drop-table
+           :create%
+           :create
+           :create-from-plist
+           :save
+           :del
+           :plist->object
+           :filter
+           :do-filter
+           :exists
+           :single
+           :single!
+           :single-or-create
+           :deref))
 (in-package :crane.interface)
 (annot:enable-annot-syntax)
 
@@ -26,7 +40,6 @@
   (query (sxql:drop-table (table-name table))
          (db table)))
 
-@export
 (defmethod drop-table ((table-name symbol))
   (drop-table (find-class table-name)))
 
@@ -48,7 +61,6 @@ SxQL. Deflation happens here."
                  ;; instance of an object, store that object's id
                  (deflate (slot-value obj slot))))))))
 
-@export
 (defmacro create% (obj)
   `(let* ((obj ,obj)
           (class (class-of obj))
@@ -82,15 +94,12 @@ SxQL. Deflation happens here."
            id)
      obj))
 
-@export
 (defmacro create (class-name &rest args)
   `(crane.interface::create% (make-instance ,class-name ,@args)))
 
-@export
 (defmacro create-from-plist (class plist)
   `(crane.interface::create% (apply #'make-instance ,class ,plist)))
 
-@export
 (defmethod save ((obj crane.table:<table>))
   (let ((set (make-set obj)))
     (query (sxql:update (table-name (class-of obj))
@@ -99,7 +108,6 @@ SxQL. Deflation happens here."
                         (sxql:where (:= :id (getf set :id))))
         (db (class-of obj)))))
 
-@export
 (defmethod del ((obj crane.table:<table>))
   (query (sxql:delete-from (table-name (class-of obj))
            (sxql:where (:= :id (getf (make-set obj) :id))))
@@ -119,7 +127,6 @@ make-instance. Inflation happens here."
                   (type (crane.meta:col-type slot)))
              (list processed-key (inflate value type)))))))
 
-@export
 @doc "Convert a tuple produced by CL-DBI to a CLOS instance."
 (defmethod plist->object ((table table-class) tuple)
   (apply #'make-instance (cons table (clean-tuple table tuple))))
@@ -127,7 +134,6 @@ make-instance. Inflation happens here."
 (defmethod plist->object ((table-name symbol) tuple)
   (plist->object (find-class table-name) tuple))
 
-@export
 (defmacro filter (class &rest params)
   (let* ((equal-params (remove-if-not #'keywordp params))
          (fn-params
@@ -149,7 +155,6 @@ make-instance. Inflation happens here."
                                          ,@fn-params)))))
                  (crane.meta:db ,class)))))
 
-@export
 (defmacro do-filter ((result-name class &rest params) &rest body)
   (let* ((equal-params (remove-if-not #'keywordp params))
          (fn-params
@@ -173,28 +178,23 @@ make-instance. Inflation happens here."
          (let ((,result-name (plist->object ,class ,result-name)))
            ,@body))))
 
-@export
 (defmacro exists (class &rest params)
   `(if (filter ,class ,@params) t nil))
 
-@export
 (defmacro single (class &rest params)
   `(first (filter ,class ,@params)))
 
-@export
 (defmacro single! (class &rest params)
   `(anaphora:aif (get ,class ,@params)
                  anaphora:it
                  (error 'crane.errors:query-error
                         :text "Call to get returned more than one result.")))
 
-@export
 (defmacro single-or-create (class &rest params)
   `(anaphora:aif (get ,class ,@params)
                  anaphora:it
                  (create ,class ,@params)))
 
-@export
 (defmacro deref (obj field)
   `(single
     (first (crane.meta:col-foreign (crane.utils::find-slot

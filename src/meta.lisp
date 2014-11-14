@@ -7,26 +7,30 @@
   (:import-from :crane.connect
                 :database-type
                 :get-db)
-  (:export
-   :col-type
-   :col-null-p
-   :col-unique-p
-   :col-primary-p
-   :col-index-p
-   :col-foreign
-   :col-autoincrement-p
-   :col-check))
+  (:export :table-class
+           :table-name
+           :abstractp
+           :deferredp
+           :db
+           :col-type
+           :col-null-p
+           :col-unique-p
+           :col-primary-p
+           :col-index-p
+           :col-foreign
+           :col-autoincrement-p
+           :col-check
+           :digest
+           :diff-digest))
 (in-package :crane.meta)
 (annot:enable-annot-syntax)
 
-@export
 (defclass table-class (closer-mop:standard-class)
   ((table-name :reader table-class-name :initarg :table-name)
    (abstractp :reader table-class-abstract-p :initarg :abstractp :initform (list nil))
    (deferredp :reader table-class-deferred-p :initarg :deferredp :initform (list nil))
    (db :reader table-class-db :initarg :db :initform (list crane.connect:*default-db*))))
 
-@export
 (defmethod table-name ((class table-class))
   (if (slot-boundp class 'table-name)
       (car (table-class-name class))
@@ -35,21 +39,18 @@
 (defmethod table-name ((class-name symbol))
   (table-name (find-class class-name)))
 
-@export
 (defmethod abstractp ((class table-class))
   (car (table-class-abstract-p class)))
 
 (defmethod abstractp ((class-name symbol))
   (abstractp (find-class class-name)))
 
-@export
 (defmethod deferredp ((class table-class))
   (car (table-class-deferred-p class)))
 
 (defmethod deferredp ((class-name symbol))
   (deferredp (find-class class-name)))
 
-@export
 (defmethod db ((class table-class))
   (aif (car (table-class-db class))
        it
@@ -166,7 +167,6 @@
         :autoincrementp (col-autoincrement-p slot)
         :foreign (col-foreign slot)))
 
-@export
 (defmethod digest ((class table-class))
   "Serialize a class's options and slots' options into a plist"
   (list :table-options
@@ -193,7 +193,6 @@ See DIGEST."
 (defun sort-slot-list (list)
   list)
 
-@export
 (defun diff-digest (digest-a digest-b)
   "Compute the difference between two digests.
 See DIGEST."

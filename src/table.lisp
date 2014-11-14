@@ -1,6 +1,7 @@
 (defpackage :crane.table
   (:use :cl :anaphora :cl-annot.doc :iter)
-  (:export :<table>))
+  (:export :<table>
+           :deftable))
 (in-package :crane.table)
 (annot:enable-annot-syntax)
 
@@ -57,7 +58,6 @@ symbols, table options are keywords."
 (defun any-concrete-superclasses (superclasses)
   (remove-if #'crane.meta:abstractp superclasses))
 
-@export
 (defmacro deftable (name (&rest superclasses) &rest slots-and-options)
   (destructuring-bind (slots options)
       (separate-slots-and-options slots-and-options)

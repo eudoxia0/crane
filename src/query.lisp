@@ -5,7 +5,9 @@
                 :db)
   (:import-from :crane.config
                 :debugp)
-  (:export :meta-query))
+  (:export :meta-query
+           :query
+           :do-query))
 (in-package :crane.query)
 (annot:enable-annot-syntax)
 
@@ -21,13 +23,11 @@
 
 
 @doc "Execute an SxQL query on the database `database-name`."
-@export
 (defmacro query (query &optional database-name)
   `(crane.query:meta-query ,query ,database-name (dbi:fetch-all result)))
 
 @doc "Execute code for each result in the query, without aggregating them all
 into a list."
-@export
 (defmacro do-query ((result-name query &optional database-name)
                     &rest body)
   `(crane.query:meta-query ,query ,database-name
