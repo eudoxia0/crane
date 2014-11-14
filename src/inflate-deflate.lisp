@@ -1,14 +1,11 @@
-;;;; Inflation/deflation map SQL string to CLOS objects. This is unrelated to
-;;;; the ORM, and meant to allow complex column datatypes to be mapped to CLOS
-;;;; objects. For example, mapping SQL timestamps to structures that represent
-;;;; time, or mapping other more complex SQL types to CLOS objects.
 (in-package :cl-user)
 (defpackage :crane.inflate-deflate
   (:use :cl :anaphora :crane.types)
   (:export :inflate
            :definflate
            :deflate
-           :defdeflate))
+           :defdeflate)
+  (:documentation "Inflation/deflation map SQL string to CLOS objects. This is unrelated to the ORM, and meant to allow complex column datatypes to be mapped to CLOS objects. For example, mapping SQL timestamps to structures that represent time, or mapping other more complex SQL types to CLOS objects."))
 (in-package :crane.inflate-deflate)
 
 (defgeneric deflate (obj)

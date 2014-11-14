@@ -16,7 +16,8 @@
            :add-constraint
            :drop-constraint
            :alter-constraint
-           :drop-column))
+           :drop-column)
+  (:documentation "This module handles the generation of SQL for table definition and migration."))
 (in-package :crane.sql)
 (annot:enable-annot-syntax)
 

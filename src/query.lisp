@@ -7,7 +7,8 @@
                 :debugp)
   (:export :meta-query
            :query
-           :do-query))
+           :do-query)
+  (:documentation "Executing cl-dbi queries in the context of Crane."))
 (in-package :crane.query)
 (annot:enable-annot-syntax)
 

@@ -11,7 +11,8 @@
            :*default-db*
            :connect
            :get-db
-           :get-connection))
+           :get-connection)
+  (:documentation "Handles database connections, connection parameter validation, and various low-level DB-specific modes."))
 (in-package :crane.connect)
 (annot:enable-annot-syntax)
 

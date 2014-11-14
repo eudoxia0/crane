@@ -4,7 +4,8 @@
   (:export :configuration-error
            :no-configuration-error
            :empty-table
-           :query-error))
+           :query-error)
+  (:documentation "Definition of Crane errors."))
 (in-package :crane.errors)
 (annot:enable-annot-syntax)
 

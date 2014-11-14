@@ -6,7 +6,8 @@
   (:export :with-transaction
            :begin-transaction
            :commit
-           :rollback))
+           :rollback)
+  (:documentation "Implements transactions."))
 (in-package :crane.transaction)
 
 (defmacro with-transaction ((&optional (db crane.connect:*default-db*))

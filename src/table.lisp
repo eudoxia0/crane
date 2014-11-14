@@ -1,7 +1,8 @@
 (defpackage :crane.table
   (:use :cl :anaphora :cl-annot.doc :iter)
   (:export :<table>
-           :deftable))
+           :deftable)
+  (:documentation "Implements the deftable macro."))
 (in-package :crane.table)
 (annot:enable-annot-syntax)
 

@@ -1,6 +1,3 @@
-;;;; This file defines the metaclasses that map CLOS objects to SQL tables, and
-;;;; some basic operations on them.
-
 (in-package :cl-user)
 (defpackage :crane.meta
   (:use :cl :anaphora :cl-annot.doc :iter)
@@ -21,7 +18,8 @@
            :col-autoincrement-p
            :col-check
            :digest
-           :diff-digest))
+           :diff-digest)
+  (:documentation "This file defines the metaclasses that map CLOS objects to SQL tables, and some basic operations on them."))
 (in-package :crane.meta)
 (annot:enable-annot-syntax)
 

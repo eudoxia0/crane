@@ -1,12 +1,11 @@
-;;;; Read and write the configuration
-
 (in-package :cl-user)
 (defpackage :crane.config
   (:use :cl :annot.doc :anaphora)
   (:export :setup
            :debugp
            :get-configuration
-           :get-config-value))
+           :get-config-value)
+  (:documentation "Functions for reading and writing from and to the global configuration."))
 (in-package :crane.config)
 (annot:enable-annot-syntax)
 

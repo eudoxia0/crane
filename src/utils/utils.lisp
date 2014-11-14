@@ -7,7 +7,8 @@
            :find-class-slot
            :find-slot
            :get-class-slot
-           :get-slot))
+           :get-slot)
+  (:documentation "Various utilities for use in other parts of Crane."))
 (in-package :crane.utils)
 (annot:enable-annot-syntax)
 

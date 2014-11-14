@@ -1,8 +1,3 @@
-;;;; The first part of this file contains various simple utilities for
-;;;; manipulating the migration history of a table. The second part contains
-;;;; code that actually creates tables and migrates them. The actual generation
-;;;; of table-creating SQL is handled by src/sql.lisp
-
 (defpackage :crane.migration
   (:use :cl :anaphora :cl-annot.doc :iter)
   (:import-from :crane.config
@@ -19,7 +14,8 @@
            :create-table
            :migrate
            :build
-           :delete-migrations))
+           :delete-migrations)
+  (:documentation "The first part of this package contains various simple utilities for manipulating the migration history of a table. The second part contains code that actually creates tables and migrates them. The actual generation of table-creating SQL is handled by crane.sql."))
 (in-package :crane.migration)
 (annot:enable-annot-syntax)
 
