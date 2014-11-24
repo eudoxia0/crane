@@ -10,6 +10,7 @@
            :database-connection
            :*default-db*
            :connect
+           :disconnect
            :get-db
            :get-connection)
   (:documentation "Handles database connections, connection parameter validation, and various low-level DB-specific modes."))
@@ -142,6 +143,11 @@ spec for the database '~A' have not been provided: ~A" db it))
 (defun connect ()
   (loop for db being the hash-values in *db* do
     (make-connection db)))
+
+@doc "Cut all connections."
+(defun disconnect ()
+  (loop for db being the hash-values in *db* do
+    (dbi:disconnect (database-connection db))))
 
 @doc "Return the database matching a specific name"
 (defun get-db (&optional database-name)

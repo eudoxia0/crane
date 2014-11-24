@@ -5,6 +5,7 @@
   (:import-from :crane.connect
                 :*default-db*
                 :connect
+                :disconnect
                 :get-connection)
   (:import-from :crane.query
                 :query
@@ -62,6 +63,7 @@
    ;; Connections
    :*default-db*
    :connect
+   :disconnect
    :get-connection
    ;; Low-level interface
    :query
