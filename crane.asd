@@ -9,7 +9,8 @@
                :iterate
                :cl-annot
                :cl-fad
-               :clos-fixtures)
+               :clos-fixtures
+               :uiop)
   :components ((:module "src"
                 :serial t
                 :components
