@@ -35,7 +35,7 @@ history for the table `table-name`."
 
 (defun read-migration-history (table-name)
   (read-from-string
-   (crane.utils:slurp-file
+   (uiop:read-file-string
     (migration-history-pathname table-name))))
 
 (defun get-last-migration (table-name)
