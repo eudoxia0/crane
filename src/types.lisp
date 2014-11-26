@@ -8,7 +8,6 @@
            :numeric
            :double
            :text
-           :string
            :varchar
            :timestamp
            :datetime)
@@ -26,7 +25,6 @@
 ;; Text
 
 (deftype text () `cl:string)
-(deftype string () `cl:string)
 (deftype varchar () `cl:string)
 
 ;; Extra
