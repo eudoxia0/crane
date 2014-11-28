@@ -30,7 +30,8 @@
            :single!
            :single-or-create
            :deref)
-  (:documentation "This package contains the methods used to access and alter database records in an object-oriented way."))
+  (:documentation "This package contains the methods used to access and alter
+ database records in an object-oriented way."))
 (in-package :crane.interface)
 (annot:enable-annot-syntax)
 
