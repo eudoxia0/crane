@@ -1,0 +1,31 @@
+language: common-lisp
+
+env:
+  matrix:
+    - LISP=sbcl
+    - LISP=ccl
+
+install:
+  # Install cl-travis
+  - curl https://raw.githubusercontent.com/luismbo/cl-travis/master/install.sh | bash
+  # So MySQL won't prompt me for a password
+  - export DEBIAN_FRONTEND=noninteractive
+  # Update repo
+  - sudo apt-get update
+  # Install Postgres
+  - sudo apt-get install -y postgresql
+  # Install MySQL
+  - sudo apt-get install -y mysql-server-5.5 mysql-server mysql-client
+  # Install SQLite
+  - sudo apt-get install -y sqlite3
+  # Set up Postgres
+  - sudo -u postgres createdb crane_test_db
+  - sudo -u postgres psql -c "CREATE USER crane_test_user WITH PASSWORD 'crane_test_user'"
+  - sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE crane_test_db TO crane_test_user"
+
+script:
+  - cl-launch -i "(ql:quickload :crane-test)"
+
+notifications:
+  email:
+    - eudoxiahp@gmail.com
