@@ -6,3 +6,29 @@ baseurl: "/crane"
 
 # Build settings
 markdown: kramdown
+
+# Documentation pages
+
+docs:
+  - title: Overview
+    url: "/overview.html"
+  - title: Connecting
+    url: "/connecting.html"
+  - title: Tables
+    url: "/tables.html"
+  - title: Creating, Saving, and Deleting Objects
+    url: "/objects.html"
+  - title: Making Queries
+    uri: "/queries.html"
+  - title: Migrations
+    uri: "/migrations.html"
+  - title: Transactions
+    uri: "/transactions.html"
+  - title: Fixtures
+    uri: "/fixtures.html"
+  - title: Inflate/Deflate
+    uri: "/inflate.html"
+  - title: "Appendix A: Connecting"
+    uri: "/appendix-a.html"
+  - title: "Appendix B: How Crane is tested"
+    uri: "/appendix-b.html"
