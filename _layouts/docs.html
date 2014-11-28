@@ -5,6 +5,14 @@ layout: default
 {% include small_header.html %}
 <article>
   <h1>{{ page.title }}</h1>
+  <ul class="pages">
+    {% for page in site.pages %}
+      {% if page.layout == 'docs' %}
+        <li><a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
   <div class="text">
+    {{ content }}
   </div>
 </article>
