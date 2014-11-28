@@ -9,17 +9,17 @@ configuration when the `crane:connect` function is called (No parameters).
 Configuration for the databases might look like this:
 
 ~~~lisp
-  (setup
-   :migrations-directory
-   (asdf:system-relative-pathname :myapp #p"migrations/")
-   :databases
-   '(:main
-     (:type :postgres
-      :name "myapp_db"
-      :user "user"
-      :pass "user")))
+(setup
+ :migrations-directory
+ (asdf:system-relative-pathname :myapp #p"migrations/")
+ :databases
+ '(:main
+   (:type :postgres
+    :name "myapp_db"
+    :user "user"
+    :pass "user")))
 
-  (connect)
+(connect)
 ~~~
 
 The value of `:databases` is a plist that maps a database's name (Not the actual
