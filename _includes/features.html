@@ -1,0 +1,237 @@
+<h1>Philosophy</h1>
+<section id="philosophy">
+  <div class="section-column">
+    <h3>Non-opinionated</h3>
+    <p>Crane doesn't drink the ORM Kool Aid: You won't spend a single minute
+    struggling with an interface that claims to be &ldquo;simple&rdquo; yet
+    forces you into a limited vision of how databases should work.</p>
+    <p>To make simple queries, Crane has a <a href="#high-level">simple interface</a>.
+    For more complex stuff, use the <a href="#sxql">SQL query DSL</a>. If you
+    like plain old fashioned SQL, you can use that too &mdash; Crane doesn't
+    judge.</p>
+  </div>
+  <div class="section-column">
+    <h3>Explicit without being verbose</h3>
+    <p>Crane doesn't create tables you don't know about, implicitly follow
+    relations, or generate any unexpected SQL. There are no surprises here.</p>
+  </div>
+</section>
+<h1>Usage</h1>
+<section id="usage">
+  <div class="example">
+    <h2>Getting it</h2>
+    <div class="description">
+      <p>Crane is available on <a href='http://quicklisp.org/'>Quicklisp</a>,
+         just one quick <code>quickload</code> away.</p>
+    </div>
+    <div class="code">
+      <pre><code class="lisp">cl-user> (ql:quickload :crane)
+To load "crane":
+  Load 1 ASDF system:
+    crane
+; Loading "crane"
+...
+(:crane)</code></pre>
+    </div>
+  </div>
+  <div class="example">
+    <h2>Configuring and Connecting</h2>
+    <div class="description">
+      <p>First things first: Setup. All Crane needs to get going is a list of
+         databases to connect to, authentication information, and a directory
+         where it will store migrations.</p>
+    </div>
+    <div class="code">
+      <pre><code class="lisp">(setup
+ :migrations-directory
+ (asdf:system-relative-pathname :myapp #p"migrations/")
+ :databases
+ '(:main
+   (:type :postgres
+    :name "myapp_db"
+    :user "user"
+    :pass "user")))
+
+(connect)</code></pre>
+    </div>
+  </div>
+  <div class="example">
+    <h2>Defining Tables</h2>
+    <div class="description">
+      <p>Crane has a very simple table definition syntax, inspired by that of
+         the Django ORM. This, combined with automatic migrations, lets you
+         rapidly prototype and experiment with table definitions.</p>
+    </div>
+    <div class="code">
+      <pre><code class="lisp">(deftable ship ()
+  (name :type text :uniquep t)
+  (tonnage :type integer))</code></pre>
+    </div>
+  </div>
+  <div class="example">
+    <h2>Automatic Migrations</h2>
+    <div class="description">
+      <p>Migrations are just another part of your development cycle &mdash; not
+        an exceptional situation. Just change your table definitions and let
+        Crane figure things out. You don't even have to leave your editor to run
+        a command, locally or in a remote server.</p>
+    </div>
+    <div class="code">
+      <pre><code class="lisp">(deftable ship ()
+  (name :type text)
+  (flag :type text)
+  (tonnage :type integer))
+
+;; Oops
+
+(deftable ship ()
+  (name :type text :indexp t)
+  (flag :type text :nullp nil)
+  (tonnage :type integer))</code></pre>
+    </div>
+  </div>
+  <div class="example">
+    <h2>Creating, Saving, and Deleting Objects</h2>
+    <div class="description">
+      <p>Just these three functions. To create an object, use the
+         <code>create</code> function. <code>save</code> and <code>del</code> do
+         exactly what you'd expect.</p>
+    </div>
+    <div class="code">
+      <pre><code class="lisp">(let ((instance (create 'ship :name "Dalliance"
+                              :tonnage "77")))
+  ;; FIXME: It's back luck to rename a ship
+  (setf (name instance) "Serenity")
+  ;; Expand the cargo hold
+  (incf (tonnage instance) 25)
+  ;; Save these changes!
+  (save instance)
+  ;; Time to retire
+  (del instance))</code></pre>
+    </div>
+  </div>
+  <div class="example">
+    <h2 id="high-level">High-Level Interface</h2>
+    <div class="description">
+      <p>Simple things should be simple, and the interface is no
+exception. The majority of database queries in your application will probably be
+simple <code>filter</code> filter calls.</p>
+    </div>
+    <div class="code">
+      <pre><code class="lisp">(filter 'user) ;; Returns everything
+
+(filter 'user :name "Eudoxia")
+
+(filter 'user (:> :age 21))
+
+;; Returns a single object
+(single 'user :name "Eudoxia")
+
+;; Throws an error if this returns more
+;; than one object
+(single! 'user (:< age 35))
+
+;; t if a match exists, nil otherwise
+(exists 'user :name "Eudoxia")
+
+;; If this record doesn't exist create it
+(get-or-create 'user :name "Eudoxia" :age 19)</code></pre>
+    </div>
+  </div>
+  <div class="example">
+    <h2 id="sxql"><a href='https://github.com/fukamachi/sxql'>SxQL</a>: Functional, Composable SQL</h2>
+    <div class="description">
+      <p>Most ORMs provide a simple interface that looks simple enough in the
+         examples &mdash; but quickly becomes painful to use in real-world
+         cases. The Django ORM tries to get around this by adding various
+         extensions to its basic <code>filter</code> method that allow it to
+         express more complicated queries, but this rapidly becomes
+         cumbersome. Crane's philosophy is: <strong>If it's more complicated
+         than a <code>filter</code>, use the SQL DSL.</strong></p>
+    </div>
+    <div class="code">
+      <pre><code class="lisp">cl-user> (query (select :tonnage
+                  (from :ship)
+                  (where (:and (:> :tonnage 125)
+                               (:<= :tonnage 500)))
+                  (order-by :tonnage)
+                  (limit 10)))
+;; => ((:|tonnage| 445))</code></pre>
+    </div>
+  </div>
+  <div class="example">
+    <h2>Transactions</h2>
+    <div class="description">
+      <p>Crane provides a macro &ndash; <code>with-transaction</code> &ndash;
+         that automatically takes care of setting up a transaction and aborting
+         when conditions (Exceptions) are signalled. A manual interface is also
+         provided to provide more fine-grained control over your transactions.</p>
+    </div>
+    <div class="code">
+      <pre><code class="lisp">;;;; Automatic
+(with-transaction ()
+  (let ((restaurants (filter 'restaurant ...)))
+    (loop for restaurant in restaurants do
+          ...
+          (save restaurant))))
+
+;;;; Manual
+(progn
+  (begin-transaction)
+  (let ((restaurants (filter 'restaurant ...)))
+    (loop for restaurant in restaurants do
+          ...
+          (save restaurant)))
+  (commit))</code></pre>
+    </div>
+  </div>
+  <div class="example">
+    <h2>Fixtures</h2>
+    <div class="description">
+      <p>Fixtures are provided through the
+        <a href='https://github.com/eudoxia0/clos-fixtures'>clos-fixtures</a>
+        library, and can be used for anything from loading mostly unchanging
+        data (A list of countries, for example) to setting up massive datasets
+        for testing.</p>
+    </div>
+    <div class="code">
+      <pre><code class="lisp">;;;; initial-data.lisp
+(app:user
+  (:name "eudoxia"
+   :groups (:admin :staff))
+  (:name "joe"
+   :groups (:admin)))
+(app:company
+  (:name "Initech"
+   :city "Denver"))
+
+;;;; myapp.asd
+(asdf:defsystem myapp
+  :defsystem-depends-on (:clos-fixtures)
+  :components ((:module "src"
+                :components
+                ((:fixture "initial-data")))))</code></pre>
+    </div>
+  </div>
+  <div class="example">
+    <h2>Inflation/Deflation</h2>
+    <div class="description">
+      <p>Crane supports <em>inflating</em> values returned by the database into
+         more complex CLOS objects, and <em>deflating</em> those same objects
+         back to an SQL representation. This can be useful for accessing
+         database extensions that provide complex types for columns, like
+         Postgres' <a href='http://postgis.net/'>PostGIS</a>.</p>
+    </div>
+    <div class="code">
+      <pre><code class="lisp">(definflate (stamp 'timestamp)
+  ;; Inflate a timestamp value
+  ;; into a timestamp object
+  (local-time:universal-to-timestamp stamp))
+
+(defdeflate (stamp local-time:timestamp)
+  ;; Deflate a timestamp object
+  ;; into a string
+  (local-time:format-timestring nil stamp))</code></pre>
+    </div>
+  </div>
+</section>
