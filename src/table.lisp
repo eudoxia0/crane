@@ -1,4 +1,4 @@
-(defpackage :crane.table
+(defpackage crane.table
   (:use :cl :anaphora :cl-annot.doc :iter)
   (:export :<table>
            :deftable)

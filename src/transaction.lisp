@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage :crane.transaction
+(defpackage crane.transaction
   (:use :cl :anaphora)
   (:import-from :crane.connect
                 :*default-db*)

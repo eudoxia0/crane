@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage :crane.interface
+(defpackage crane.interface
   (:use :cl :anaphora :cl-annot.doc :iter)
   (:import-from :crane.utils
                 :make-keyword

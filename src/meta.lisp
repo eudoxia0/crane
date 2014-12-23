@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage :crane.meta
+(defpackage crane.meta
   (:use :cl :anaphora :cl-annot.doc :iter)
   (:import-from :crane.connect
                 :database-type

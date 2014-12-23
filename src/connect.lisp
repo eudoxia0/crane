@@ -1,4 +1,4 @@
-(defpackage :crane.connect
+(defpackage crane.connect
   (:use :cl :anaphora :iter :annot.doc :annot.class)
   (:import-from :alexandria
                 :remove-from-plist)

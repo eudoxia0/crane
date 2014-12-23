@@ -1,4 +1,4 @@
-(defpackage :crane.query
+(defpackage crane.query
   (:use :cl :anaphora :iter :cl-annot.doc)
   (:import-from :crane.meta
                 :table-name

@@ -1,4 +1,4 @@
-(defpackage :crane.migration
+(defpackage crane.migration
   (:use :cl :anaphora :cl-annot.doc :iter)
   (:import-from :crane.config
                 :get-config-value

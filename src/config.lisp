@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage :crane.config
+(defpackage crane.config
   (:use :cl :annot.doc :anaphora)
   (:export :*after-config-hook*
            :setup

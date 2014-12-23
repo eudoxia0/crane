@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage :crane.errors
+(defpackage crane.errors
   (:use :cl :annot.doc)
   (:export :configuration-error
            :no-configuration-error

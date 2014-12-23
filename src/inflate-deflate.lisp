@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage :crane.inflate-deflate
+(defpackage crane.inflate-deflate
   (:use :cl :anaphora :crane.types)
   (:export :inflate
            :definflate

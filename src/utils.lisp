@@ -1,4 +1,4 @@
-(defpackage :crane.utils
+(defpackage crane.utils
   (:use :cl :anaphora :iter :annot.doc)
   (:export :diff-plist
            :plist-keys

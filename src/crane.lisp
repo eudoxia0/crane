@@ -1,4 +1,4 @@
-(defpackage :crane
+(defpackage crane
   (:use :cl :crane.types)
   (:import-from :crane.config
                 :setup)

@@ -5,7 +5,7 @@
 ;;;; strings. How horrifying.
 
 (in-package :cl-user)
-(defpackage :crane.sql
+(defpackage crane.sql
   (:use :cl :anaphora :crane.utils :annot.doc :iter)
   (:import-from :sxql
                 :*quote-character*)

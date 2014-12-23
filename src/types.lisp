@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage :crane.types
+(defpackage crane.types
   (:import-from :cl
                 :deftype)
   (:export :int
