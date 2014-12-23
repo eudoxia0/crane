@@ -20,7 +20,11 @@ install:
   - sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE crane_test_db TO crane_test_user"
 
 script:
-  - cl -e '(ql:quickload :crane-test)' -Q
+  - cl -e '(ql:quickload :fiveam) \
+           (setf fiveam:*debug-on-error* t \
+                 *debugger-hook* (lambda (c h) (uiop:quit -1)) \
+           (ql:quickload :crane-test)' \
+           -Q
 
 notifications:
   email:
