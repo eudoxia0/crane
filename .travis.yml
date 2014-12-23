@@ -10,7 +10,7 @@ install:
   # Update repo
   - sudo apt-get update
   # Install Postgres
-  - sudo apt-get install -y postgresql
+  - sudo apt-get install -y postgresql-9.4
   # Install MySQL
   - sudo DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server-5.5 mysql-server mysql-client
   # Install SQLite
