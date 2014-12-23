@@ -1,5 +1,8 @@
 language: common-lisp
 
+addons:
+  postgresql: "9.1"
+
 env:
   matrix:
     - LISP=sbcl
@@ -9,10 +12,6 @@ install:
   - curl https://raw.githubusercontent.com/luismbo/cl-travis/master/install.sh | bash
   # Update repo
   - sudo apt-get update
-  # Install Postgres
-  - sudo apt-get install -y postgresql-9.4
-  # Install MySQL
-  - sudo DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server-5.5 mysql-server mysql-client
   # Install SQLite
   - sudo apt-get install -y sqlite3
   # Set up Postgres
