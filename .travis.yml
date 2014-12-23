@@ -22,7 +22,10 @@ install:
 script:
   - cl -e '(ql:quickload :fiveam)'
        -e '(setf fiveam:*debug-on-error* t)'
-       -e '(setf *debugger-hook* (lambda (c h) (uiop:quit -1)))'
+       -e '(setf *debugger-hook*
+                 (lambda (c h)
+                   (declare (ignore c h))
+                   (uiop:quit -1)))'
        -e '(ql:quickload :crane-test)'
 
 notifications:
