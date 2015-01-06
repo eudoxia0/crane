@@ -2,6 +2,7 @@
   :version "0.4"
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
+  :homepage "http://eudoxia.me/crane/"
   :depends-on (:closer-mop
                :anaphora
                :sxql
