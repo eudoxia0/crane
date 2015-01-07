@@ -1,6 +1,6 @@
 (in-package :cl-user)
 (defpackage crane.interface
-  (:use :cl :anaphora :cl-annot.doc :iter)
+  (:use :cl :anaphora :iter)
   (:import-from :crane.utils
                 :make-keyword
                 :get-class-slot)
@@ -33,7 +33,6 @@
   (:documentation "This package contains the methods used to access and alter
  database records in an object-oriented way."))
 (in-package :crane.interface)
-(annot:enable-annot-syntax)
 
 (defmethod drop-table ((table table-class))
   (query (sxql:drop-table (table-name table))
@@ -48,9 +47,9 @@
                  (mapcar #'closer-mop:slot-definition-name
                          (closer-mop:class-slots (class-of obj)))))
 
-@doc "Transform an object into a call to the set= function used by
-SxQL. Deflation happens here."
 (defun make-set (obj)
+  "Transform an object into a call to the set= function used by SxQL. Deflation
+happens here."
   (let ((slot-names (slot-tuple obj)))
     (iter (for slot in slot-names)
       (appending
@@ -113,9 +112,9 @@ SxQL. Deflation happens here."
       (db (class-of obj))))
 
 
-@doc "Process a plist returned by CL-DBI into a format that can be accepted by
-make-instance. Inflation happens here."
 (defmethod clean-tuple ((table table-class) tuple)
+  "Process a plist returned by CL-DBI into a format that can be accepted by
+make-instance. Inflation happens here."
   (flet ((process-key (key)
            (intern (string-upcase (symbol-name key))
                    :keyword)))
@@ -126,8 +125,8 @@ make-instance. Inflation happens here."
                   (type (crane.meta:col-type slot)))
              (list processed-key (inflate value type)))))))
 
-@doc "Convert a tuple produced by CL-DBI to a CLOS instance."
 (defmethod plist->object ((table table-class) tuple)
+  "Convert a tuple produced by CL-DBI to a CLOS instance."
   (apply #'make-instance (cons table (clean-tuple table tuple))))
 
 (defmethod plist->object ((table-name symbol) tuple)

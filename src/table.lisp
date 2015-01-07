@@ -1,10 +1,9 @@
 (defpackage crane.table
-  (:use :cl :anaphora :cl-annot.doc :iter)
+  (:use :cl :anaphora :iter)
   (:export :<table>
            :deftable)
   (:documentation "Implements the deftable macro."))
 (in-package :crane.table)
-(annot:enable-annot-syntax)
 
 (defparameter +slot-mapping+
   (list :type           :col-type
@@ -19,8 +18,8 @@
 (defparameter +standard-class-options+
   (list :initarg :initform :accessor :reader :writer))
 
-@doc "If the slot doesn't have :initarg or :accessor slots, add them"
 (defun add-default-slots (slot-name plist)
+  "If the slot doesn't have :initarg or :accessor slots, add them."
   (let ((plist-with-accessor
           (if (not (member :accessor plist))
               (append (list :accessor slot-name) plist)
@@ -30,10 +29,10 @@
                 plist-with-accessor)
         plist-with-accessor)))
 
-@doc "Take a plist like (:col-type 'string :col-null-p t) and remove the
-prefixes on the keys. Turn 'deftable slot properties' (:type, :nullp, etc.) into
-'table-class slot properties' (:col-type, :col-null-p, etc.)"
 (defun process-slot (slot)
+  "Take a plist like (:col-type 'string :col-null-p t) and remove the prefixes
+on the keys. Turn 'deftable slot properties' (:type, :nullp, etc.) into
+'table-class slot properties' (:col-type, :col-null-p, etc.)"
   (cons (car slot)
         (add-default-slots (car slot)
          (iter (for (key val) on (cdr slot) by #'cddr)
@@ -41,10 +40,10 @@ prefixes on the keys. Turn 'deftable slot properties' (:type, :nullp, etc.) into
                               (list key val)
                               (list (getf +slot-mapping+ key) val)))))))
 
-@doc "To minimize the number of parentheses, both slots and table options come
-in the same list. This function separates them: Normal slot names are plain old
-symbols, table options are keywords."
 (defun separate-slots-and-options (slots-and-options)
+  "To minimize the number of parentheses, both slots and table options come in
+the same list. This function separates them: Normal slot names are plain old
+symbols, table options are keywords."
   (let ((slots (list))
         (options (list)))
     (iter (for item in slots-and-options)
@@ -60,6 +59,7 @@ symbols, table options are keywords."
   (remove-if #'crane.meta:abstractp superclasses))
 
 (defmacro deftable (name (&rest superclasses) &rest slots-and-options)
+  "Define a table."
   (destructuring-bind (slots options)
       (separate-slots-and-options slots-and-options)
     `(progn

@@ -8,7 +8,6 @@
                :sxql
                :dbi
                :iterate
-               :cl-annot
                :cl-fad
                :clos-fixtures
                :uiop)

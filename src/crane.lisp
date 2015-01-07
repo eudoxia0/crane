@@ -124,4 +124,5 @@
    :union-queries
    :where
    :yield)
-  (:documentation "The global Crane package re-exports symbols from internal modules."))
+  (:documentation "The global Crane package re-exports symbols from internal
+  modules."))
