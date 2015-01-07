@@ -1,6 +1,6 @@
 (in-package :cl-user)
 (defpackage crane.meta
-  (:use :cl :anaphora :cl-annot.doc :iter)
+  (:use :cl :anaphora :iter)
   (:import-from :crane.connect
                 :database-type
                 :get-db)
@@ -21,7 +21,6 @@
            :diff-digest)
   (:documentation "This file defines the metaclasses that map CLOS objects to SQL tables, and some basic operations on them."))
 (in-package :crane.meta)
-(annot:enable-annot-syntax)
 
 (defclass table-class (closer-mop:standard-class)
   ((table-name :reader table-class-name :initarg :table-name)

@@ -12,7 +12,8 @@ represent time, or mapping other more complex SQL types to CLOS objects."))
 (in-package :crane.inflate-deflate)
 
 (defgeneric deflate (obj)
-  (:documentation "Turn a Lisp object into a string for insertion in the database."))
+  (:documentation "Turn a Lisp object into a string for insertion in the
+  database."))
 
 (defmacro defdeflate ((obj-name obj-type) &rest body)
   `(defmethod crane.inflate-deflate:deflate ((,obj-name ,obj-type))

@@ -1,5 +1,5 @@
 (defpackage crane.fixture
-  (:use :cl :cl-annot.doc)
+  (:use :cl)
   (:documentation "Customizes clos-fixtures for use in Crane."))
 (in-package :crane.fixture)
 

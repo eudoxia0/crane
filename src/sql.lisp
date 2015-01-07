@@ -6,7 +6,7 @@
 
 (in-package :cl-user)
 (defpackage crane.sql
-  (:use :cl :anaphora :crane.utils :annot.doc :iter)
+  (:use :cl :anaphora :crane.utils :iter)
   (:import-from :sxql
                 :*quote-character*)
   (:export :sqlize
@@ -19,11 +19,10 @@
            :drop-column)
   (:documentation "This module handles the generation of SQL for table definition and migration."))
 (in-package :crane.sql)
-(annot:enable-annot-syntax)
 
-@doc "Turn a symbol or a string into its SQL representation. Identical to the
-behaviour of SxQL."
 (defun sqlize (obj)
+  "Turn a symbol or a string into its SQL representation. Identical to the
+behaviour of SxQL."
   (typecase obj
     (symbol
      (sqlize (symbol-name obj)))
@@ -33,28 +32,28 @@ behaviour of SxQL."
              (string-downcase obj)
              (or *quote-character* "")))))
 
-@doc "Give constraints Crane-specific names"
 (defun constraint-name (table-name column-name type)
+  "Give constraints Crane-specific names"
   (sqlize (concatenate 'string "crane_" (symbol-name table-name) "_"
                        (symbol-name column-name) "_" (symbol-name type))))
 
-@doc "Toggle NULL constraint."
 (defun set-null (column-name value)
+  "Toggle NULL constraint."
   (unless value
     (concatenate 'string "CHECK (" (sqlize column-name) " IS NOT NULL)")))
 
-@doc "Toggle UNIQUE constraint."
 (defun set-unique (column-name value)
+  "Toggle UNIQUE constraint."
   (when value
     (concatenate 'string "UNIQUE (" (sqlize column-name) ")")))
 
-@doc "Toggle PRIMARY KEY constraint."
 (defun set-primary (column-name value)
+  "Toggle PRIMARY KEY constraint."
   (when value
     (concatenate 'string "PRIMARY KEY (" (sqlize column-name) ")")))
 
-@doc "Toggle INDEX pseudo-constraint."
 (defun set-index (table-name column-name value)
+  "Toggle INDEX pseudo-constraint."
   (if value
     (list :external
           (format nil "CREATE INDEX ~A ON ~A (~A)"
@@ -85,9 +84,9 @@ behaviour of SxQL."
           (map-ref-action on-delete)
           (map-ref-action on-update)))
 
-@doc "A constraint from its type and values, if it can be created (eg :nullp t
-doesn't create a constraint, but :nullp nil creates a NOT NULL constraint)."
 (defun make-constraint (table-name column-name type value)
+  "A constraint from its type and values, if it can be created (eg :nullp t
+doesn't create a constraint, but :nullp nil creates a NOT NULL constraint)."
   (if (eql type :indexp)
       ;; :indexp is treated especially, because it generates an external command
       ;; which already includes the constraint name
@@ -122,9 +121,9 @@ doesn't create a constraint, but :nullp nil creates a NOT NULL constraint)."
     (:mysql    "AUTO_INCREMENT")
     (:sqlite3  "PRIMARY KEY AUTOINCREMENT")))
 
-@doc "A column definition from the digest of its slot, name and name of
-the database it's table belongs to"
 (defun define-column (table-name column database-name)
+  "A column definition from the digest of its slot, name and name of the
+database it's table belongs to"
   (let* ((column-definition
            (let ((column-type (symbol-name (getf column :type))))
              (format nil "~A ~A"
@@ -153,8 +152,8 @@ the database it's table belongs to"
           :internal internal-constraints
           :external external-constraints)))
 
-@doc "A plist of different types of constraints from a table digest."
 (defun create-and-sort-constraints (table-name digest database-name)
+  "A plist of different types of constraints from a table digest."
   (let ((definitions
           (mapcar #'(lambda (col)
                       (define-column table-name col database-name))
@@ -169,20 +168,20 @@ the database it's table belongs to"
 
 ;;;; Alter Table
 
-@doc "SQL to add a constraint to a table."
 (defun add-constraint (table-name column-name body)
+  "SQL to add a constraint to a table."
   (format nil "ALTER TABLE ~A ADD ~A"
           (sqlize table-name)
           body))
 
-@doc "SQL to drop a constraint from a table."
 (defun drop-constraint (table-name column-name type)
+  "SQL to drop a constraint from a table."
   (format nil "ALTER TABLE ~A DROP CONSTRAINT ~A"
           (sqlize table-name)
           (constraint-name table-name column-name type)))
 
-@doc "SQL to alter a constraint in a table."
 (defun alter-constraint (table-name column-name type value)
+  "SQL to alter a constraint in a table."
   (if (member type (list :primaryp :uniquep :indexp :foreign :check))
       (if value
           ;; The constraint wasn't there, add it
@@ -206,7 +205,7 @@ the database it's table belongs to"
                            column-name
                            type))))
 
-@doc "SQL to drop a column, given the table and column names."
 (defun drop-column (table-name column-name)
+  "SQL to drop a column, given the table and column names."
   (sxql:yield (sxql:alter-table table-name
                 (sxql:drop-column column-name))))

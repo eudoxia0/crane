@@ -1,5 +1,5 @@
 (defpackage crane.connect
-  (:use :cl :anaphora :iter :annot.doc :annot.class)
+  (:use :cl :anaphora :iter)
   (:import-from :alexandria
                 :remove-from-plist)
   (:import-from :sxql
@@ -15,7 +15,6 @@
            :get-connection)
   (:documentation "Handles database connections, connection parameter validation, and various low-level DB-specific modes."))
 (in-package :crane.connect)
-(annot:enable-annot-syntax)
 
 ;; Postgres and SQLite both use the double-quote as an escape character. MySQL
 ;; lets you do it as well, but requires setting `SQL_MODE=ANSI_QUOTES;`. MS SQL
@@ -36,8 +35,8 @@
         :sqlite3  :dbd-sqlite3
         :mysql    :dbd-mysql))
 
-@doc "Load the ASDF system for the specified database module."
 (defun load-driver (driver)
+  "Load the ASDF system for the specified database module."
   #+quicklisp (ql:quickload driver :verbose nil)
   #-quicklisp (asdf:load-system driver :verbose nil))
 
@@ -82,8 +81,8 @@ the connection spec of the database '~A'" key db))))
 spec for the database '~A' have not been provided: ~A" db it))
          final-spec)))
 
-@doc "A map from database names to <database> objects."
-(defparameter *db* (make-hash-table))
+(defparameter *db* (make-hash-table)
+  "A map from database names to <database> objects.")
 
 (defclass <database> ()
   ((type :reader database-type
@@ -102,11 +101,13 @@ spec for the database '~A' have not been provided: ~A" db it))
          :documentation "The underlying connection object."))
   (:documentation "A database."))
 
-@doc "The name of the default database"
-(defparameter *default-db* nil)
+(defparameter *default-db* nil
+  "The name of the default database")
 
 (defun validate-all-databases ()
-  "Immediately after configuration, iterate over the list of defined databases, validating configuration parameters, creating their corresponding <database> instances, and setting the value of *default-db*."
+  "Immediately after configuration, iterate over the list of defined databases,
+validating configuration parameters, creating their corresponding <database>
+instances, and setting the value of *default-db*."
   (let ((databases (crane.config:get-config-value :databases)))
     (iter (for (db spec) on databases by #'cddr)
       (let ((name (getf spec :name))
@@ -139,20 +140,20 @@ spec for the database '~A' have not been provided: ~A" db it))
     (set-proper-quote-character conn type)
     (setf (database-connection database) conn)))
 
-@doc "Connect to all the databases specified in the configuration."
 (defun connect ()
+  "Connect to all the databases specified in the configuration."
   (loop for db being the hash-values in *db* do
     (make-connection db)))
 
-@doc "Cut all connections."
 (defun disconnect ()
+  "Cut all connections."
   (loop for db being the hash-values in *db* do
     (dbi:disconnect (database-connection db))))
 
-@doc "Return the database matching a specific name"
 (defun get-db (&optional database-name)
+  "Return the database matching a specific name"
   (gethash (aif database-name it *default-db*) *db*))
 
-@doc "Return the connection handler for a given database."
 (defun get-connection (&optional database-name)
+  "Return the connection handler for a given database."
   (database-connection (get-db database-name)))
