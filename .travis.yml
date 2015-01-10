@@ -6,6 +6,8 @@ addons:
 env:
   matrix:
     - LISP=sbcl
+    - LISP=ccl
+    - LISP=clisp
 
 install:
   # Install cl-travis
