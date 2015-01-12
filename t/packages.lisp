@@ -5,7 +5,7 @@
 
 (defpackage crane-test.util
   (:use :cl :fiveam)
-  (:export :tests))
+  (:export :util))
 
 (defpackage crane-test.spec
   (:use :cl :crane :fiveam)
