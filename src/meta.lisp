@@ -23,15 +23,12 @@
 (in-package :crane.meta)
 
 (defclass <table-class> (closer-mop:standard-class)
-  ((table-name :reader table-class-name :initarg :table-name)
-   (abstractp :reader table-class-abstract-p :initarg :abstractp :initform (list nil))
+  ((abstractp :reader table-class-abstract-p :initarg :abstractp :initform (list nil))
    (deferredp :reader table-class-deferred-p :initarg :deferredp :initform (list nil))
    (db :reader table-class-db :initarg :db :initform (list crane.connect:*default-db*))))
 
 (defmethod table-name ((class <table-class>))
-  (if (slot-boundp class 'table-name)
-      (car (table-class-name class))
-      (class-name class)))
+  (class-name class))
 
 (defmethod abstractp ((class <table-class>))
   (car (table-class-abstract-p class)))
