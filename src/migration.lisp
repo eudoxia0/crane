@@ -145,7 +145,7 @@ table `table-name`."
     (if (migration-history-p table-name)
         (let ((diff (diff-digest
                      (get-last-migration table-name)
-                     (digest table-name))))
+                     (digest (find-class table-name)))))
           (if (or (getf diff :additions)
                   (getf diff :deletions)
                   (getf diff :changes))
@@ -154,8 +154,8 @@ table `table-name`."
                   (format t "~&Diff for '~A': ~A~&" table-name diff))
                 (migrate (find-class table-name) diff)
                 (insert-migration table-name
-                                  (digest table-name)))))
-        (let ((digest (digest table-name)))
+                                  (digest (find-class table-name))))))
+        (let ((digest (digest (find-class table-name))))
           (insert-migration table-name digest)
           (create-table table-name digest)))))
 
