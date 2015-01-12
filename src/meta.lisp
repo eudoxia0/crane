@@ -33,28 +33,16 @@
       (car (table-class-name class))
       (class-name class)))
 
-(defmethod table-name ((class-name symbol))
-  (table-name (find-class class-name)))
-
 (defmethod abstractp ((class table-class))
   (car (table-class-abstract-p class)))
 
-(defmethod abstractp ((class-name symbol))
-  (abstractp (find-class class-name)))
-
 (defmethod deferredp ((class table-class))
   (car (table-class-deferred-p class)))
-
-(defmethod deferredp ((class-name symbol))
-  (deferredp (find-class class-name)))
 
 (defmethod db ((class table-class))
   (aif (car (table-class-db class))
        it
        crane.connect:*default-db*))
-
-(defmethod db ((class-name symbol))
-  (db (find-class class-name)))
 
 (defmethod closer-mop:validate-superclass ((class table-class) (super closer-mop:standard-class))
   t)
@@ -176,9 +164,6 @@
               (error 'crane.errors:empty-table
                      :text "The table ~A has no slots."
                      (table-name class))))))
-
-(defmethod digest ((class-name symbol))
-  (digest (find-class class-name)))
 
 (defun diff-slot (slot-a slot-b)
   "Compute the difference between two slot digests.
