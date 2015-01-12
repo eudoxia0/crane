@@ -85,7 +85,7 @@ table `table-name`."
   (let* ((constraints (crane.sql:create-and-sort-constraints
                        table-name
                        digest
-                       (crane.meta:db table-name)))
+                       (crane.meta:table-database (find-class table-name))))
          (query
            (format nil +create-table-format-string+
                    (crane.sql:sqlize (table-name (find-class table-name)))
@@ -93,7 +93,8 @@ table `table-name`."
                    (if (getf constraints :internal) "," "")
                    (getf constraints :internal)
                    (getf constraints :external)))
-         (conn (crane.connect:get-connection (crane.meta:db table-name))))
+         (conn (crane.connect:get-connection (crane.meta:table-database
+                                              (find-class table-name)))))
     (format t "~&Query: ~A~&" query)
     (dbi:execute (dbi:prepare conn query))))
 
@@ -114,7 +115,8 @@ table `table-name`."
                        (crane.sql:define-column
                            table-name
                            column
-                           (crane.meta:db table-name)))
+                         (crane.meta:table-database
+                          (find-class table-name))))
                    (getf diff :additions)))
          (additions
            (iter (for def in new-columns)
@@ -125,13 +127,11 @@ table `table-name`."
                      (mapcar #'(lambda (internal-constraint)
                                  (crane.sql:add-constraint
                                   table-name
-                                  (getf def :name)
                                   internal-constraint))
                              (getf def :internal))
                      (mapcar #'(lambda (external-constraint)
                                  (crane.sql:add-constraint
                                   table-name
-                                  (getf def :name)
                                   external-constraint))
                              (getf def :external)))))))
          (deletions
@@ -143,11 +143,11 @@ table `table-name`."
             (append alterations additions deletions))))
 
 (defun build (table-name)
-  (unless (crane.meta:abstractp table-name)
+  (unless (crane.meta:abstractp (find-class table-name))
     (if (migration-history-p table-name)
         (let ((diff (diff-digest
                      (get-last-migration table-name)
-                     (digest table-name))))
+                     (digest (find-class table-name)))))
           (if (or (getf diff :additions)
                   (getf diff :deletions)
                   (getf diff :changes))
@@ -156,8 +156,8 @@ table `table-name`."
                   (format t "~&Diff for '~A': ~A~&" table-name diff))
                 (migrate (find-class table-name) diff)
                 (insert-migration table-name
-                                  (digest table-name)))))
-        (let ((digest (digest table-name)))
+                                  (digest (find-class table-name))))))
+        (let ((digest (digest (find-class table-name))))
           (insert-migration table-name digest)
           (create-table table-name digest)))))
 

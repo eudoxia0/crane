@@ -53,10 +53,12 @@ symbols, table options are keywords."
     (list slots options)))
 
 (defclass <table> () ()
-  (:metaclass crane.meta:table-class))
+  (:metaclass crane.meta:<table-class>))
 
 (defun any-concrete-superclasses (superclasses)
-  (remove-if #'crane.meta:abstractp superclasses))
+  (remove-if #'(lambda (class-name)
+                 (crane.meta:abstractp (find-class class-name)))
+             superclasses))
 
 (defmacro deftable (name (&rest superclasses) &rest slots-and-options)
   "Define a table."
@@ -80,7 +82,7 @@ symbols, table options are keywords."
                   :initarg :id)))
            slots)
          ,@options
-         (:metaclass crane.meta:table-class))
+         (:metaclass crane.meta:<table-class>))
        (closer-mop:finalize-inheritance (find-class ',name))
-       (unless (crane.meta:deferredp ',name)
+       (unless (crane.meta:deferredp (find-class ',name))
          (crane.migration:build ',name)))))

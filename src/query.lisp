@@ -2,7 +2,7 @@
   (:use :cl :anaphora :iter)
   (:import-from :crane.meta
                 :table-name
-                :db)
+                :table-database)
   (:import-from :crane.config
                 :debugp)
   (:export :meta-query

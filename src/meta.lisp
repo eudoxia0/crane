@@ -4,11 +4,11 @@
   (:import-from :crane.connect
                 :database-type
                 :get-db)
-  (:export :table-class
+  (:export :<table-class>
            :table-name
            :abstractp
            :deferredp
-           :db
+           :table-database
            :col-type
            :col-null-p
            :col-unique-p
@@ -22,44 +22,37 @@
   (:documentation "This file defines the metaclasses that map CLOS objects to SQL tables, and some basic operations on them."))
 (in-package :crane.meta)
 
-(defclass table-class (closer-mop:standard-class)
-  ((table-name :reader table-class-name :initarg :table-name)
-   (abstractp :reader table-class-abstract-p :initarg :abstractp :initform (list nil))
-   (deferredp :reader table-class-deferred-p :initarg :deferredp :initform (list nil))
-   (db :reader table-class-db :initarg :db :initform (list crane.connect:*default-db*))))
+(defclass <table-class> (closer-mop:standard-class)
+  ((abstractp :reader abstractp
+              :initarg :abstractp
+              :initform nil
+              :documentation "Whether the class corresponds to an SQL table or not.")
+   (deferredp :reader deferredp
+              :initarg :deferredp
+              :initform nil
+              :documentation "Whether the class should be built only when explicitly calling build.")
+   (database :reader %table-database
+             :initarg :database
+             :initform nil
+             :documentation "The database this class belongs to."))
+  (:documentation "A table metaclass."))
 
-(defmethod table-name ((class table-class))
-  (if (slot-boundp class 'table-name)
-      (car (table-class-name class))
-      (class-name class)))
+(defmethod table-name ((class <table-class>))
+  "Return the name of a the class, a symbol."
+  (class-name class))
 
-(defmethod table-name ((class-name symbol))
-  (table-name (find-class class-name)))
-
-(defmethod abstractp ((class table-class))
-  (car (table-class-abstract-p class)))
-
-(defmethod abstractp ((class-name symbol))
-  (abstractp (find-class class-name)))
-
-(defmethod deferredp ((class table-class))
-  (car (table-class-deferred-p class)))
-
-(defmethod deferredp ((class-name symbol))
-  (deferredp (find-class class-name)))
-
-(defmethod db ((class table-class))
-  (aif (car (table-class-db class))
+(defmethod table-database ((class <table-class>))
+  "The database this class belongs to."
+  (aif (%table-database class)
        it
        crane.connect:*default-db*))
 
-(defmethod db ((class-name symbol))
-  (db (find-class class-name)))
-
-(defmethod closer-mop:validate-superclass ((class table-class) (super closer-mop:standard-class))
+(defmethod closer-mop:validate-superclass ((class <table-class>)
+                                           (super closer-mop:standard-class))
   t)
 
-(defmethod closer-mop:validate-superclass ((class standard-class) (super table-class))
+(defmethod closer-mop:validate-superclass ((class standard-class)
+                                           (super <table-class>))
   t)
 
 (defclass table-class-direct-slot-definition (closer-mop:standard-direct-slot-definition)
@@ -110,15 +103,16 @@
 ;;; the MOP while trying not to end up in r/badcode, like a child
 ;;; playing in the surf...
 
-(defmethod closer-mop:direct-slot-definition-class ((class table-class) &rest initargs)
+(defmethod closer-mop:direct-slot-definition-class ((class <table-class>) &rest initargs)
   (declare (ignore class initargs))
   (find-class 'table-class-direct-slot-definition))
 
-(defmethod closer-mop:effective-slot-definition-class ((class table-class) &rest initargs)
+(defmethod closer-mop:effective-slot-definition-class ((class <table-class>) &rest initargs)
   (declare (ignore class initargs))
   (find-class 'table-class-effective-slot-definition))
 
-(defmethod closer-mop:compute-effective-slot-definition ((class table-class) slot-name direct-slot-definitions)
+(defmethod closer-mop:compute-effective-slot-definition ((class <table-class>)
+                                                         slot-name direct-slot-definitions)
   (declare (ignore slot-name))
   (let ((effective-slot-definition (call-next-method)))
     (setf (slot-value effective-slot-definition 'col-type)
@@ -131,7 +125,7 @@
           (col-unique-p (first direct-slot-definitions))
 
           (slot-value effective-slot-definition 'col-primary-p)
-          (if (and (eq (database-type (get-db (db class)))
+          (if (and (eq (database-type (get-db (table-database class)))
                        :sqlite3)
                    (eq (col-autoincrement-p (first direct-slot-definitions))
                        t))
@@ -164,10 +158,10 @@
         :autoincrementp (col-autoincrement-p slot)
         :foreign (col-foreign slot)))
 
-(defmethod digest ((class table-class))
+(defmethod digest ((class <table-class>))
   "Serialize a class's options and slots' options into a plist"
   (list :table-options
-        (list :db (db class))
+        (list :database (table-database class))
         :columns
         (let ((slots (closer-mop:class-slots class)))
           (if slots
@@ -176,9 +170,6 @@
               (error 'crane.errors:empty-table
                      :text "The table ~A has no slots."
                      (table-name class))))))
-
-(defmethod digest ((class-name symbol))
-  (digest (find-class class-name)))
 
 (defun diff-slot (slot-a slot-b)
   "Compute the difference between two slot digests.

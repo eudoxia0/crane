@@ -5,9 +5,9 @@
                 :make-keyword
                 :get-class-slot)
   (:import-from :crane.meta
-                :table-class
+                :<table-class>
                 :table-name
-                :db
+                :table-database
                 :col-foreign)
   (:import-from :crane.sql
                 :sqlize)
@@ -34,9 +34,9 @@
  database records in an object-oriented way."))
 (in-package :crane.interface)
 
-(defmethod drop-table ((table table-class))
+(defmethod drop-table ((table <table-class>))
   (query (sxql:drop-table (table-name table))
-         (db table)))
+         (table-database table)))
 
 (defmethod drop-table ((table-name symbol))
   (drop-table (find-class table-name)))
@@ -65,7 +65,7 @@ happens here."
           (table-name (table-name class))
           (db-type
             (crane.connect:database-type
-             (crane.connect:get-db (db class))))
+             (crane.connect:get-db (table-database class))))
           (results
             (if (eq db-type :sqlite3)
                 (query (sxql:insert-into
@@ -73,14 +73,14 @@ happens here."
                         (apply #'sxql.clause:make-clause
                                (cons :set=
                                      (make-set obj))))
-                       (db (class-of obj)))
+                       (table-database (class-of obj)))
                 (query (sxql:insert-into
                         table-name
                         (apply #'sxql.clause:make-clause
                                (cons :set=
                                      (make-set obj)))
                         (sxql:make-op :returning :id))
-                       (db (class-of obj)))))
+                       (table-database (class-of obj)))))
           (id
             (if (eq db-type :sqlite3)
                 (let ((res (let ((sxql:*QUOTE-CHARACTER* nil))
@@ -104,15 +104,15 @@ happens here."
                         (apply #'sxql.clause:make-clause
                                (cons :set= set))
                         (sxql:where (:= :id (getf set :id))))
-        (db (class-of obj)))))
+        (table-database (class-of obj)))))
 
 (defmethod del ((obj crane.table:<table>))
   (query (sxql:delete-from (table-name (class-of obj))
            (sxql:where (:= :id (getf (make-set obj) :id))))
-      (db (class-of obj))))
+      (table-database (class-of obj))))
 
 
-(defmethod clean-tuple ((table table-class) tuple)
+(defmethod clean-tuple ((table <table-class>) tuple)
   "Process a plist returned by CL-DBI into a format that can be accepted by
 make-instance. Inflation happens here."
   (flet ((process-key (key)
@@ -125,7 +125,7 @@ make-instance. Inflation happens here."
                   (type (crane.meta:col-type slot)))
              (list processed-key (inflate value type)))))))
 
-(defmethod plist->object ((table table-class) tuple)
+(defmethod plist->object ((table <table-class>) tuple)
   "Convert a tuple produced by CL-DBI to a CLOS instance."
   (apply #'make-instance (cons table (clean-tuple table tuple))))
 
@@ -151,7 +151,7 @@ make-instance. Inflation happens here."
                                                              (getf params slot-name)))
                                                    equal-params)
                                          ,@fn-params)))))
-                 (crane.meta:db ,class)))))
+                 (crane.meta:table-database (find-class ,class))))))
 
 (defmacro do-filter ((result-name class &rest params) &rest body)
   (let* ((equal-params (remove-if-not #'keywordp params))
@@ -172,7 +172,7 @@ make-instance. Inflation happens here."
                                                       (getf params slot-name)))
                                             equal-params)
                                   ,@fn-params)))))
-          (crane.meta:db ,class))
+          (crane.meta:table-database ,class))
          (let ((,result-name (plist->object ,class ,result-name)))
            ,@body))))
 
