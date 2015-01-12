@@ -12,7 +12,7 @@
        ,@(loop for suite in test-suites
                collecting
                `(run! ',(intern (symbol-name suite)
-                                (find-package :crane-test.generic)))))))1
+                                (find-package :crane-test.generic)))))))
 
 (run! 'crane-test.spec:postgres)
 (run! 'crane-test.spec:mysql)
