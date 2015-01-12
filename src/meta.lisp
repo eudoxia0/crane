@@ -23,21 +23,35 @@
 (in-package :crane.meta)
 
 (defclass <table-class> (closer-mop:standard-class)
-  ((abstractp :reader table-class-abstract-p :initarg :abstractp :initform (list nil))
-   (deferredp :reader table-class-deferred-p :initarg :deferredp :initform (list nil))
-   (db :reader table-class-db :initarg :db :initform (list crane.connect:*default-db*))))
+  ((abstractp :reader table-class-abstract-p
+              :initarg :abstractp
+              :initform (list nil)
+              :documentation "Whether the class corresponds to an SQL table or not.")
+   (deferredp :reader table-class-deferred-p
+              :initarg :deferredp
+              :initform (list nil)
+              :documentation "Whether the class should be built only when explicitly calling build.")
+   (database :reader table-class-database
+             :initarg :database
+             :initform (list crane.connect:*default-db*)
+             :documentation "The database this class belongs to."))
+  (:documentation "A table metaclass."))
 
 (defmethod table-name ((class <table-class>))
+  "The name of the table, a symbol that can be used with SxQL."
   (class-name class))
 
 (defmethod abstractp ((class <table-class>))
+  "Whether the table is abstract or not."
   (car (table-class-abstract-p class)))
 
 (defmethod deferredp ((class <table-class>))
+  "Whether construction of the table is deferred or not."
   (car (table-class-deferred-p class)))
 
 (defmethod db ((class <table-class>))
-  (aif (car (table-class-db class))
+  "The database this table is stored in."
+  (aif (car (table-class-database class))
        it
        crane.connect:*default-db*))
 
