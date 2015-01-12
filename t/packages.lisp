@@ -1,29 +1,37 @@
 (in-package :cl-user)
 (defpackage crane-test
-  (:use :cl :crane :fiveam))
+  (:use :cl :crane :fiveam)
+  (:export :setup))
 
-(in-package :cl-user)
+(defpackage crane-test.util
+  (:use :cl :fiveam)
+  (:export :util))
+
+(defpackage crane-test.spec
+  (:use :cl :crane :fiveam)
+  (:export :postgres
+           :mysql
+           :sqlite3))
+
+(defpackage crane-test.generic
+  (:use :cl :crane :fiveam)
+  (:export :table-slots
+           :column-slots
+           :foreign
+           :dereferencing
+           :migrations
+           :queries))
+
 (defpackage crane-test.postgres
-  (:use :cl :crane :fiveam))
+  (:use :cl :crane :fiveam)
+  (:export :config))
 
-(in-package :cl-user)
 (defpackage crane-test.mysql
   (:use :cl :crane :fiveam))
 
-(in-package :cl-user)
 (defpackage crane-test.sqlite3
-  (:use :cl :crane :fiveam))
+  (:use :cl :crane :fiveam)
+  (:export :config))
 
-(in-package :crane-test)
-
-(def-suite preliminary
-  :description "Start with a clean slate")
-(in-suite preliminary)
-
-(test delete-migrations
-  (finishes
-    (let ((dir (asdf:system-relative-pathname :crane-test #p"t/migrations/")))
-      (when (fad:directory-exists-p dir)
-        (fad:delete-directory-and-files dir)))))
-
-(run! 'preliminary)
+(defpackage crane-test.final
+  (:use :cl :fiveam))

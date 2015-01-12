@@ -8,20 +8,15 @@
                 :serial t
                 :components
                 ((:file "packages")
-                 (:file "utils")
-                 (:file "connection-specs")
-                 (:module "postgres"
+                 (:file "util")
+                 (:file "connection-spec")
+                 (:module "test"
                   :serial t
                   :components
-                  ((:file "config")
-                   (:file "table")
+                  ((:file "table")
                    (:file "migration")
-                   (:file "queries")
-                   (:file "inflate-deflate")))
-                 (:module "sqlite3"
-                  :serial t
-                  :components
-                  ((:file "config")
-                   (:file "table")
-                   (:file "queries"))))))
+                   (:file "queries")))
+                 (:file "postgres")
+                 (:file "sqlite3")
+                 (:file "final"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))
