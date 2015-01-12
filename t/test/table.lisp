@@ -26,7 +26,6 @@
     (find-class 'table-b)
     (find-class 'table-c)))
 
-
 (def-suite column-slots
   :description "Test that table column options work.")
 (in-suite column-slots)
@@ -53,9 +52,9 @@
       (something-else :type text :initform "Foo")
       (ref :type integer :foreign (parent-table :on-delete :cascade)))))
 
-(test (dereferencing :depends-on creating-related-tables)
-  (is (equal
-       (let* ((parent-instance (create 'parent-table :something 99))
-              (child-instance  (create 'child-table :ref (id parent-instance))))
-         (something (deref child-instance 'ref)))
-       99)))
+;(test (dereferencing :depends-on creating-related-tables)
+;  (is (equal
+;       (let* ((parent-instance (create 'parent-table :something 99))
+;              (child-instance  (create 'child-table :ref (id parent-instance))))
+;         (something (deref child-instance 'ref)))
+;       99)))
