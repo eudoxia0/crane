@@ -168,7 +168,7 @@ database it's table belongs to"
 
 ;;;; Alter Table
 
-(defun add-constraint (table-name column-name body)
+(defun add-constraint (table-name body)
   "SQL to add a constraint to a table."
   (format nil "ALTER TABLE ~A ADD ~A"
           (sqlize table-name)
@@ -186,9 +186,7 @@ database it's table belongs to"
       (if value
           ;; The constraint wasn't there, add it
           (aif (make-constraint table-name column-name type t)
-               (add-constraint table-name
-                               column-name
-                               it))
+               (add-constraint table-name it))
           ;; The constraint has been dropped
           (drop-constraint table-name
                            column-name
@@ -197,9 +195,7 @@ database it's table belongs to"
       (if value
           ;; Set null
           (aif (make-constraint table-name column-name :nullp t)
-               (add-constraint table-name
-                               column-name
-                               it))
+               (add-constraint table-name it))
           ;; Remove null constraint
           (drop-constraint table-name
                            column-name

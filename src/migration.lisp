@@ -125,13 +125,11 @@ table `table-name`."
                      (mapcar #'(lambda (internal-constraint)
                                  (crane.sql:add-constraint
                                   table-name
-                                  (getf def :name)
                                   internal-constraint))
                              (getf def :internal))
                      (mapcar #'(lambda (external-constraint)
                                  (crane.sql:add-constraint
                                   table-name
-                                  (getf def :name)
                                   external-constraint))
                              (getf def :external)))))))
          (deletions
