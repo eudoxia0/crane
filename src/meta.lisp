@@ -25,11 +25,11 @@
 (defclass <table-class> (closer-mop:standard-class)
   ((abstractp :reader abstractp
               :initarg :abstractp
-              :initform (list nil)
+              :initform nil
               :documentation "Whether the class corresponds to an SQL table or not.")
    (deferredp :reader deferredp
               :initarg :deferredp
-              :initform (list nil)
+              :initform nil
               :documentation "Whether the class should be built only when explicitly calling build.")
    (database :reader %table-database
              :initarg :database
