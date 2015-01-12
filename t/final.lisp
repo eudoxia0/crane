@@ -13,6 +13,6 @@
 
 (run! 'crane-test.util:tests)
 
-;(run! 'crane-test:setup)
+(run! 'crane-test:setup)
 
-;(run-tests-in-context 'crane-test.postgres:config)
+(run-tests-in-context 'crane-test.postgres:config)
