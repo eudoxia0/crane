@@ -82,5 +82,5 @@ symbols, table options are keywords."
          ,@options
          (:metaclass crane.meta:<table-class>))
        (closer-mop:finalize-inheritance (find-class ',name))
-       (unless (crane.meta:deferredp ',name)
+       (unless (crane.meta:deferredp (find-class ',name))
          (crane.migration:build ',name)))))
