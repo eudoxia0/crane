@@ -17,5 +17,6 @@
                    (:file "migration")
                    (:file "queries")))
                  (:file "postgres")
+                 (:file "sqlite3")
                  (:file "final"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))
