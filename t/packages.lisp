@@ -30,7 +30,8 @@
   (:use :cl :crane :fiveam))
 
 (defpackage crane-test.sqlite3
-  (:use :cl :crane :fiveam))
+  (:use :cl :crane :fiveam)
+  (:export :config))
 
 (defpackage crane-test.final
   (:use :cl :fiveam))
