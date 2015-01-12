@@ -17,15 +17,13 @@
 (test create-another-table
   (finishes
     (deftable table-c (table-a)
-      (field-b :type integer :nullp nil)
-      (:table-name table--c))))
+      (field-b :type integer :nullp nil))))
 
 (test find-tables
   (finishes
     (find-class 'table-a)
     (find-class 'table-b)
     (find-class 'table-c)))
-
 
 (def-suite column-slots
   :description "Test that table column options work.")

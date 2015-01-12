@@ -56,7 +56,9 @@ symbols, table options are keywords."
   (:metaclass crane.meta:<table-class>))
 
 (defun any-concrete-superclasses (superclasses)
-  (remove-if #'crane.meta:abstractp superclasses))
+  (remove-if #'(lambda (class-name)
+                 (crane.meta:abstractp (find-class class-name)))
+             superclasses))
 
 (defmacro deftable (name (&rest superclasses) &rest slots-and-options)
   "Define a table."
