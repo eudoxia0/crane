@@ -85,7 +85,7 @@ table `table-name`."
   (let* ((constraints (crane.sql:create-and-sort-constraints
                        table-name
                        digest
-                       (crane.meta:db table-name)))
+                       (crane.meta:table-database (find-class table-name))))
          (query
            (format nil +create-table-format-string+
                    (crane.sql:sqlize (table-name (find-class table-name)))
@@ -93,7 +93,8 @@ table `table-name`."
                    (if (getf constraints :internal) "," "")
                    (getf constraints :internal)
                    (getf constraints :external)))
-         (conn (crane.connect:get-connection (crane.meta:db table-name))))
+         (conn (crane.connect:get-connection (crane.meta:table-database
+                                              (find-class table-name)))))
     (format t "~&Query: ~A~&" query)
     (dbi:execute (dbi:prepare conn query))))
 
@@ -114,7 +115,8 @@ table `table-name`."
                        (crane.sql:define-column
                            table-name
                            column
-                           (crane.meta:db table-name)))
+                         (crane.meta:table-database
+                          (find-class table-name))))
                    (getf diff :additions)))
          (additions
            (iter (for def in new-columns)

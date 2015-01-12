@@ -8,7 +8,7 @@
            :table-name
            :abstractp
            :deferredp
-           :db
+           :table-database
            :col-type
            :col-null-p
            :col-unique-p
@@ -23,37 +23,23 @@
 (in-package :crane.meta)
 
 (defclass <table-class> (closer-mop:standard-class)
-  ((abstractp :reader table-class-abstract-p
+  ((abstractp :reader abstractp
               :initarg :abstractp
               :initform (list nil)
               :documentation "Whether the class corresponds to an SQL table or not.")
-   (deferredp :reader table-class-deferred-p
+   (deferredp :reader deferredp
               :initarg :deferredp
               :initform (list nil)
               :documentation "Whether the class should be built only when explicitly calling build.")
-   (database :reader table-class-database
+   (database :reader table-database
              :initarg :database
              :initform (list crane.connect:*default-db*)
              :documentation "The database this class belongs to."))
   (:documentation "A table metaclass."))
 
 (defmethod table-name ((class <table-class>))
-  "The name of the table, a symbol that can be used with SxQL."
+  "Return the name of a the class, a symbol."
   (class-name class))
-
-(defmethod abstractp ((class <table-class>))
-  "Whether the table is abstract or not."
-  (car (table-class-abstract-p class)))
-
-(defmethod deferredp ((class <table-class>))
-  "Whether construction of the table is deferred or not."
-  (car (table-class-deferred-p class)))
-
-(defmethod db ((class <table-class>))
-  "The database this table is stored in."
-  (aif (car (table-class-database class))
-       it
-       crane.connect:*default-db*))
 
 (defmethod closer-mop:validate-superclass ((class <table-class>)
                                            (super closer-mop:standard-class))
@@ -133,7 +119,7 @@
           (col-unique-p (first direct-slot-definitions))
 
           (slot-value effective-slot-definition 'col-primary-p)
-          (if (and (eq (database-type (get-db (db class)))
+          (if (and (eq (database-type (get-db (table-database class)))
                        :sqlite3)
                    (eq (col-autoincrement-p (first direct-slot-definitions))
                        t))
@@ -169,7 +155,7 @@
 (defmethod digest ((class <table-class>))
   "Serialize a class's options and slots' options into a plist"
   (list :table-options
-        (list :db (db class))
+        (list :database (table-database class))
         :columns
         (let ((slots (closer-mop:class-slots class)))
           (if slots
