@@ -1,7 +1,7 @@
 (in-package :crane-test.util)
 
-(def-suite tests)
-(in-suite tests)
+(def-suite util)
+(in-suite util)
 
 (test diff-plist
   (is
