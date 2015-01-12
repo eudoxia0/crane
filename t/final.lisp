@@ -23,4 +23,4 @@
 (run! 'crane-test:setup)
 
 (run-tests-in-context 'crane-test.postgres:config)
-(run-tests-in-context 'crane-test.postgres:sqlite3)
+(run-tests-in-context 'crane-test.sqlite3:sqlite3)
