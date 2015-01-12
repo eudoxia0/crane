@@ -31,15 +31,21 @@
               :initarg :deferredp
               :initform (list nil)
               :documentation "Whether the class should be built only when explicitly calling build.")
-   (database :reader table-database
+   (database :reader %table-database
              :initarg :database
-             :initform (list crane.connect:*default-db*)
+             :initform nil
              :documentation "The database this class belongs to."))
   (:documentation "A table metaclass."))
 
 (defmethod table-name ((class <table-class>))
   "Return the name of a the class, a symbol."
   (class-name class))
+
+(defmethod table-database ((class <table-class>))
+  "The database this class belongs to."
+  (aif (%table-database class)
+       it
+       crane.connect:*default-db*))
 
 (defmethod closer-mop:validate-superclass ((class <table-class>)
                                            (super closer-mop:standard-class))
