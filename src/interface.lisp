@@ -5,7 +5,7 @@
                 :make-keyword
                 :get-class-slot)
   (:import-from :crane.meta
-                :table-class
+                :<table-class>
                 :table-name
                 :db
                 :col-foreign)
@@ -34,7 +34,7 @@
  database records in an object-oriented way."))
 (in-package :crane.interface)
 
-(defmethod drop-table ((table table-class))
+(defmethod drop-table ((table <table-class>))
   (query (sxql:drop-table (table-name table))
          (db table)))
 
@@ -112,7 +112,7 @@ happens here."
       (db (class-of obj))))
 
 
-(defmethod clean-tuple ((table table-class) tuple)
+(defmethod clean-tuple ((table <table-class>) tuple)
   "Process a plist returned by CL-DBI into a format that can be accepted by
 make-instance. Inflation happens here."
   (flet ((process-key (key)
@@ -125,7 +125,7 @@ make-instance. Inflation happens here."
                   (type (crane.meta:col-type slot)))
              (list processed-key (inflate value type)))))))
 
-(defmethod plist->object ((table table-class) tuple)
+(defmethod plist->object ((table <table-class>) tuple)
   "Convert a tuple produced by CL-DBI to a CLOS instance."
   (apply #'make-instance (cons table (clean-tuple table tuple))))
 

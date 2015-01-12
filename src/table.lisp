@@ -53,7 +53,7 @@ symbols, table options are keywords."
     (list slots options)))
 
 (defclass <table> () ()
-  (:metaclass crane.meta:table-class))
+  (:metaclass crane.meta:<table-class>))
 
 (defun any-concrete-superclasses (superclasses)
   (remove-if #'crane.meta:abstractp superclasses))
@@ -80,7 +80,7 @@ symbols, table options are keywords."
                   :initarg :id)))
            slots)
          ,@options
-         (:metaclass crane.meta:table-class))
+         (:metaclass crane.meta:<table-class>))
        (closer-mop:finalize-inheritance (find-class ',name))
        (unless (crane.meta:deferredp ',name)
          (crane.migration:build ',name)))))
