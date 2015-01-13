@@ -2,6 +2,6 @@
 
 (run! 'crane-test.util:util-tests)
 
-(run! 'crane-test.specpostgres)
-(run! 'crane-test.specmysql)
-(run! 'crane-test.specsqlite3)
+(run! 'crane-test.spec:postgres)
+(run! 'crane-test.spec:mysql)
+(run! 'crane-test.spec:sqlite3)
