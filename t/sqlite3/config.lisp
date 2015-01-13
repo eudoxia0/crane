@@ -21,5 +21,3 @@
 (test connect
   (finishes
     (crane.connect:connect)))
-
-(run! 'config)

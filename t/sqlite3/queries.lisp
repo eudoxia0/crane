@@ -30,5 +30,3 @@
          1))
   (is (= (field-a (single 'sq-table-a :field-a 1))))
   (is-true (exists 'sq-table-a :field-a 1)))
-
-(run! 'queries)
