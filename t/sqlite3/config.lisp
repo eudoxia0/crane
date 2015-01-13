@@ -15,7 +15,7 @@
     :databases
     '(:sqlite-db
       (:type :sqlite3
-       :name ":memory:"))))
+       :name ":memory:")))))
 
 (test (main-db :depends-on setup)
   (is (equal :sqlite-db crane.connect:*default-db*)))
