@@ -74,7 +74,7 @@
 the connection spec of the database '~A'" key db))))
     (aif (set-difference
           required-keys
-          (crane.utils:plist-keys final-spec))
+          (crane.util:plist-keys final-spec))
          (error 'crane.errors:configuration-error
                 :key (list :databases :-> db)
                 :text (format nil "The following properties of the connection
