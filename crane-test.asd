@@ -9,7 +9,7 @@
                 :components
                 ((:file "packages")
                  (:file "util")
-                 (:file "connection-specs")
+                 (:file "connection-spec")
                  (:module "postgres"
                   :serial t
                   :components

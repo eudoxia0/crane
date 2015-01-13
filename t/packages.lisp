@@ -6,6 +6,12 @@
   (:use :cl :fiveam)
   (:export :util-tests))
 
+(defpackage crane-test.spec
+  (:use :cl :fiveam)
+  (:export :postgres
+           :mysql
+           :sqlite3))
+
 (defpackage crane-test.postgres
   (:use :cl :crane :fiveam))
 

@@ -1,4 +1,4 @@
-(in-package :crane-test)
+(in-package :crane-test.spec)
 
 (defmacro validate (db-type spec)
   `(crane.connect::validate-connection-spec
@@ -66,7 +66,3 @@
 (test bad-specs
   (finishes
     (validate :sqlite3 '(:name "my-db"))))
-
-(run! 'postgres)
-(run! 'mysql)
-(run! 'sqlite3)
