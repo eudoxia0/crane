@@ -8,7 +8,7 @@
                 :serial t
                 :components
                 ((:file "packages")
-                 (:file "utils")
+                 (:file "util")
                  (:file "connection-specs")
                  (:module "postgres"
                   :serial t
