@@ -9,14 +9,14 @@
    (deftable table-with-time ()
      (field :type timestamp))))
 
-(test definitions
+(test (definitions :depends-on create-table)
   (finishes
     (definflate (stamp 'timestamp)
         (local-time:universal-to-timestamp stamp))
     (defdeflate (stamp local-time:timestamp)
         (local-time:format-timestring nil stamp))))
 
-(test queries
+(test (queries :depends-on definitions)
   (is-true
    (let* ((timestamp (local-time:today))
           (instance (create 'table-with-time
