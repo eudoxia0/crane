@@ -17,9 +17,9 @@
        :user "crane_test_user"
        :pass "crane_test_user")))))
 
-(test (connect :depends-on setup)
-  (finishes
-    (crane.connect:connect)))
-
 (test (main-db :depends-on setup)
   (is (equal :postgres-db crane.connect:*default-db*)))
+
+(test (connect :depends-on main-db)
+  (finishes
+    (crane.connect:connect)))
