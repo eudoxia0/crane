@@ -2,6 +2,10 @@
 (defpackage crane-test
   (:use :cl :crane :fiveam))
 
+(defpackage crane-test.util
+  (:use :cl :fiveam)
+  (:export :util-tests))
+
 (defpackage crane-test.postgres
   (:use :cl :crane :fiveam))
 
@@ -10,6 +14,9 @@
 
 (defpackage crane-test.sqlite3
   (:use :cl :crane :fiveam))
+
+(defpackage crane-test.final
+  (:use :cl :fiveam))
 
 (in-package :crane-test)
 
