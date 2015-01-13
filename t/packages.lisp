@@ -1,6 +1,7 @@
 (in-package :cl-user)
 (defpackage crane-test
-  (:use :cl :crane :fiveam))
+  (:use :cl :crane :fiveam)
+  (:export :preliminary))
 
 (defpackage crane-test.util
   (:use :cl :fiveam)
@@ -13,7 +14,14 @@
            :sqlite3))
 
 (defpackage crane-test.postgres
-  (:use :cl :crane :fiveam))
+  (:use :cl :crane :fiveam)
+  (:export :config
+           :table-slots
+           :column-slots
+           :foreign
+           :migrations
+           :queries
+           :inflate-deflate))
 
 (defpackage crane-test.mysql
   (:use :cl :crane :fiveam))
@@ -35,5 +43,3 @@
     (let ((dir (asdf:system-relative-pathname :crane-test #p"t/migrations/")))
       (when (fad:directory-exists-p dir)
         (fad:delete-directory-and-files dir)))))
-
-(run! 'preliminary)

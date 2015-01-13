@@ -57,8 +57,3 @@
               (child-instance  (create 'child-table :ref (id parent-instance))))
          (something (deref child-instance 'ref)))
        99)))
-
-(run! 'preliminary)
-(run! 'table-slots)
-(run! 'column-slots)
-(run! 'foreign)

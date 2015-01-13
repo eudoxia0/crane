@@ -21,5 +21,3 @@
 
 (test main-db
   (is (equal :postgres-db crane.connect:*default-db*)))
-
-(run! 'config)

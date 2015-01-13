@@ -40,5 +40,3 @@
   (finishes
     (deftable a ()
       (field-a :type integer :uniquep t))))
-
-(run! 'migrations)

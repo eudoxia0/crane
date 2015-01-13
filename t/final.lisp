@@ -1,7 +1,18 @@
 (in-package :crane-test.final)
 
-(run! 'crane-test.util:util-tests)
+(let ((tests '(crane-test.util:util-tests
 
-(run! 'crane-test.spec:postgres)
-(run! 'crane-test.spec:mysql)
-(run! 'crane-test.spec:sqlite3)
+               crane-test.spec:postgres
+               crane-test.spec:mysql
+               crane-test.spec:sqlite3
+
+               crane-test:preliminary
+               crane-test.postgres:config
+               crane-test.postgres:table-slots
+               crane-test.postgres:column-slots
+               crane-test.postgres:foreign
+               crane-test.postgres:migrations
+               crane-test.postgres:queries
+               crane-test.postgres:inflate-deflate)))
+  (loop for test in tests do
+    (run! test)))

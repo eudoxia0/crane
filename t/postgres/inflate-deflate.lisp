@@ -25,5 +25,3 @@
             (single 'table-with-time :field timestamp)))
      (local-time:timestamp= timestamp
                             (field found-instance)))))
-
-(run! 'inflate-deflate)
