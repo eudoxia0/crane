@@ -1,4 +1,4 @@
-(defpackage crane.utils
+(defpackage crane.util
   (:use :cl :anaphora :iter)
   (:export :diff-plist
            :plist-keys
@@ -8,7 +8,7 @@
            :get-class-slot
            :get-slot)
   (:documentation "Various utilities for use in other parts of Crane."))
-(in-package :crane.utils)
+(in-package :crane.util)
 
 (defun diff-plist (plist-a plist-b &key (test #'eql))
   "Calculates the difference between two plists, returning the result as a list of ([property] [old value] [new value])"

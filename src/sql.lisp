@@ -6,7 +6,7 @@
 
 (in-package :cl-user)
 (defpackage crane.sql
-  (:use :cl :anaphora :crane.utils :iter)
+  (:use :cl :anaphora :crane.util :iter)
   (:import-from :sxql
                 :*quote-character*)
   (:export :sqlize

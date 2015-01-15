@@ -1,7 +1,7 @@
 (in-package :cl-user)
 (defpackage crane.interface
   (:use :cl :anaphora :iter)
-  (:import-from :crane.utils
+  (:import-from :crane.util
                 :make-keyword
                 :get-class-slot)
   (:import-from :crane.meta
@@ -195,7 +195,7 @@ make-instance. Inflation happens here."
 
 (defmacro deref (obj field)
   `(single
-    (first (crane.meta:col-foreign (crane.utils::find-slot
+    (first (crane.meta:col-foreign (crane.util::find-slot
                                     ,obj ,field)))
     :id (slot-value ,obj (closer-mop:slot-definition-name
-                          (crane.utils::get-slot ,obj :id)))))
+                          (crane.util::get-slot ,obj :id)))))

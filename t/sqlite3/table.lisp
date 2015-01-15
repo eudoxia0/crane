@@ -7,5 +7,3 @@
   (finishes
     (deftable sq-table-b (sq-table-a)
       (field-b :type text))))
-
-(run! 'create-basic-tables)

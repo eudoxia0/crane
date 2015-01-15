@@ -1,9 +1,5 @@
 (in-package :crane-test.postgres)
 
-(def-suite migrations
-  :description "Test that migrations actually work.")
-(in-suite migrations)
-
 (test initial-definitions
   (finishes
     (deftable a ()
@@ -40,5 +36,3 @@
   (finishes
     (deftable a ()
       (field-a :type integer :uniquep t))))
-
-(run! 'migrations)

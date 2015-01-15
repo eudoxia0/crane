@@ -176,7 +176,7 @@
 See DIGEST."
   (append (list :name (getf slot-a :name) :diff)
           (list
-           (crane.utils:diff-plist slot-a slot-b :test #'equal))))
+           (crane.util:diff-plist slot-a slot-b :test #'equal))))
 
 (defun sort-slot-list (list)
   list)

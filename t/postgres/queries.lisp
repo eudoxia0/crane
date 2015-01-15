@@ -1,9 +1,5 @@
 (in-package :crane-test.postgres)
 
-(def-suite queries
-  :description "Creating, saving, and destroying objects.")
-(in-suite queries)
-
 (test creating
   (finishes
    (create 'a :field-a 1)
@@ -32,5 +28,3 @@
          1))
   (is (= (field-a (single 'a :field-a 1))))
   (is-true (exists 'a :field-a 1)))
-
-(run! 'queries)

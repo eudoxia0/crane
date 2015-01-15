@@ -1,9 +1,5 @@
 (in-package :crane-test.postgres)
 
-(def-suite table-slots
-  :description "Test that table metaclass slots work.")
-(in-suite table-slots)
-
 (test create-simple-table
   (finishes
     (deftable table-a ()
@@ -57,8 +53,3 @@
               (child-instance  (create 'child-table :ref (id parent-instance))))
          (something (deref child-instance 'ref)))
        99)))
-
-(run! 'preliminary)
-(run! 'table-slots)
-(run! 'column-slots)
-(run! 'foreign)
