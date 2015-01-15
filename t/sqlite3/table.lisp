@@ -1,5 +1,9 @@
 (in-package :crane-test.sqlite3)
 
+(def-suite tables
+  :description "Test that we can configure Crane and connect to a DB.")
+(in-suite tables)
+
 (test create-basic-tables
   (finishes
     (deftable sq-table-a ()

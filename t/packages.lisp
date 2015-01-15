@@ -23,7 +23,10 @@
   (:use :cl :crane :fiveam))
 
 (defpackage crane-test.sqlite3
-  (:use :cl :crane :fiveam))
+  (:use :cl :crane :fiveam)
+  (:export :config
+           :tables
+           :queries))
 
 (defpackage crane-test
   (:use :cl :fiveam))
