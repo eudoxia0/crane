@@ -25,5 +25,5 @@
 (defpackage crane-test.sqlite3
   (:use :cl :crane :fiveam))
 
-(defpackage crane-test.final
+(defpackage crane-test
   (:use :cl :fiveam))
