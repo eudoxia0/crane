@@ -1,10 +1,10 @@
 (in-package :crane-test.sqlite3)
 
-(def-suite config
-  :description "Test that we can configure Crane and connect to a DB.")
-(in-suite config)
+(def-suite sqlite3
+  :description "SQLite3 tests.")
+(in-suite sqlite3)
 
-(test sq-setup
+(test setup
   (finishes
    (crane:setup
     :debug t
@@ -17,7 +17,7 @@
       (:type :sqlite3
        :name ":memory:")))))
 
-(test (main-db :depends-on sq-setup)
+(test (main-db :depends-on setup)
   (is (equal :sqlite-db crane.connect:*default-db*)))
 
 (test (connect :depends-on main-db)

@@ -1,9 +1,5 @@
 (in-package :crane-test.sqlite3)
 
-(def-suite queries
-  :description "Creating, saving, and destroying objects.")
-(in-suite queries)
-
 (test creating
   (finishes
    (create 'sq-table-a :field-a 1)

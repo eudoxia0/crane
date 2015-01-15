@@ -1,9 +1,5 @@
 (in-package :crane-test.postgres)
 
-(def-suite inflate-deflate
-  :description "Test inflation/deflation.")
-(in-suite inflate-deflate)
-
 (test create-table
   (finishes
    (deftable table-with-time ()

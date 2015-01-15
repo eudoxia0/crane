@@ -1,10 +1,4 @@
 (in-package :crane-test)
 
 (run! 'preliminary)
-(run! 'crane-test.postgres:config)
-(run! 'crane-test.postgres:table-slots)
-(run! 'crane-test.postgres:column-slots)
-(run! 'crane-test.postgres:foreign)
-(run! 'crane-test.postgres:migrations)
-(run! 'crane-test.postgres:queries)
-(run! 'crane-test.postgres:inflate-deflate)
+(run! 'crane-test.postgres:postgres)

@@ -1,9 +1,5 @@
 (in-package :crane-test.postgres)
 
-(def-suite queries
-  :description "Creating, saving, and destroying objects.")
-(in-suite queries)
-
 (test creating
   (finishes
    (create 'a :field-a 1)

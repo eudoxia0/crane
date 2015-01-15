@@ -1,9 +1,5 @@
 (in-package :crane-test.postgres)
 
-(def-suite table-slots
-  :description "Test that table metaclass slots work.")
-(in-suite table-slots)
-
 (test create-simple-table
   (finishes
     (deftable table-a ()

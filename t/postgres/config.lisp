@@ -1,10 +1,10 @@
 (in-package :crane-test.postgres)
 
-(def-suite config
-  :description "Test that we can configure Crane and connect to a DB.")
-(in-suite config)
+(def-suite postgres
+  :description "PostgreSQL tests.")
+(in-suite postgres)
 
-(test pg-setup
+(test setup
   (finishes
    (crane:setup
     :debug t
@@ -17,7 +17,7 @@
        :user "crane_test_user"
        :pass "crane_test_user")))))
 
-(test (main-db :depends-on pg-setup)
+(test (main-db :depends-on setup)
   (is (equal :postgres-db crane.connect:*default-db*)))
 
 (test (connect :depends-on main-db)
