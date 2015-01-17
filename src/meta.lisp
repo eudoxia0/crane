@@ -78,7 +78,7 @@
                  :initform nil)
    (col-autoincrement-p :reader col-autoincrement-p
                         :initarg :col-autoincrement-p
-                        :initform nil)
+                        :initform nil))
   (:documentation "The direct slot definition class of <table-class> slots."))
 
 (defclass <table-class-slot>
@@ -103,7 +103,7 @@
                 :documentation "Describes a foreign key relationship.")
    (col-autoincrement-p :reader col-autoincrement-p
                         :initarg :col-autoincrement-p
-                        :documentation "Whether the column should be autoincremented.")
+                        :documentation "Whether the column should be autoincremented."))
   (:documentation "A slot of a <table-class>."))
 
 (defmethod closer-mop:direct-slot-definition-class ((class <table-class>)
@@ -145,7 +145,7 @@
           (col-foreign direct-slot)
 
           (slot-value effective-slot-definition 'col-autoincrement-p)
-          (col-autoincrement-p direct-slot)
+          (col-autoincrement-p direct-slot))
     effective-slot-definition))
 
 (defmethod digest-slot ((slot <table-class-slot>))
