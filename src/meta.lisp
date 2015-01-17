@@ -5,6 +5,7 @@
                 :database-type
                 :get-db)
   (:export :<table-class>
+           :<table-class-slot>
            :table-name
            :abstractp
            :deferredp
@@ -49,105 +50,116 @@
 
 (defmethod closer-mop:validate-superclass ((class <table-class>)
                                            (super closer-mop:standard-class))
+  "Validate that a table class can be a subclass of a standard-class."
   t)
 
 (defmethod closer-mop:validate-superclass ((class standard-class)
                                            (super <table-class>))
+  "Validate that a standard-class can be the subclass of a table-class."
   t)
 
-(defclass table-class-direct-slot-definition (closer-mop:standard-direct-slot-definition)
-  ((col-type :initarg :col-type
-             :reader  col-type)
-   (col-null-p :initarg :col-null-p
-               :reader  col-null-p
+(defclass <table-class-direct-slot-definition>
+    (closer-mop:standard-direct-slot-definition)
+  ((col-type :reader col-type
+             :initarg :col-type)
+   (col-null-p :reader col-null-p
+               :initarg :col-null-p
                :initform t)
-   (col-unique-p :initarg :col-unique-p
-                 :reader  col-unique-p
+   (col-unique-p :reader col-unique-p
+                 :initarg :col-unique-p
                  :initform nil)
-   (col-primary-p :initarg :col-primary-p
-                  :reader col-primary-p
+   (col-primary-p :reader col-primary-p
+                  :initarg :col-primary-p
                   :initform nil)
-   (col-index-p :initarg :col-index-p
-                :reader  col-index-p
+   (col-index-p :reader col-index-p
+                :initarg :col-index-p
                 :initform nil)
-   (col-foreign :initarg :col-foreign
-                :reader  col-foreign
-                :initform nil)
-   (col-autoincrement-p :initarg :col-autoincrement-p
-                        :reader  col-autoincrement-p
+   (col-foreign  :reader col-foreign
+                 :initarg :col-foreign
+                 :initform nil)
+   (col-autoincrement-p :reader col-autoincrement-p
+                        :initarg :col-autoincrement-p
                         :initform nil)
-   (col-check :initarg :col-check
-              :reader col-check
-              :initarg nil)))
+   (col-check :reader col-check
+              :initarg :col-check
+              :initarg nil))
+  (:documentation "The direct slot definition class of <table-class> slots."))
 
-(defclass table-class-effective-slot-definition (closer-mop:standard-effective-slot-definition)
-  ((col-type :initarg :col-type
-             :accessor col-type)
-   (col-null-p :initarg :col-null-p
-               :reader  col-null-p)
-   (col-unique-p :initarg :col-unique-p
-                 :reader  col-unique-p)
-   (col-primary-p :initarg :col-primary-p
-                  :reader col-primary-p)
-   (col-index-p :initarg :col-index-p
-                :reader  col-index-p)
-   (col-foreign :initarg :col-foreign
-                :reader  col-foreign)
-   (col-autoincrement-p :initarg :col-autoincrement-p
-                        :reader  col-autoincrement-p)
-   (col-check :initarg :col-check
-              :reader col-check)))
+(defclass <table-class-slot>
+    (closer-mop:standard-effective-slot-definition)
+  ((col-type :reader col-type
+             :initarg :col-type
+             :documentation "The type of the column.")
+   (col-null-p :reader col-null-p
+               :initarg :col-null-p
+               :documentation "Whether the column is nullable.")
+   (col-unique-p :reader col-unique-p
+                 :initarg :col-unique-p
+                 :documentation "Whether the column is unique.")
+   (col-primary-p :reader col-primary-p
+                  :initarg :col-primary-p
+                  :documentation "Whether the column is a primary key.")
+   (col-index-p :reader col-index-p
+                :initarg :col-index-p
+                :documentation "Whether the column is an index in the database.")
+   (col-foreign :reader col-foreign
+                :initarg :col-foreign
+                :documentation "Describes a foreign key relationship.")
+   (col-autoincrement-p :reader col-autoincrement-p
+                        :initarg :col-autoincrement-p
+                        :documentation "Whether the column should be autoincremented.")
+   (col-check :reader col-check
+              :initarg :col-check))
+  (:documentation "A slot of a <table-class>."))
 
-;;; Common Lisp is a vast ocean of possibilities, stretching infinitely
-;;; and with no horizon... And here I am pretending to understand
-;;; the MOP while trying not to end up in r/badcode, like a child
-;;; playing in the surf...
-
-(defmethod closer-mop:direct-slot-definition-class ((class <table-class>) &rest initargs)
+(defmethod closer-mop:direct-slot-definition-class ((class <table-class>)
+                                                    &rest initargs)
   (declare (ignore class initargs))
-  (find-class 'table-class-direct-slot-definition))
+  (find-class '<table-class-direct-slot-definition>))
 
-(defmethod closer-mop:effective-slot-definition-class ((class <table-class>) &rest initargs)
+(defmethod closer-mop:effective-slot-definition-class ((class <table-class>)
+                                                       &rest initargs)
   (declare (ignore class initargs))
-  (find-class 'table-class-effective-slot-definition))
+  (find-class '<table-class-slot>))
 
 (defmethod closer-mop:compute-effective-slot-definition ((class <table-class>)
                                                          slot-name direct-slot-definitions)
   (declare (ignore slot-name))
-  (let ((effective-slot-definition (call-next-method)))
+  (let ((direct-slot (first direct-slot-definitions))
+        (effective-slot-definition (call-next-method)))
     (setf (slot-value effective-slot-definition 'col-type)
-          (col-type (first direct-slot-definitions))
+          (col-type direct-slot)
 
           (slot-value effective-slot-definition 'col-null-p)
-          (col-null-p (first direct-slot-definitions))
+          (col-null-p direct-slot)
 
           (slot-value effective-slot-definition 'col-unique-p)
-          (col-unique-p (first direct-slot-definitions))
+          (col-unique-p direct-slot)
 
           (slot-value effective-slot-definition 'col-primary-p)
           (if (and (eq (database-type (get-db (table-database class)))
                        :sqlite3)
-                   (eq (col-autoincrement-p (first direct-slot-definitions))
+                   (eq (col-autoincrement-p direct-slot)
                        t))
               nil
               (col-primary-p (first direct-slot-definitions)))
 
           (slot-value effective-slot-definition 'col-index-p)
-          (col-index-p (first direct-slot-definitions))
+          (col-index-p direct-slot)
 
           (slot-value effective-slot-definition 'col-foreign)
-          (col-foreign (first direct-slot-definitions))
+          (col-foreign direct-slot)
 
           (slot-value effective-slot-definition 'col-autoincrement-p)
-          (col-autoincrement-p (first direct-slot-definitions))
+          (col-autoincrement-p direct-slot)
 
           (slot-value effective-slot-definition 'col-check)
           (if (slot-boundp (first direct-slot-definitions) 'col-check)
-              (col-check (first direct-slot-definitions))
+              (col-check direct-slot)
               nil))
     effective-slot-definition))
 
-(defun digest-slot (slot)
+(defmethod digest-slot ((slot <table-class-slot>))
   (list :name (closer-mop:slot-definition-name slot)
         :type (col-type slot)
         :nullp (col-null-p slot)
@@ -171,7 +183,7 @@
                      :text "The table ~A has no slots."
                      (table-name class))))))
 
-(defun diff-slot (slot-a slot-b)
+(defmethod diff-slot ((slot-a <table-class-slot>) (slot-b <table-class-slot>))
   "Compute the difference between two slot digests.
 See DIGEST."
   (append (list :name (getf slot-a :name) :diff)
