@@ -10,7 +10,8 @@
                :iterate
                :cl-fad
                :clos-fixtures
-               :uiop)
+               :uiop
+               :local-time)
   :components ((:module "src"
                 :serial t
                 :components

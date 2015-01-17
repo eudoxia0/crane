@@ -40,3 +40,11 @@ represent time, or mapping other more complex SQL types to CLOS objects."))
 (definflate (obj 'varchar) obj)
 (definflate (obj 'timestamp) obj)
 (definflate (obj 'datetime) obj)
+
+(definflate (stamp 'timestamp)
+    (if (integerp stamp)
+        (local-time:universal-to-timestamp stamp)
+        (local-time:parse-timestring stamp)))
+
+(defdeflate (stamp local-time:timestamp)
+    (local-time:format-timestring nil stamp))
