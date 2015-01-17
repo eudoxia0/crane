@@ -11,6 +11,7 @@
            :empty-table
            :no-slot-type
            :query-error
+           :more-than-one-result
            :key
            :message
            :database-name
@@ -127,3 +128,10 @@
      (declare (ignore condition))
      (format stream "Error in query.")))
   (:documentation "Error in a query."))
+
+(define-condition more-than-one-result (query-error)
+  ()
+  (:report
+   (lambda (condition stream)
+     (declare (ignore condition))
+     (format stream "Call to single! returned more than one result."))))

@@ -41,5 +41,4 @@
        it
        (error 'crane.errors:configuration-error
               :key key
-              :text "This key is not configured."
-              key)))
+              :message "This key is not configured.")))

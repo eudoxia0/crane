@@ -68,17 +68,15 @@
     (iter (for key in spec by #'cddr)
           (aif (getf normalized-spec key)
                (setf (getf final-spec it) (getf spec key))
-               (error 'crane.errors:configuration-error
-                      :key (list :databases :-> db :-> key)
-                      :text (format nil "The property '~A' is not supported by
-the connection spec of the database '~A'" key db))))
+               (error 'crane.errors:unsupported-property
+                      :database-name db
+                      :property-name key)))
     (aif (set-difference
           required-keys
           (crane.util:plist-keys final-spec))
-         (error 'crane.errors:configuration-error
-                :key (list :databases :-> db)
-                :text (format nil "The following properties of the connection
-spec for the database '~A' have not been provided: ~A" db it))
+         (error 'crane.errors:missing-properties
+                :database-name db
+                :properties it)
          final-spec)))
 
 (defparameter *db* (make-hash-table)

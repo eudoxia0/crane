@@ -168,8 +168,7 @@
               (mapcar #'digest-slot
                       (closer-mop:class-slots class))
               (error 'crane.errors:empty-table
-                     :text "The table ~A has no slots."
-                     (table-name class))))))
+                     :table-name (table-name class))))))
 
 (defmethod diff-slot ((slot-a <table-class-slot>) (slot-b <table-class-slot>))
   "Compute the difference between two slot digests.

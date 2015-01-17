@@ -185,8 +185,7 @@ make-instance. Inflation happens here."
 (defmacro single! (class &rest params)
   `(anaphora:aif (get ,class ,@params)
                  anaphora:it
-                 (error 'crane.errors:query-error
-                        :text "Call to get returned more than one result.")))
+                 (error 'crane.errors:query-error)))
 
 (defmacro single-or-create (class &rest params)
   `(anaphora:aif (get ,class ,@params)
