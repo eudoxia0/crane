@@ -147,6 +147,6 @@ internals is also provided. The `crane-docs` system compiles those to PDF, and
 
 # License
 
-Copyright (c) 2013 Fernando Borretti (eudoxiahp@gmail.com)
+Copyright (c) 2013-2015 Fernando Borretti (eudoxiahp@gmail.com)
 
 Released under the MIT license.
