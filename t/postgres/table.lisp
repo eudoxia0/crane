@@ -21,10 +21,6 @@
     (find-class 'table-b)
     (find-class 'table-c)))
 
-(def-suite column-slots
-  :description "Test that table column options work.")
-(in-suite column-slots)
-
 (test column-options
   (finishes
     (deftable table-d (table-a)
@@ -33,10 +29,6 @@
   (finishes
     (closer-mop:class-slots (find-class 'table-d)))
   (finishes (crane.meta:digest (find-class 'table-d))))
-
-(def-suite foreign
-  :description "Testing the 'R' in ORM.")
-(in-suite foreign)
 
 (test creating-related-tables
   (finishes
