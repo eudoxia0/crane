@@ -20,7 +20,7 @@
                                             "bad-spec-"
                                             (write-to-string i))
                                *package*)
-                  (signals crane.errors:configuration-error
+                  (signals crane.errors:connection-error
                     (validate ,db-type ',spec)))))))
 
 (defmacro generate-good-tests (db-type)
@@ -44,22 +44,19 @@
 (generate-bad-tests :postgres)
 (generate-good-tests :postgres)
 
-
 (def-suite mysql
   :description "MySQL connection spec tests.")
 (in-suite mysql)
 
-
 (generate-bad-tests :mysql)
 (generate-good-tests :mysql)
-
 
 (def-suite sqlite3
   :description "SQLite3 connection spec tests.")
 (in-suite sqlite3)
 
 (test bad-specs
-  (signals 'crane.errors:configuration-error
+  (signals 'crane.errors:unsupported-property
     (validate :sqlite3 '())
     (validate :sqlite3 '(:some-other-key t))))
 
