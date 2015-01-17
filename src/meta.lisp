@@ -17,7 +17,6 @@
            :col-index-p
            :col-foreign
            :col-autoincrement-p
-           :col-check
            :digest
            :diff-digest)
   (:documentation "This file defines the metaclasses that map CLOS objects to SQL tables, and some basic operations on them."))
@@ -80,9 +79,6 @@
    (col-autoincrement-p :reader col-autoincrement-p
                         :initarg :col-autoincrement-p
                         :initform nil)
-   (col-check :reader col-check
-              :initarg :col-check
-              :initarg nil))
   (:documentation "The direct slot definition class of <table-class> slots."))
 
 (defclass <table-class-slot>
@@ -108,8 +104,6 @@
    (col-autoincrement-p :reader col-autoincrement-p
                         :initarg :col-autoincrement-p
                         :documentation "Whether the column should be autoincremented.")
-   (col-check :reader col-check
-              :initarg :col-check))
   (:documentation "A slot of a <table-class>."))
 
 (defmethod closer-mop:direct-slot-definition-class ((class <table-class>)
@@ -152,11 +146,6 @@
 
           (slot-value effective-slot-definition 'col-autoincrement-p)
           (col-autoincrement-p direct-slot)
-
-          (slot-value effective-slot-definition 'col-check)
-          (if (slot-boundp (first direct-slot-definitions) 'col-check)
-              (col-check direct-slot)
-              nil))
     effective-slot-definition))
 
 (defmethod digest-slot ((slot <table-class-slot>))
@@ -166,7 +155,6 @@
         :uniquep (col-unique-p slot)
         :primaryp (col-primary-p slot)
         :indexp (col-index-p slot)
-        :check (col-check slot)
         :autoincrementp (col-autoincrement-p slot)
         :foreign (col-foreign slot)))
 

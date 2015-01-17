@@ -11,7 +11,6 @@
         :uniquep        :col-unique-p
         :primaryp       :col-primary-p
         :indexp         :col-index-p
-        :check          :col-check
         :autoincrementp :col-autoincrement-p
         :foreign        :col-foreign))
 

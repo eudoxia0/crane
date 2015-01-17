@@ -182,7 +182,7 @@ database it's table belongs to"
 
 (defun alter-constraint (table-name column-name type value)
   "SQL to alter a constraint in a table."
-  (if (member type (list :primaryp :uniquep :indexp :foreign :check))
+  (if (member type (list :primaryp :uniquep :indexp :foreign))
       (if value
           ;; The constraint wasn't there, add it
           (aif (make-constraint table-name column-name type t)
