@@ -55,32 +55,7 @@
                                            (super <table-class>))
   t)
 
-(defclass table-class-direct-slot-definition (closer-mop:standard-direct-slot-definition)
-  ((col-type :initarg :col-type
-             :reader  col-type)
-   (col-null-p :initarg :col-null-p
-               :reader  col-null-p
-               :initform t)
-   (col-unique-p :initarg :col-unique-p
-                 :reader  col-unique-p
-                 :initform nil)
-   (col-primary-p :initarg :col-primary-p
-                  :reader col-primary-p
-                  :initform nil)
-   (col-index-p :initarg :col-index-p
-                :reader  col-index-p
-                :initform nil)
-   (col-foreign :initarg :col-foreign
-                :reader  col-foreign
-                :initform nil)
-   (col-autoincrement-p :initarg :col-autoincrement-p
-                        :reader  col-autoincrement-p
-                        :initform nil)
-   (col-check :initarg :col-check
-              :reader col-check
-              :initarg nil)))
-
-(defclass table-class-effective-slot-definition (closer-mop:standard-effective-slot-definition)
+(defclass table-class-slot-definition-mixin ()
   ((col-type :initarg :col-type
              :accessor col-type)
    (col-null-p :initarg :col-null-p
@@ -97,6 +72,20 @@
                         :reader  col-autoincrement-p)
    (col-check :initarg :col-check
               :reader col-check)))
+
+(defclass table-class-direct-slot-definition (table-class-slot-definition-mixin
+                                              closer-mop:standard-direct-slot-definition)
+  ((col-null-p :initform t)
+   (col-unique-p :initform nil)
+   (col-primary-p :initform nil)
+   (col-index-p :initform nil)
+   (col-foreign :initform nil)
+   (col-autoincrement-p :initform nil)
+   (col-check :initarg nil)))
+
+(defclass table-class-effective-slot-definition (table-class-slot-definition-mixin
+                                                 closer-mop:standard-effective-slot-definition)
+  ())
 
 ;;; Common Lisp is a vast ocean of possibilities, stretching infinitely
 ;;; and with no horizon... And here I am pretending to understand
