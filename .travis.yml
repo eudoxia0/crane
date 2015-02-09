@@ -10,7 +10,10 @@ env:
 install:
   # Install cl-travis
   - curl https://raw.githubusercontent.com/luismbo/cl-travis/master/install.sh | bash
-  # Update repo
+  # Install the latest versions of the major dependencies
+  - git clone https://github.com/fukamachi/sxql.git quicklisp/local-projects/sxql
+  - git clone https://github.com/fukamachi/cl-dbi.git quicklisp/local-projects/cl-dbi
+  # Update package repos
   - sudo apt-get update
   # Install SQLite
   - sudo apt-get install -y sqlite3
