@@ -1,0 +1,50 @@
+\section{
+  \title{Appendix A: Connecting}
+
+  \section[title=PostgreSQL]{
+    \b{Required}
+
+    \deflist{
+      \def{
+        \term{\c{:name}}
+        Database name.
+      }
+
+      \def{
+        \term{\c{:user}}
+        User name.
+      }
+
+      \def{
+        \term{\c{:pass}}
+        User password.
+      }
+    }
+
+    \b{Optional}
+
+    \deflist{
+
+      \def{
+        \term{\c{:host}}
+        Host that runs the database server. Default: \c{localhost}.
+      }
+
+      \def{
+        \term{\c{:port}}
+        Port the database server listens on. Default: 5432.
+      }
+
+      \def{
+        \term{\c{:ssl}}
+
+        \c{:yes} enables secure SSL connections to the server. This might be
+        useful if the server is running on a host other than the default. Note
+        that OpenSSL must be installed on both machines. For mpre information, see
+        the
+        relevant \link[uri=http://www.postgresql.org/docs/9.1/static/ssl-tcp.html]{PostgreSQL
+          documentation}. Default: \c{:no}.
+      }
+    }
+  }
+}
