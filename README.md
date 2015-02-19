@@ -141,9 +141,11 @@ environments, you might want to use [Envy](https://github.com/fukamachi/envy).
 
 # Documentation
 
-The manual is provided in Markdown format in `docs/manual.md`. A document on the
-internals is also provided. The `crane-docs` system compiles those to PDF, and
-`crane-web` compiles them to HTML in addition to generating the site.
+I'm in the process of moving the documentation to [Codex][codex], so for now you
+can check it out in the [website][docs-pdf].
+
+[codex]: https://github.com/CommonDoc/codex
+[docs-pdf]: http://eudoxia.me/crane/docs/manual.pdf
 
 # License
 
