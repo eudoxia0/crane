@@ -1,0 +1,32 @@
+\section[title="Making Queries"]{
+
+\section[title=High-Level API]{
+
+\cldoc{crane:filter}
+
+\cldoc{crane:single}
+
+\cldoc{crane:get-or-create}
+
+}
+
+\section[title=Functional SQL]{
+
+Crane exports the important bits of SxQL so you can write queries using this DSL
+without worrying about packages. The syntax is fairly straightforward, and has
+few surprises, so a lot of the time consulting the documentation is not
+required. It's simply SQL with Lisp syntax.
+
+Examples:
+
+\code[lang=lisp]{
+cl-user> (query (select :tonnage
+                  (from :ship)
+                  (where (:and (:> :tonnage 125)
+                               (:<= :tonnage 500)))
+                  (order-by :tonnage)
+                  (limit 10)))
+;; => ((:|tonnage| 445))
+}
+}
+}
