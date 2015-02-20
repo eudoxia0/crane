@@ -5,46 +5,34 @@
     \b{Required}
 
     \deflist{
-      \def{
-        \term{\c{:name}}
-        Database name.
-      }
+      \term{\c{:name}}
+      \def{Database name.}
 
-      \def{
-        \term{\c{:user}}
-        User name.
-      }
+      \term{\c{:user}}
+      \def{User name.}
 
-      \def{
-        \term{\c{:pass}}
-        User password.
-      }
+      \term{\c{:pass}}
+      \def{User password.}
     }
 
     \b{Optional}
 
     \deflist{
 
-      \def{
-        \term{\c{:host}}
-        Host that runs the database server. Default: \c{localhost}.
-      }
+      \term{\c{:host}}
+      \def{Host that runs the database server. Default: \c{localhost}.}
 
-      \def{
-        \term{\c{:port}}
-        Port the database server listens on. Default: 5432.
-      }
+      \term{\c{:port}}
+      \def{Port the database server listens on. Default: 5432.}
 
-      \def{
-        \term{\c{:ssl}}
+      \term{\c{:ssl}}
 
-        \c{:yes} enables secure SSL connections to the server. This might be
+      \def{\c{:yes} enables secure SSL connections to the server. This might be
         useful if the server is running on a host other than the default. Note
-        that OpenSSL must be installed on both machines. For mpre information, see
-        the
-        relevant \link[uri=http://www.postgresql.org/docs/9.1/static/ssl-tcp.html]{PostgreSQL
-          documentation}. Default: \c{:no}.
-      }
+        that OpenSSL must be installed on both machines. For mpre information,
+        see the relevant
+        \link[uri=http://www.postgresql.org/docs/9.1/static/ssl-tcp.html]{PostgreSQL
+          documentation}. Default: \c{:no}.}
     }
   }
 }

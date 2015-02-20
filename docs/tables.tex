@@ -64,19 +64,18 @@ For example:
 
 \section[title=Class Options]{
 
-\deflist{
+  \deflist{
+    \term{\c{:table-name}}
+    \def{A symbol that will be converted to the table's SQL name (Not a
+      string). Default: The class's name.}
 
-  \term{\c{:table-name}}
-  \def{A symbol that will be converted to the table's SQL name (Not a
-    string). Default: The class's name.}
+    \term{\c{:abstractp}}
+    \def{Determines whether the table is abstract. Abstract table only provide
+      slots for subclasses to inherit, and don't compile to actual SQL tables.}
 
-  \term{\c{:abstractp}}
-  \def{Determines whether the table is abstract. Abstract table only provide
-    slots for subclasses to inherit, and don't compile to actual SQL tables.}
-
-  \term{\c{:deferredp}}
-  \def{Deferred classes are only built on demand by calling
-    \clref{crane:build}. Default: False.}
-}
+    \term{\c{:deferredp}}
+    \def{Deferred classes are only built on demand by calling
+      \clref{crane:build}. Default: False.}
+  }
 }
 }
