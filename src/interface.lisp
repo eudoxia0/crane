@@ -93,12 +93,14 @@ happens here."
      obj))
 
 (defmacro create (class-name &rest args)
+  "Create an object."
   `(crane.interface::create% (make-instance ,class-name ,@args)))
 
 (defmacro create-from-plist (class plist)
   `(crane.interface::create% (apply #'make-instance ,class ,plist)))
 
 (defmethod save ((obj crane.table:<table>))
+  "Write an instance object to the database."
   (let ((set (make-set obj)))
     (query (sxql:update (table-name (class-of obj))
                         (apply #'sxql.clause:make-clause
@@ -107,10 +109,10 @@ happens here."
         (table-database (class-of obj)))))
 
 (defmethod del ((obj crane.table:<table>))
+  "Delete an object from the database."
   (query (sxql:delete-from (table-name (class-of obj))
            (sxql:where (:= :id (getf (make-set obj) :id))))
       (table-database (class-of obj))))
-
 
 (defmethod clean-tuple ((table <table-class>) tuple)
   "Process a plist returned by CL-DBI into a format that can be accepted by
