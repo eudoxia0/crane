@@ -2,6 +2,9 @@
  :systems (:crane)
  :documents ((:title "Crane Manual"
               :authors ("Fernando Borretti")
+              :markup-format :vertex
+              :output-format (:type :multi-html
+                              :template :min)
               :sources ("overview.tex"
                         "connecting.tex"
                         "tables.tex"
