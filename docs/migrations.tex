@@ -12,8 +12,7 @@ that without ever having to leave your Lisp environment or accessing the shell.
 
 \section[title=Examples]{
 
-\code[lang=lisp]{
-(deftable employees
+\code[lang=lisp]{(deftable employees
   (name :type string :null nil)
   (age  :type integer)
   (address :type string :null nil))
@@ -22,8 +21,7 @@ that without ever having to leave your Lisp environment or accessing the shell.
 Now, if you decide that addresses can be nullable, you just redefine the class
 (Make the change, and either `C-c C-c` on Emacs or Quickload your project):
 
-\code[lang=lisp]{
-(deftable employees
+\code[lang=lisp]{(deftable employees
   (name :type string :null nil)
   (age  :type integer)
   (address :type string))

@@ -5,8 +5,7 @@ configuration when the \c{crane:connect} function is called (No parameters).
 
 Configuration for the databases might look like this:
 
-\code[lang=lisp]{
-(setup
+\code[lang=lisp]{(setup
  :migrations-directory
  (asdf:system-relative-pathname :myapp #p"migrations/")
  :databases

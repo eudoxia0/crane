@@ -4,15 +4,13 @@ Crane uses the metaobject protocol to bind SQL tables and CLOS objects through
 a \c{table-class} metaclass. Table classes can be defined simply through
 the \clref{crane:deftable} macro, the syntax being:
 
-\code[lang=lisp]{
-(deftable <name> (<superclass>*)
+\code[lang=lisp]{(deftable <name> (<superclass>*)
   <field-or-option>*)
 }
 
 For example:
 
-\code[lang=lisp]{
-(deftable enemy ()
+\code[lang=lisp]{(deftable enemy ()
   (name :type text :primaryp t)
   (age :type integer :check (:> 'age 12))
   (address :nullp t
