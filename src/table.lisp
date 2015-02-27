@@ -52,8 +52,10 @@ symbols, table options are keywords."
           (push (process-slot item) slots)))
     (list slots options)))
 
-(defclass <table> () ()
-  (:metaclass crane.meta:<table-class>))
+(defclass <table> ()
+  ()
+  (:metaclass crane.meta:<table-class>)
+  (:documentation "The base class of all table classes."))
 
 (defun any-concrete-superclasses (superclasses)
   (remove-if #'(lambda (class-name)

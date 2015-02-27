@@ -19,45 +19,46 @@ For example:
   (identifying-color :unique t :foreign (colors name)))
 }
 
+\cldoc{crane.table:<table>}
+
 \section[title=Slot Options]{
 
-\deflist{
-  \term{\c{:type}}
-  \def{The type of the column. No default.}
+  \deflist{
+    \term{\c{:type}}
+    \def{The type of the column. No default.}
 
-  \term{\c{:nullp}}
-  \def{Whether the column is nullable or not. Default: False.}
+    \term{\c{:nullp}}
+    \def{Whether the column is nullable or not. Default: False.}
 
-  \term{\c{:uniquep}}
-  \def{Whether the column's values is unique across the table. Default: False.}
+    \term{\c{:uniquep}}
+    \def{Whether the column's values is unique across the table. Default: False.}
 
-  \term{\c{:primaryp}}
-  \def{Whether the column is a primary key of the table. Default: False.}
+    \term{\c{:primaryp}}
+    \def{Whether the column is a primary key of the table. Default: False.}
 
-  \term{\c{:indexp}}
-  \def{Whether the column is an index of the table. Default: False.}
+    \term{\c{:indexp}}
+    \def{Whether the column is an index of the table. Default: False.}
 
-  \term{\c{:autoincrementp}}
-  \def{If true, when adding a new column, this value will be one greater than
-    the previous highest value in the table. Table type must be an
-    integer. Default: False.}
+    \term{\c{:autoincrementp}}
+    \def{If true, when adding a new column, this value will be one greater than
+      the previous highest value in the table. Table type must be an
+      integer. Default: False.}
 
-  \term{\c{:foreign}}
-  \def{Defines a foreign key. The value of this slot can either be the name of
-    the table to point to; or a list where the first element is the name of the
-    table to point to, and the next two elements are, respectively, the action
-    to perform on deletes and on updates. These are:
+    \term{\c{:foreign}}
+    \def{Defines a foreign key. The value of this slot can either be the name of
+      the table to point to; or a list where the first element is the name of
+      the table to point to, and the next two elements are, respectively, the
+      action to perform on deletes and on updates. These are:
 
       \list{
-        \item{\c{cascade}}
-        \item{\c{restrict}}
-        \item{\c{no-action}}
-        \item{\c{set-null}}
-        \item{\c{set-default}}
+      \item{\c{cascade}}
+      \item{\c{restrict}}
+      \item{\c{no-action}}
+      \item{\c{set-null}}
+      \item{\c{set-default}}
       }
+    }
   }
-}
-
 }
 
 \section[title=Class Options]{
