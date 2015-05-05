@@ -22,7 +22,8 @@
 (in-package :crane.migration)
 
 (defun get-migration-dir ()
-  (ensure-directories-exist (get-config-value :migrations-directory)))
+  (ensure-directories-exist
+   (cl-fad:pathname-as-directory (get-config-value :migrations-directory))))
 
 (defun migration-history-pathname (table-name)
   "Return the pathname to the file containing the migration history for the
