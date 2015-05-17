@@ -99,7 +99,7 @@ doesn't create a constraint, but :nullp nil creates a NOT NULL constraint)."
              (:primaryp
               (set-primary column-name value))
              (:foreign
-              (when value (apply #'foreign (cons column-name value)))))
+              (when value (funcall #'foreign column-name value))))
            (concatenate 'string
                         "CONSTRAINT "
                         (constraint-name table-name column-name type)
