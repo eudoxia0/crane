@@ -12,8 +12,10 @@ relational databases, and out of the box migrations.
 ```lisp
 (deftable user ()
   (name :type text :uniquep t)
-  (age :type integer :nullp nil :initform 18))
+  (age :type integer :nullp nil :initform 18)
+  (friend :type integer :foreign user)))
 ```
+The foreign argument accepts a symbol that represents another table or a sexp of the form `(table &key on-delete on-update))`, where acceptable values are `:no-action :restrict :cascade :set-null :set-default`.
 
 ## Migrating
 

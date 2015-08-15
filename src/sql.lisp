@@ -99,7 +99,7 @@ doesn't create a constraint, but :nullp nil creates a NOT NULL constraint)."
              (:primaryp
               (set-primary column-name value))
              (:foreign
-              (when value (apply #'foreign (cons column-name value)))))
+              (when value (apply #'foreign (cons column-name (if (listp value) value (list value)))))))
            (concatenate 'string
                         "CONSTRAINT "
                         (constraint-name table-name column-name type)
@@ -185,7 +185,7 @@ database it's table belongs to"
   (if (member type (list :primaryp :uniquep :indexp :foreign :check))
       (if value
           ;; The constraint wasn't there, add it
-          (aif (make-constraint table-name column-name type t)
+          (aif (make-constraint table-name column-name type value)
                (add-constraint table-name it))
           ;; The constraint has been dropped
           (drop-constraint table-name
