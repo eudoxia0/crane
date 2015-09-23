@@ -47,4 +47,4 @@ represent time, or mapping other more complex SQL types to CLOS objects."))
         (local-time:parse-timestring stamp)))
 
 (defdeflate (stamp local-time:timestamp)
-    (local-time:format-timestring nil stamp))
+    (local-time:format-timestring nil stamp :timezone local-time:+utc-zone+))
