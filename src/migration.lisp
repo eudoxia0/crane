@@ -139,9 +139,12 @@ table `table-name`."
            (mapcar #'(lambda (column-name)
                        (crane.sql:drop-column table-name
                                               column-name))
-                   (getf diff :deletions))))
-    (reduce #'(lambda (a b) (concatenate 'string a ";" b))
-            (append alterations additions deletions))))
+                   (getf diff :deletions)))
+	 (conn (crane.connect:get-connection (crane.meta:table-database
+                                              (find-class table-name)))))
+    (dbi:execute (dbi:prepare conn
+			      (reduce #'(lambda (a b) (concatenate 'string a ";" b))
+				      (append alterations additions deletions))))))
 
 (defun build (table-name)
   (unless (crane.meta:abstractp (find-class table-name))
