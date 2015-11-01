@@ -24,7 +24,14 @@
                 :foreign-key-table
                 :foreign-key-on-delete
                 :foreign-key-on-update
-                :referential-action-name)
+                :referential-action-name
+                :table-class
+                :table-name
+                :table-abstract-p
+                :table-auto-id-p
+                :table-auto-id-accessor
+                :table-database
+                :table-columns)
   (:documentation "Tools for serializing and de-serializing various internal
   data structures."))
 (in-package :crane.serialize)
@@ -90,5 +97,15 @@
 
 
 ;;; Serializing Tables
+
+(defmethod encode-slots progn ((table table-class))
+  "Encode a table."
+  (encode-object-elements
+   "name" (table-name table)
+   "abstractp" (table-abstract-p table)
+   "auto_id_p" (table-auto-id-p table)
+   "auto_id_accessor" (encode-symbol (table-auto-id-accessor table))
+   "columns" (loop for column in (table-columns table) do
+               (encode-object column))))
 
 ;;; Reconstructing tables
