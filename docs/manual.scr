@@ -34,4 +34,25 @@ Database classes:
 
 @end(section)
 
+@begin(section)
+@title(Configuration)
+
+@cl:with-package[name="crane.config"](
+@cl:doc(variable *debug*)
+@cl:doc(variable *database-registry*)
+@cl:doc(variable *default-database*)
+@cl:doc(variable *migrations-directory*)
+@cl:doc(macro with-configuration)
+@cl:doc(function configure)
+@cl:doc(function add-database)
+@cl:doc(macro define-postgres-database)
+@cl:doc(macro define-mysql-database)
+@cl:doc(macro define-sqlite3-database)
+@cl:doc(function get-database)
+@cl:doc(macro do-databases)
+@cl:doc(function list-databases)
+)
+
+@end(section)
+
 @end(section)
