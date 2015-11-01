@@ -17,10 +17,16 @@ install:
   - sudo apt-get update
   # Install SQLite
   - sudo apt-get install -y sqlite3
+
+before_script:
+  # Set up MySQL
+  - mysql -uroot -e "CREATE USER mysql_user@localhost IDENTIFIED BY 'mysql_pass';"
+  - mysql -uroot -e "CREATE DATABASE mysql_db;"
+  - mysql -uroot -e "GRANT ALL PRIVILEGES ON mysql_db.* TO mysql_user@localhost identified by 'mysql_pass';"
   # Set up Postgres
-  - sudo -u postgres createdb crane_test_db
-  - sudo -u postgres psql -c "CREATE USER crane_test_user WITH PASSWORD 'crane_test_user'"
-  - sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE crane_test_db TO crane_test_user"
+  - createdb -U postgres postgres_db
+  - psql -U postgres -c "CREATE USER postgres_user WITH PASSWORD 'postgres_pass'"
+  - psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE postgres_db TO postgres_user"
 
 script:
   - cl -e '(ql:quickload :fiveam)'
