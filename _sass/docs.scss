@@ -1,4 +1,15 @@
 /* Documentation style */
 
 article {
+    display: flex;
+    flex-direction: row;
+
+    .pages {
+        list-style-type: none;
+    }
+
+    .text {
+        margin-left: 30px;
+        margin-bottom: 50px;
+    }
 }

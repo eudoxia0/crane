@@ -1,14 +1,24 @@
 /* Global style */
 
 html, body {
-  height: 100%;
   margin: 0;
   padding: 0;
+}
+
+html {
+  height: 100vh;
 }
 
 body {
   font-family: 'Open Sans', sans-serif;
   color: #444;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+
+  .content {
+      flex: 1;
+  }
 }
 
 a {
