@@ -6,29 +6,9 @@
   :components ((:module "t"
                 :serial t
                 :components
-                ((:file "packages")
-                 (:file "preliminary")
-                 (:module "common"
-                  :serial t
-                  :components
-                  ((:file "util")
-                   (:file "connection-spec")
-                   (:file "final")))
-                 (:module "postgres"
-                  :serial t
-                  :components
-                  ((:file "config")
-                   (:file "table")
-                   (:file "migration")
-                   (:file "queries")
-                   (:file "inflate-deflate")
-                   (:file "final")))
-                 (:module "sqlite3"
-                  :serial t
-                  :components
-                  ((:file "config")
-                   (:file "table")
-                   (:file "queries")
-                   (:file "inflate-deflate")
-                   (:file "final"))))))
+                ((:file "crane")
+                 (:file "database")
+                 (:file "config")
+                 (:file "table")
+                 (:file "final"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))
