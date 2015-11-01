@@ -30,6 +30,14 @@
      ;; Postgres or SQLite, do nothing
      t)))
 
+(defun enforce-foreign-keys (connection database-type)
+  (cond
+    ((eq database-type :sqlite3)
+     (dbi:execute (dbi:prepare connection "PRAGMA foreign_keys = ON;")))
+    (t
+     ;; Postgres or MySQL, do nothing
+     t)))
+
 (defparameter +system-mapping+
   (list :postgres :dbd-postgres
         :sqlite3  :dbd-sqlite3
