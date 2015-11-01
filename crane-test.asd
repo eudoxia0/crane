@@ -2,6 +2,9 @@
   :author "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
   :depends-on (:crane
+               :dbd-postgres
+               :dbd-mysql
+               :dbd-sqlite3
                :fiveam)
   :components ((:module "t"
                 :serial t
