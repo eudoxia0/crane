@@ -1,0 +1,14 @@
+@begin(section)
+@title(Overview)
+
+This is where you explain what your project does.
+
+@end(section)
+
+@begin(section)
+@title(API Reference)
+
+And this is where you list your project's functionality. Read the tutorial to
+learn how to do this.
+
+@end(section)
