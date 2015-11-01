@@ -4,32 +4,20 @@
   :license "MIT"
   :homepage "http://eudoxia.me/crane/"
   :depends-on (:closer-mop
-               :anaphora
                :sxql
                :dbi
-               :iterate
-               :cl-fad
                :clos-fixtures
                :uiop
-               :local-time)
+               :local-time
+               :yason)
   :components ((:module "src"
                 :serial t
                 :components
-                ((:file "errors")
+                ((:file "database")
                  (:file "config")
-                 (:file "util")
-                 (:file "connect")
-                 (:file "sql")
-                 (:file "meta")
-                 (:file "query")
-                 (:file "migration")
-                 (:file "table")
                  (:file "types")
-                 (:file "inflate-deflate")
-                 (:file "interface")
-                 (:file "fixture")
-                 (:file "transaction")
-                 (:file "crane"))))
+                 (:file "table")
+                 (:file "serialize"))))
   :description "An ORM for Common Lisp."
   :long-description
   #.(uiop:read-file-string
