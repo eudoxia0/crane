@@ -55,4 +55,23 @@ Database classes:
 
 @end(section)
 
+@begin(section)
+@title(SQL Types)
+
+@cl:with-package[name="crane.types"](
+@cl:doc(class sql-type)
+@cl:doc(generic type-sql)
+@cl:doc(class int)
+@cl:doc(class bigint)
+@cl:doc(class smallint)
+@cl:doc(class numeric)
+@cl:doc(class double)
+@cl:doc(class text)
+@cl:doc(class varchar)
+@cl:doc(class timestamp)
+@cl:doc(class datetime)
+)
+
+@end(section)
+
 @end(section)
