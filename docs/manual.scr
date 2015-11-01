@@ -1,14 +1,19 @@
 @begin(section)
 @title(Overview)
 
-This is where you explain what your project does.
+Crane is a Common Lisp ORM.
 
 @end(section)
 
 @begin(section)
 @title(API Reference)
 
-And this is where you list your project's functionality. Read the tutorial to
-learn how to do this.
+@begin(section)
+@title(Databases)
+
+Support for different databases is added by creating a subclass of the
+@c(database) class.
+
+@end(section)
 
 @end(section)
