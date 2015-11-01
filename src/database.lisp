@@ -196,6 +196,6 @@
                        :database-name (database-name database)))
     t))
 
-(defmethod connect :after ((database mysql))
+(defmethod connect :after ((database sqlite3))
   "Post-connect corrections."
   (send-sql database "PRAGMA foreign_keys = ON;" nil))
