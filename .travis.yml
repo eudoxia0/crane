@@ -14,8 +14,8 @@ env:
     - LISP=sbcl-bin
 
 install:
-  # Install cl-travis
-  - curl https://raw.githubusercontent.com/luismbo/cl-travis/master/install.sh | bash
+  # Install Roswell
+  - curl -L https://raw.githubusercontent.com/snmsts/roswell/$ROSWELL_BRANCH/scripts/install-for-ci.sh | sh
   # Install the latest versions of the major dependencies
   - git clone https://github.com/fukamachi/sxql.git quicklisp/local-projects/sxql
   - git clone https://github.com/fukamachi/cl-dbi.git quicklisp/local-projects/cl-dbi
