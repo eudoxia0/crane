@@ -195,3 +195,7 @@
           (dbi:connect :sqlite3
                        :database-name (database-name database)))
     t))
+
+(defmethod connect :after ((database mysql))
+  "Post-connect corrections."
+  (send-sql database "PRAGMA foreign_keys = ON;" nil))
