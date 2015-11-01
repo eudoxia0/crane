@@ -11,5 +11,5 @@ index.html
 web/style.css
 .sass-cache
 highlight-lisp*
-docs/_build
+docs/build/
 t/sqlite3.db
