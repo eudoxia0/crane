@@ -1,11 +1,17 @@
 language: common-lisp
+sudo: false
 
 addons:
-  postgresql: "9.1"
+  postgresql: "9.3"
 
 env:
+  global:
+    - PATH=~/.roswell/bin:$PATH
+    - ROSWELL_BRANCH=master
+    - ROSWELL_INSTALL_DIR=$HOME/.roswell
+    - COVERAGE_EXCLUDE=t
   matrix:
-    - LISP=sbcl
+    - LISP=sbcl-bin
 
 install:
   # Install cl-travis
@@ -13,12 +19,12 @@ install:
   # Install the latest versions of the major dependencies
   - git clone https://github.com/fukamachi/sxql.git quicklisp/local-projects/sxql
   - git clone https://github.com/fukamachi/cl-dbi.git quicklisp/local-projects/cl-dbi
-  # Update package repos
-  - sudo apt-get update
   # Install SQLite
   - sudo apt-get install -y sqlite3
 
 before_script:
+  - ros --version
+  - ros config
   # Set up MySQL
   - mysql -uroot -e "CREATE USER mysql_user@localhost IDENTIFIED BY 'mysql_pass';"
   - mysql -uroot -e "CREATE DATABASE mysql_db;"
@@ -29,13 +35,15 @@ before_script:
   - psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE postgres_db TO postgres_user"
 
 script:
-  - cl -e '(ql:quickload :fiveam)'
-       -e '(setf fiveam:*debug-on-error* t)'
-       -e '(setf *debugger-hook*
-                 (lambda (c h)
-                   (declare (ignore c h))
-                   (uiop:quit -1)))'
-       -e '(ql:quickload :crane-test)'
+  - ros -e '(ql:quickload :fiveam)'
+        -e '(setf fiveam:*debug-on-error* t
+                  fiveam:*debug-on-failure* t)'
+        -e '(setf *debugger-hook*
+                  (lambda (c h)
+                    (declare (ignore c h))
+                    (uiop:quit -1)))'
+        -e '(ql:quickload :crane-test)'
+        -e '(crane-test:run-tests)'
 
 notifications:
   email:
