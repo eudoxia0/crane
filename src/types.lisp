@@ -26,7 +26,7 @@
   (:documentation "The base class of all SQL types."))
 
 (defgeneric type-sql (type)
-  (:documentation "Return the SQL string that denotes a type.."))
+  (:documentation "Return the SQL string that denotes a type."))
 
 ;;; Types
 
