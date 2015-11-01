@@ -12,3 +12,4 @@ web/style.css
 .sass-cache
 highlight-lisp*
 docs/_build
+t/sqlite3.db
