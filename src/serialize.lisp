@@ -42,7 +42,7 @@
   (concatenate 'string
                (uiop:symbol-package-name symbol)
                "::"
-               symbol))
+               (symbol-name symbol)))
 
 ;;; Serializing columns
 
@@ -51,7 +51,7 @@
     (with-object ()
       (let ((type (column-type column)))
         (encode-object-elements
-         "name" (encode-symbol (class-name type)))
+         "name" (encode-symbol (class-name (class-of type))))
         (with-object-element ("slots")
           (encode-object type)))))
   (encode-object-elements
