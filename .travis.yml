@@ -44,7 +44,7 @@ script:
         -e '(setf *debugger-hook*
                   (lambda (c h)
                     (declare (ignore h))
-                    (format t "Error: ~A" c)
+                    (princ c)
                     (uiop:quit -1)))'
         -e '(ql:quickload :crane-test)'
         -e '(crane-test:run-tests)'
