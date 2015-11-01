@@ -146,6 +146,7 @@ instances, and setting the value of *default-db*."
                                                       type
                                                       (remove-from-plist spec :type))))))
     (set-proper-quote-character conn type)
+    (enforce-foreign-keys conn type)
     (setf (database-connection database) conn)))
 
 (defun connect ()
