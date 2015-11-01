@@ -74,4 +74,17 @@ Database classes:
 
 @end(section)
 
+@begin(section)
+@title(Tables)
+
+@cl:with-package[name="crane.table"](
+@cl:doc(class foreign-key)
+@cl:doc(class table-class)
+@cl:doc(class column)
+@cl:doc(class standard-db-object)
+@cl:doc(macro deftable)
+)
+
+@end(section)
+
 @end(section)
