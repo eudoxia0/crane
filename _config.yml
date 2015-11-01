@@ -1,0 +1,5 @@
+# Site settings
+title: Crane
+description: An ORM for Common Lisp
+
+baseurl: "/crane"

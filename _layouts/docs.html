@@ -1,0 +1,20 @@
+---
+layout: default
+---
+
+{% include small_header.html %}
+<h1>{{ page.title }}</h1>
+<article>
+  <ul class="pages">
+    {% for page in site.docs %}
+      <li>
+        <a href="{{ page.url | prepend: "/docs" | prepend: site.baseurl }}">
+          {{ page.title }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+  <div class="text">
+    {{ content }}
+  </div>
+</article>
