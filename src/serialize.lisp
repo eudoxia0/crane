@@ -58,12 +58,12 @@
    "nullp" (json-boolean (column-null-p column))
    "uniquep" (json-boolean (column-unique-p column))
    "primaryp" (json-boolean (column-primary-p column))
-   "indexp" (json-boolean (column-index-p column))
-   (when (slot-boundp column 'column-foreign)
-     (with-object-element ("foreign")
-       (encode-object (column-foreign column))))
-   (encode-object-elements
-    "autoincrementp" (json-boolean (column-autoincrement-p column)))))
+   "indexp" (json-boolean (column-index-p column)))
+  (when (slot-boundp column 'column-foreign)
+    (with-object-element ("foreign")
+      (encode-object (column-foreign column))))
+  (encode-object-elements
+   "autoincrementp" (json-boolean (column-autoincrement-p column))))
 
 ;;; Serializing types
 
