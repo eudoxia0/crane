@@ -52,7 +52,7 @@ environments, you might want to use [Envy](https://github.com/fukamachi/envy).
 
 ```lisp
 (let ((instance (create 'ship :name "Dalliance"
-                              :tonnage "77")))
+                              :tonnage 77)))
   ;; FIXME: It's back luck to rename a ship
   (setf (name instance) "Serenity")
   ;; Expand the cargo hold
