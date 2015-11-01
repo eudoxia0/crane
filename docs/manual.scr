@@ -14,6 +14,24 @@ Crane is a Common Lisp ORM.
 Support for different databases is added by creating a subclass of the
 @c(database) class.
 
+@cl:with-package[name="crane.database"](
+@cl:doc(class database)
+@cl:doc(generic connect)
+@cl:doc(generic connectedp)
+@cl:doc(generic disconnect)
+@cl:doc(generic send-sql)
+@cl:doc(generic yield-statement)
+@cl:doc(generic send-statement)
+)
+
+Database classes:
+
+@cl:with-package[name="crane.database"](
+@cl:doc(class postgres)
+@cl:doc(class mysql)
+@cl:doc(class sqlite3)
+)
+
 @end(section)
 
 @end(section)
