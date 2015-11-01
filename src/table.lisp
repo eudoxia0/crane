@@ -1,90 +1,295 @@
+(in-package :cl-user)
 (defpackage crane.table
-  (:use :cl :anaphora :iter)
-  (:export :<table>
-           :deftable)
-  (:documentation "Implements the deftable macro."))
+  (:use :cl)
+  (:import-from :closer-mop
+                :standard-class
+                :standard-direct-slot-definition
+                :standard-effective-slot-definition
+                :compute-effective-slot-definition)
+  ;; Foreign key relations
+  (:export :foreign-key
+           :foreign-key-table
+           :foreign-key-on-delete
+           :foreign-key-on-update
+           :referential-action-name)
+  ;; Tables
+  (:export :table-class
+           :table-name
+           :table-abstract-p
+           :table-auto-id-p
+           :table-auto-id-accessor
+           :table-database
+           :table-columns)
+  ;; Columns
+  (:export :column
+           :column-type
+           :column-null-p
+           :column-unique-p
+           :column-primary-p
+           :column-index-p
+           :column-foreign
+           :column-autoincrement-p)
+  ;; Deftable
+  (:export :standard-db-object
+           :deftable
+           :id)
+  (:documentation "This package defines the metaclasses that map CLOS objects to
+  SQL tables, and some basic operations on them."))
 (in-package :crane.table)
 
-(defparameter +slot-mapping+
-  (list :type           :col-type
-        :nullp          :col-null-p
-        :uniquep        :col-unique-p
-        :primaryp       :col-primary-p
-        :indexp         :col-index-p
-        :check          :col-check
-        :autoincrementp :col-autoincrement-p
-        :foreign        :col-foreign))
+;;; Foreign key relations
 
-(defparameter +standard-class-options+
-  (list :initarg :initform :accessor :reader :writer))
+(defvar +referential-actions+
+  (list :cascade "CASCADE"
+        :restrict "RESTRICT"
+        :no-action "NO ACTION"
+        :set-null "SET NULL"
+        :set-default "SET DEFAULT")
+  "A map of allowed referential actions to their SQL names.")
 
-(defun add-default-slots (slot-name plist)
-  "If the slot doesn't have :initarg or :accessor slots, add them."
-  (let ((plist-with-accessor
-          (if (not (member :accessor plist))
-              (append (list :accessor slot-name) plist)
-              plist)))
-    (if (not (member :initarg plist))
-        (append (list :initarg (intern (symbol-name slot-name) :keyword))
-                plist-with-accessor)
-        plist-with-accessor)))
+(defun referential-action-name (action)
+  "Find the SQL string of a referential action."
+  (getf +referential-actions+ action))
 
-(defun process-slot (slot)
-  "Take a plist like (:col-type 'string :col-null-p t) and remove the prefixes
-on the keys. Turn 'deftable slot properties' (:type, :nullp, etc.) into
-'table-class slot properties' (:col-type, :col-null-p, etc.)"
-  (cons (car slot)
-        (add-default-slots (car slot)
-         (iter (for (key val) on (cdr slot) by #'cddr)
-               (appending (if (member key +standard-class-options+)
-                              (list key val)
-                              (list (getf +slot-mapping+ key) val)))))))
+(defun ensure-valid-referential-action (action)
+  "Ensure a referential action is valid."
+  (or (referential-action-name action)
+      (error "No such referential action: ~A." action)))
 
-(defun separate-slots-and-options (slots-and-options)
-  "To minimize the number of parentheses, both slots and table options come in
-the same list. This function separates them: Normal slot names are plain old
-symbols, table options are keywords."
-  (let ((slots (list))
-        (options (list)))
-    (iter (for item in slots-and-options)
-      (if (eq (symbol-package (car item)) (find-package :keyword))
-          (push item options)
-          (push (process-slot item) slots)))
-    (list slots options)))
+(defclass foreign-key ()
+  ((table :reader foreign-key-table
+          :initarg :table
+          :type symbol
+          :documentation "The name of the table referenced by this relation.")
+   (on-delete :reader foreign-key-on-delete
+              :initarg :on-delete
+              :initform :no-action
+              :type keyword
+              :documentation "The action to take on deletion.")
+   (on-update :reader foreign-key-on-update
+              :initarg :on-update-action
+              :initform :no-action
+              :type keyword
+              :documentation "The action to take on updates."))
+  (:documentation "A foreign key relationship."))
 
-(defclass <table> ()
+(defmethod initialize-instance :after ((foreign foreign-key) &key)
+  "Verify that the referential actions are allowed."
+  (ensure-valid-referential-action (foreign-key-on-delete foreign))
+  (ensure-valid-referential-action (foreign-key-on-update foreign)))
+
+(defun make-foreign-key (foreign-table-name &key (on-delete :no-action)
+                                              (on-update :no-action))
+  "Create a foreign key object."
+  (make-instance 'foreign-key
+                 :table foreign-table-name
+                 :on-delete on-delete
+                 :on-update on-update))
+
+;;; Tables
+
+(defclass table-class (standard-class)
+  ((abstractp :reader table-abstract-p
+              :initarg :abstractp
+              :initform nil
+              :type boolean
+              :documentation "Whether the class corresponds to an SQL table or not.")
+   (auto-id-p :reader table-auto-id-p
+              :initarg :auto-id-p
+              :initform nil
+              :type boolean
+              :documentation "Whether or not to automatically create an ID slot.")
+   (auto-id-accessor :reader table-auto-id-accessor
+                     :initarg :auto-id-accessor
+                     :initform 'id
+                     :type symbol
+                     :documentation "The symbol to use as the table ID's accessor.")
+   (database :reader table-database
+             :initarg :database
+             :initform crane.config:*default-database*
+             :type symbol
+             :documentation "The tag of the database this class belongs to. This is setfable."))
+  (:documentation "A table metaclass."))
+
+(defmethod table-name ((class table-class))
+  "Return the SQL name of the table, a string."
+  (string-downcase (symbol-name (class-name class))))
+
+(defmethod (setf table-database) (database (class table-class))
+  "Set a new database for the table."
+  (warn "Changing the database ~A is assigned to from ~A to ~A. Objects created
+  prior to this change, if any, will become inaccessible."
+        (table-name class)
+        (table-database class)
+        database))
+
+(defmethod table-columns ((class table-class))
+  "Return a list of column objects."
+  (closer-mop:class-slots class))
+
+;;; Columns
+
+(defclass table-class-direct-slot-definition (standard-direct-slot-definition)
+  ((direct-slot-type :reader direct-slot-type
+                     :initarg :column-type
+                     :type symbol)
+   (direct-slot-null-p :reader direct-slot-null-p
+                       :initarg :column-null-p
+                       :initform t
+                       :type boolean)
+   (direct-slot-unique-p :reader direct-slot-unique-p
+                         :initarg :column-unique-p
+                         :initform nil
+                         :type boolean)
+   (direct-slot-primary-p :reader direct-slot-primary-p
+                          :initarg :column-primary-p
+                          :initform nil
+                          :type boolean)
+   (direct-slot-index-p :reader direct-slot-index-p
+                        :initarg :column-index-p
+                        :initform nil
+                        :type boolean)
+   (direct-slot-foreign :reader direct-slot-foreign
+                        :initarg :column-foreign
+                        :type list)
+   (direct-slot-autoincrement-p :reader direct-slot-autoincrement-p
+                                :initarg :column-autoincrement-p
+                                :initform nil
+                                :type boolean))
+  (:documentation "The direct slot definition class of table slots. The
+  @c(:initargs) here are what the user sees: they are the names of slot options
+  passed to the class. The values stored in these slots are the forms the used
+  provides on class definition."))
+
+(defclass column (standard-effective-slot-definition)
+  ((column-type :reader column-type
+                :initarg :column-type
+                :type crane.types:sql-type
+                :documentation "The type of the column.")
+   (column-null-p :reader column-null-p
+                  :initarg :column-null-p
+                  :type boolean
+                  :documentation "Whether the column is nullable.")
+   (column-unique-p :reader column-unique-p
+                    :initarg :column-unique-p
+                    :type boolean
+                    :documentation "Whether the column is unique.")
+   (column-primary-p :reader column-primary-p
+                     :initarg :column-primary-p
+                     :type boolean
+                     :documentation "Whether the column is a primary key.")
+   (column-index-p :reader column-index-p
+                   :initarg :column-index-p
+                   :type boolean
+                   :documentation "Whether the column is an index in the database.")
+   (column-foreign :reader column-foreign
+                   :initarg :column-foreign
+                   :type foreign-key
+                   :documentation "Describes a foreign key relationship.")
+   (column-autoincrement-p :reader column-autoincrement-p
+                           :initarg :column-autoincrement-p
+                           :type boolean
+                           :documentation "Whether the column should be
+                           autoincremented."))
+  (:documentation "A slot of a table class. This is what the slots look like in
+  the end: the values stored in the slots are computed from the forms in the
+  direct slot definition by the @c(compute-effective-slot-definition) method."))
+
+(defmethod compute-effective-slot-definition ((class table-class)
+                                              slot-name direct-slot-definitions)
+  (declare (ignore slot-name))
+  (let ((direct-slot (first direct-slot-definitions))
+        (column (call-next-method)))
+    (setf (slot-value column 'column-type)
+          (let ((type (direct-slot-type direct-slot)))
+            (if (listp type)
+                (apply #'make-instance type)
+                (make-instance type)))
+
+          (slot-value column 'column-null-p)
+          (direct-slot-null-p direct-slot)
+
+          (slot-value column 'column-unique-p)
+          (direct-slot-unique-p direct-slot)
+
+          (slot-value column 'column-primary-p)
+          (direct-slot-primary-p direct-slot)
+
+          (slot-value column 'column-index-p)
+          (direct-slot-index-p direct-slot)
+
+          (slot-value column 'column-autoincrement-p)
+          (direct-slot-autoincrement-p direct-slot))
+
+    ;; If the user supplied a foreign key, create the foreign key object and
+    ;; assign it to the column
+    (when (slot-boundp direct-slot 'direct-slot-foreign)
+      (setf (slot-value column 'column-foreign)
+            (apply #'make-foreign-key
+                   (direct-slot-foreign direct-slot))))
+
+    column))
+
+;;; Assorted MOPery
+
+(defmethod closer-mop:validate-superclass ((class table-class) (super standard-class))
+  "A table class cannot be a subclass of a standard-class."
+  t)
+
+(defmethod closer-mop:validate-superclass ((class standard-class)
+                                           (super table-class))
+  "A standard-class can be the subclass of a table-class."
+  t)
+
+(defmethod closer-mop:direct-slot-definition-class ((class table-class)
+                                                    &rest initargs)
+  (declare (ignore class initargs))
+  (find-class 'table-class-direct-slot-definition))
+
+(defmethod closer-mop:effective-slot-definition-class ((class table-class)
+                                                       &rest initargs)
+  (declare (ignore class initargs))
+  (find-class 'column))
+
+;;; The deftable macro
+
+(defclass standard-db-object ()
   ()
-  (:metaclass crane.meta:<table-class>)
-  (:documentation "The base class of all table classes."))
+  (:metaclass table-class)
+  (:documentation "The base class of all database objects."))
 
-(defun any-concrete-superclasses (superclasses)
-  (remove-if #'(lambda (class-name)
-                 (crane.meta:abstractp (find-class class-name)))
-             superclasses))
+(defvar +slot-option-mapping+
+  (list :type           :column-type
+        :nullp          :column-null-p
+        :uniquep        :column-unique-p
+        :primaryp       :column-primary-p
+        :indexp         :column-index-p
+        :check          :column-check
+        :autoincrementp :column-autoincrement-p
+        :foreign        :column-foreign))
 
-(defmacro deftable (name (&rest superclasses) &rest slots-and-options)
+(defmacro deftable (name (&rest superclasses) slots &rest options)
   "Define a table."
-  (destructuring-bind (slots options)
-      (separate-slots-and-options slots-and-options)
+  (let ((auto-id-p (cadr (assoc :auto-id-p options)))
+        (auto-id-accessor (or (cadr (assoc :auto-id-p options))
+                              'id)))
     `(progn
-       (defclass ,name ,(if superclasses superclasses `(crane.table:<table>))
+       (defclass ,name ,(if superclasses superclasses `(standard-db-object))
          ,(append
-           (when (or
-                  ;; If it's abstract, it doesn't have an ID
-                  (not (cadr (assoc :abstractp options)))
-                  ;; If it's concrete, it has an ID, unless it has a concrete
-                  ;; superclass
-                  (any-concrete-superclasses superclasses))
-               `((,(intern "ID" *package*)
-                  :col-type integer
-                  :col-primary-p t
-                  :col-null-p nil
-                  :accessor ,(intern "ID" *package*)
-                  :col-autoincrement-p t
-                  :initarg :id)))
-           slots)
+           (when auto-id-p
+             `((id :accessor ,auto-id-accessor
+                   :initarg :id
+                   :column-type integer
+                   :column-primary-p t
+                   :column-null-p nil
+                   :column-autoincrement-p t)))
+           (loop for slot in slots collecting
+             (let ((name (first slot)))
+               (cons name
+                     (loop for (key value) on (rest slot) by #'cddr appending
+                       (list (or (getf +slot-option-mapping+ key)
+                                 key)
+                             value))))))
          ,@options
-         (:metaclass crane.meta:<table-class>))
-       (closer-mop:finalize-inheritance (find-class ',name))
-       (unless (crane.meta:deferredp (find-class ',name))
-         (crane.migration:build ',name)))))
+         (:metaclass table-class))
+       (closer-mop:finalize-inheritance (find-class ',name)))))
