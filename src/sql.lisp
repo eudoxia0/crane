@@ -192,9 +192,9 @@ database it's table belongs to"
                            column-name
                            type))
       ;; NULL constraint
-      (if value
+      (if (null value)
           ;; Set null
-          (aif (make-constraint table-name column-name :nullp t)
+          (aif (make-constraint table-name column-name :nullp nil)
                (add-constraint table-name it))
           ;; Remove null constraint
           (drop-constraint table-name

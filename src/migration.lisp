@@ -142,9 +142,9 @@ table `table-name`."
                    (getf diff :deletions)))
 	 (conn (crane.connect:get-connection (crane.meta:table-database
                                               (find-class table-name)))))
-    (dbi:execute (dbi:prepare conn
-			      (reduce #'(lambda (a b) (concatenate 'string a ";" b))
-				      (append alterations additions deletions))))))
+    (dolist (query (append alterations additions deletions))
+      (format t "~&Query: ~A~&" query)
+      (dbi:execute (dbi:prepare conn query)))))
 
 (defun build (table-name)
   (unless (crane.meta:abstractp (find-class table-name))
