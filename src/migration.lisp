@@ -130,11 +130,7 @@ table `table-name`."
                                   table-name
                                   internal-constraint))
                              (getf def :internal))
-                     (mapcar #'(lambda (external-constraint)
-                                 (crane.sql:add-constraint
-                                  table-name
-                                  external-constraint))
-                             (getf def :external)))))))
+                     (getf def :external))))))
          (deletions
            (mapcar #'(lambda (column-name)
                        (crane.sql:drop-column table-name
