@@ -38,7 +38,6 @@ represent time, or mapping other more complex SQL types to CLOS objects."))
 (definflate (obj 'double) obj)
 (definflate (obj 'text) obj)
 (definflate (obj 'varchar) obj)
-(definflate (obj 'timestamp) obj)
 (definflate (obj 'datetime) obj)
 
 (definflate (stamp 'timestamp)
