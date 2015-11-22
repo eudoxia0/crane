@@ -1,6 +1,7 @@
 # Crane
 
 [![Build Status](https://travis-ci.org/eudoxia0/crane.svg?branch=master)](https://travis-ci.org/eudoxia0/crane)
+[![Quicklisp](http://quickdocs.org/badge/crane.svg)](http://quickdocs.org/crane/)
 
 Crane is an ORM for Common Lisp, providing a simple bridge between CLOS and
 relational databases, and out of the box migrations.
