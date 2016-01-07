@@ -1,111 +1,39 @@
+
 (in-package :cl-user)
 (defpackage crane.serialize
   (:use :cl)
-  (:import-from :yason
-                :encode-slots
-                :encode-object
-                :with-object
-                :encode-object-elements
-                :with-object-element)
-  (:import-from :crane.types
-                :sql-type
-                :varchar
-                :varchar-length)
-  (:import-from :crane.table
-                :column
-                :column-type
-                :column-null-p
-                :column-unique-p
-                :column-primary-p
-                :column-index-p
-                :column-foreign
-                :column-autoincrement-p
-                :foreign-key
-                :foreign-key-table
-                :foreign-key-on-delete
-                :foreign-key-on-update
-                :referential-action-name
-                :table-class
-                :table-name
-                :table-abstract-p
-                :table-auto-id-p
-                :table-auto-id-accessor
-                :table-database
-                :table-columns)
-  (:documentation "Tools for serializing and de-serializing various internal
-  data structures."))
+  (:export :to-plist
+           :from-plist
+           :serialize
+           :deserialize)
+  (:documentation "An interface to serialize/deserialize internal data
+  structures. This package is used by the migrations system to record the
+  definition of tables, which requires serializing the table, column, and type
+  objects used in the table definition."))
 (in-package :crane.serialize)
 
-;;; Utilities
+(defgeneric to-plist (object)
+  (:documentation "Serialize a CLOS object to a property list.")
 
-(defun json-boolean (boolean)
-  "Convert a boolean to a JSON boolean."
-  (if boolean
-      'yason:true
-      'yason:false))
+  (:method ((type t))
+    "The default method: return an empty list."
+    nil))
 
-(defun encode-symbol (symbol)
-  "Encode a symbol into a string."
-  (concatenate 'string
-               (uiop:symbol-package-name symbol)
-               "::"
-               (symbol-name symbol)))
+(defgeneric from-plist (class plist)
+  (:documentation "Create a CLOS instance from a plist and the class name. Use
+  @cl:spec(eql) specialization for the @cl:param(class) argument.")
 
-;;; Serializing columns
+  (:method ((class symbol) plist)
+    "The default method: just create the instance."
+    (make-instance class)))
 
-(defmethod encode-slots progn ((column column))
-  (with-object-element ("type")
-    (with-object ()
-      (let ((type (column-type column)))
-        (encode-object-elements
-         "name" (encode-symbol (class-name (class-of type))))
-        (with-object-element ("slots")
-          (encode-object type)))))
-  (encode-object-elements
-   "nullp" (json-boolean (column-null-p column))
-   "uniquep" (json-boolean (column-unique-p column))
-   "primaryp" (json-boolean (column-primary-p column))
-   "indexp" (json-boolean (column-index-p column)))
-  (when (slot-boundp column 'column-foreign)
-    (with-object-element ("foreign")
-      (encode-object (column-foreign column))))
-  (encode-object-elements
-   "autoincrementp" (json-boolean (column-autoincrement-p column))))
+(defun serialize (object)
+  "Serialize an object."
+  (list :class (class-name (class-of object))
+        :data (to-plist object)))
 
-;;; Serializing types
-
-(defmethod encode-slots progn ((type sql-type))
-  "The default method for an SQL type. Does nothing."
-  (declare (ignore type))
-  t)
-
-(defmethod encode-slots progn ((type varchar))
-  "Encode the slots of the varchar type."
-  (encode-object-elements
-   "length" (varchar-length type)))
-
-;;; Serializing foreign key relations
-
-(defmethod encode-slots progn ((foreign foreign-key))
-  "Encode the slots of a foreign key relation."
-  (encode-object-elements
-   "foreign_table" (encode-symbol (foreign-key-table foreign))
-   "on_delete" (referential-action-name
-                (foreign-key-on-delete foreign))
-   "on_update" (referential-action-name
-                (foreign-key-on-update foreign))))
-
-
-;;; Serializing Tables
-
-(defmethod encode-slots progn ((table table-class))
-  "Encode a table."
-  (encode-object-elements
-   "name" (table-name table)
-   "abstractp" (table-abstract-p table)
-   "auto_id_p" (table-auto-id-p table)
-   "auto_id_accessor" (encode-symbol (table-auto-id-accessor table))
-   "columns" (loop for column in (table-columns table) do
-               (encode-object column))))
-
-;;; Reconstructing tables
+(defun deserialize (plist)
+  "Deserialize an object."
+  (let ((class (getf plist :class))
+        (data (getf plist :data)))
+    (from-plist class data)))
