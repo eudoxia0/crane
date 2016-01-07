@@ -4,4 +4,6 @@
               :authors ("Fernando Borretti")
               :output-format (:type :multi-html
                               :template :minima)
-              :sources ("manual.scr"))))
+              :sources ("overview.scr"
+                        "internals.scr"
+                        "api.scr"))))
