@@ -1,18 +1,7 @@
 (in-package :cl-user)
 (defpackage crane.config
   (:use :cl)
-  (:import-from :crane.database
-                :*default-host*
-                :*default-postgres-port*
-                :*default-mysql-port*
-                :postgres
-                :mysql
-                :sqlite3)
   (:export :*debug*
-           :*default-database*
-           :*migrations-directory*
-           :with-configuration
-           :configure
            :define-postgres-database
            :define-mysql-database
            :define-sqlite3-database
@@ -30,53 +19,19 @@
 (defvar *database-registry* (list)
   "An association list of database tags to database instances.")
 
-(defvar *default-database* nil
-  "The tag of the default database.")
-
-(defvar *migrations-directory*
-  (merge-pathnames #p".crane-migrations"
-                   (user-homedir-pathname))
-  "The migrations directory.")
-
 ;;; Configuration definition
-
-(defmacro with-configuration ((&key (default-database nil defaultp)
-                                 (migrations-directory nil migrationsp)
-                                 (debug t debugp))
-                              &body body)
-  "Execute the body with a local configuration."
-  `(let ,(append
-          (when defaultp
-            `(*default-database* ,default-database))
-          (when migrationsp
-            `(*migrations-directory* ,migrations-directory))
-          (when debugp
-            `(*debug* ,debug)))
-     ,@body))
-
-(defun configure (&key (default-database nil defaultp)
-                    (migrations-directory nil migrationsp)
-                    (debug t debugp))
-  "Set the global configuration. Returns T."
-  (when defaultp
-    (setf *default-database* default-database))
-  (when migrationsp
-    (setf *migrations-directory* migrations-directory))
-  (when debugp
-      (setf *debug* debug))
-  t)
 
 (defun add-database (tag instance)
   "Add a database instance to the registry."
   (push (cons tag instance) *database-registry*))
 
 (defmacro define-postgres-database (tag &key name username password
-                                          (host *default-host*)
-                                          (port *default-postgres-port*)
+                                          (host crane.database.postgres:*default-host*)
+                                          (port crane.database.postgres:*default-port*)
                                           (use-ssl nil))
   "Define a Postgres database."
   `(add-database ',tag
-                 (make-instance 'postgres
+                 (make-instance 'crane.database.postgres:postgres
                                 :name ,name
                                 :username ,username
                                 :password ,password
@@ -85,11 +40,11 @@
                                 :use-ssl ,use-ssl)))
 
 (defmacro define-mysql-database (tag &key name username password
-                                       (host *default-host*)
-                                       (port *default-mysql-port*))
+                                       (host crane.database.mysql:*default-host*)
+                                       (port crane.database.mysql:*default-port*))
   "Define a MySQL database."
   `(add-database ',tag
-                 (make-instance 'mysql
+                 (make-instance 'crane.database.mysql:mysql
                                 :name ,name
                                 :username ,username
                                 :password ,password
@@ -99,7 +54,7 @@
 (defmacro define-sqlite3-database (tag &key pathname)
   "Define an SQLite3 database."
   `(add-database ',tag
-                 (make-instance 'sqlite3
+                 (make-instance 'crane.database.sqlite3:sqlite3
                                 :name (namestring ,pathname))))
 
 ;;; Querying the database registry
@@ -115,14 +70,12 @@
 
 (defun list-databases (&optional (stream *standard-output*))
   "List the databases."
+  (format t "~&Databases:")
   (do-databases (tag database)
     (format stream
-            "~& ~A ~A: ~A"
-            (if (eq *default-database* tag)
-                "*"
-                " ")
+            "~&  ~A: ~A"
             tag
             (typecase database
-              (postgres "Postgres")
-              (mysql "MySQL")
-              (sqlite3 "SQLite3")))))
+              (crane.database.postgres:postgres "Postgres")
+              (crane.database.mysql:mysql "MySQL")
+              (crane.database.sqlite3:sqlite3 "SQLite3")))))
