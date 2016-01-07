@@ -1,0 +1,47 @@
+@begin(section)
+@title(Internals)
+
+@begin(section)
+@title(Migrations)
+
+Every time a table is changed, the migrations system stores the present state of
+every table in the session into a file. These files form a totally ordered set
+describing the database schema at every stage.
+
+When Crane tries to build a table, it reads the latest migration and looks for a
+table with the same name. If there isn't one, the table is simply created for
+the first time and a migration created to store its definition.
+
+If there is a table with that name, the two are compared for differences. If no
+differences are found, then there's no problem, and no migration is created. If
+differences are found, then a change has to be applied.
+
+@begin(section)
+@title(Constraints)
+
+Constraints are represented by classes:
+
+@cl:with-package[name="crane.table.sql"](
+@cl:doc(class constraint)
+@cl:doc(class single-column)
+@cl:doc(class multi-column)
+@cl:doc(class unique)
+@cl:doc(class not-null)
+@cl:doc(class primary-key)
+@cl:doc(class index)
+@cl:doc(class foreign-key)
+)
+
+They are converted to SQL by two methods, @c(add-constraint) and @c(drop
+constraint):
+
+@cl:with-package[name="crane.table.sql"](
+@cl:doc(generic add-constraint)
+@cl:doc(generic drop-constraint)
+)
+
+@end(section)
+
+@end(section)
+
+@end(section)
