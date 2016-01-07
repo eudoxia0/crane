@@ -1,11 +1,4 @@
 @begin(section)
-@title(Overview)
-
-Crane is a Common Lisp ORM.
-
-@end(section)
-
-@begin(section)
 @title(API Reference)
 
 @begin(section)
