@@ -16,9 +16,6 @@
   (:export :table-class
            :table-name
            :table-abstract-p
-           :table-auto-id-p
-           :table-auto-id-accessor
-           :table-database
            :table-columns)
   ;; Columns
   (:export :column
@@ -67,7 +64,7 @@
               :type keyword
               :documentation "The action to take on deletion.")
    (on-update :reader foreign-key-on-update
-              :initarg :on-update-action
+              :initarg :on-update
               :initform :no-action
               :type keyword
               :documentation "The action to take on updates."))
@@ -93,35 +90,12 @@
               :initarg :abstractp
               :initform nil
               :type boolean
-              :documentation "Whether the class corresponds to an SQL table or not.")
-   (auto-id-p :reader table-auto-id-p
-              :initarg :auto-id-p
-              :initform nil
-              :type boolean
-              :documentation "Whether or not to automatically create an ID slot.")
-   (auto-id-accessor :reader table-auto-id-accessor
-                     :initarg :auto-id-accessor
-                     :initform 'id
-                     :type symbol
-                     :documentation "The symbol to use as the table ID's accessor.")
-   (database :reader table-database
-             :initarg :database
-             :initform crane.config:*default-database*
-             :type symbol
-             :documentation "The tag of the database this class belongs to. This is setfable."))
+              :documentation "Whether the class corresponds to an SQL table or not."))
   (:documentation "A table metaclass."))
 
 (defmethod table-name ((class table-class))
   "Return the SQL name of the table, a string."
   (string-downcase (symbol-name (class-name class))))
-
-(defmethod (setf table-database) (database (class table-class))
-  "Set a new database for the table."
-  (warn "Changing the database ~A is assigned to from ~A to ~A. Objects created
-  prior to this change, if any, will become inaccessible."
-        (table-name class)
-        (table-database class)
-        database))
 
 (defmethod table-columns ((class table-class))
   "Return a list of column objects."
@@ -131,29 +105,28 @@
 
 (defclass table-class-direct-slot-definition (standard-direct-slot-definition)
   ((direct-slot-type :reader direct-slot-type
-                     :initarg :column-type
-                     :type symbol)
+                     :initarg :col-type)
    (direct-slot-null-p :reader direct-slot-null-p
-                       :initarg :column-null-p
+                       :initarg :nullp
                        :initform t
                        :type boolean)
    (direct-slot-unique-p :reader direct-slot-unique-p
-                         :initarg :column-unique-p
+                         :initarg :uniquep
                          :initform nil
                          :type boolean)
    (direct-slot-primary-p :reader direct-slot-primary-p
-                          :initarg :column-primary-p
+                          :initarg :primaryp
                           :initform nil
                           :type boolean)
    (direct-slot-index-p :reader direct-slot-index-p
-                        :initarg :column-index-p
+                        :initarg :indexp
                         :initform nil
                         :type boolean)
    (direct-slot-foreign :reader direct-slot-foreign
-                        :initarg :column-foreign
+                        :initarg :foreign
                         :type list)
    (direct-slot-autoincrement-p :reader direct-slot-autoincrement-p
-                                :initarg :column-autoincrement-p
+                                :initarg :autoincrementp
                                 :initform nil
                                 :type boolean))
   (:documentation "The direct slot definition class of table slots. The
@@ -163,31 +136,31 @@
 
 (defclass column (standard-effective-slot-definition)
   ((column-type :reader column-type
-                :initarg :column-type
+                :initarg :col-type
                 :type crane.types:sql-type
                 :documentation "The type of the column.")
    (column-null-p :reader column-null-p
-                  :initarg :column-null-p
+                  :initarg :nullp
                   :type boolean
                   :documentation "Whether the column is nullable.")
    (column-unique-p :reader column-unique-p
-                    :initarg :column-unique-p
+                    :initarg :uniquep
                     :type boolean
                     :documentation "Whether the column is unique.")
    (column-primary-p :reader column-primary-p
-                     :initarg :column-primary-p
+                     :initarg :primaryp
                      :type boolean
                      :documentation "Whether the column is a primary key.")
    (column-index-p :reader column-index-p
-                   :initarg :column-index-p
+                   :initarg :indexp
                    :type boolean
                    :documentation "Whether the column is an index in the database.")
    (column-foreign :reader column-foreign
-                   :initarg :column-foreign
+                   :initarg :foreign
                    :type foreign-key
                    :documentation "Describes a foreign key relationship.")
    (column-autoincrement-p :reader column-autoincrement-p
-                           :initarg :column-autoincrement-p
+                           :initarg :autoincrementp
                            :type boolean
                            :documentation "Whether the column should be
                            autoincremented."))
@@ -258,38 +231,30 @@
   (:metaclass table-class)
   (:documentation "The base class of all database objects."))
 
-(defvar +slot-option-mapping+
-  (list :type           :column-type
-        :nullp          :column-null-p
-        :uniquep        :column-unique-p
-        :primaryp       :column-primary-p
-        :indexp         :column-index-p
-        :check          :column-check
-        :autoincrementp :column-autoincrement-p
-        :foreign        :column-foreign))
-
 (defmacro deftable (name (&rest superclasses) slots &rest options)
   "Define a table."
-  (let ((auto-id-p (cadr (assoc :auto-id-p options)))
-        (auto-id-accessor (or (cadr (assoc :auto-id-p options))
-                              'id)))
+  (flet ((process-slot (plist)
+           (let ((options (alexandria:remove-from-plist plist :type :initform)))
+             (append options
+                     (if (getf plist :type)
+                         (list :col-type (getf plist :type))
+                         (error "No :type option in slot definition."))
+                     (when (getf plist :initform)
+                       (list :initform (getf plist :initform)))))))
     `(progn
        (defclass ,name ,(if superclasses superclasses `(standard-db-object))
          ,(append
-           (when auto-id-p
-             `((id :accessor ,auto-id-accessor
-                   :initarg :id
-                   :column-type integer
-                   :column-primary-p t
-                   :column-null-p nil
-                   :column-autoincrement-p t)))
-           (loop for slot in slots collecting
-             (let ((name (first slot)))
-               (cons name
-                     (loop for (key value) on (rest slot) by #'cddr appending
-                       (list (or (getf +slot-option-mapping+ key)
-                                 key)
-                             value))))))
+           `((id ,@(process-slot '(:accessor id
+                                   :initarg :id
+                                   :type crane.types:int
+                                   :primaryp t
+                                   :nullp nil
+                                   :autoincrementp t))))
+           (mapcar #'(lambda (slot)
+                       (cons (first slot)
+                             (process-slot (rest slot))))
+                   slots))
          ,@options
          (:metaclass table-class))
-       (closer-mop:finalize-inheritance (find-class ',name)))))
+       (closer-mop:finalize-inheritance (find-class ',name))
+     ',name)))
