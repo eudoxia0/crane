@@ -8,16 +8,30 @@
                :dbi
                :clos-fixtures
                :uiop
-               :local-time
-               :yason)
+               :local-time)
   :components ((:module "src"
                 :serial t
                 :components
-                ((:file "database")
-                 (:file "config")
+                ((:file "serialize")
+                 (:file "database")
                  (:file "types")
-                 (:file "table")
-                 (:file "serialize"))))
+                 (:file "convert")
+                 (:module "backend"
+                  :components
+                  ((:file "postgres")
+                   (:file "mysql")
+                   (:file "sqlite3")))
+                 (:file "config")
+                 (:module "table"
+                  :serial t
+                  :components
+                  ((:file "table")
+                   (:file "serialize")
+                   (:file "sql")
+                   (:file "diff")
+                   (:file "create")
+                   (:file "alter")))
+                 (:file "session"))))
   :description "An ORM for Common Lisp."
   :long-description
   #.(uiop:read-file-string
