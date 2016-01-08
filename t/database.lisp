@@ -16,8 +16,10 @@
 (in-suite database-tests)
 
 (defun tests (database)
+  ;; connect
   (is-true
    (crane.database:connect database))
+  ;; simple queries
   (let ((result (crane.database:sql-query database "SELECT 1+1" nil)))
     (is
      (equal (cadr (dbi:fetch result))
@@ -28,6 +30,10 @@
       (is
        (equal (cadr (dbi:fetch result))
               2))))
+  ;; table existence
+  (is-false
+   (crane.database:table-exists-p "my_table"))
+  ;; disconnect
   (is-true
    (crane.database:disconnect database)))
 
