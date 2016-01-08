@@ -48,7 +48,9 @@
 ;;; Other methods
 
 (defmethod table-exists-p ((database sqlite3) table-name)
-  (declare (type string name))
+  "SQLite3 doesn't support the information schema, so we have to use custom
+SQL."
+  (declare (type string table-name))
   (let* ((sql "SELECT name FROM sqlite_master WHERE type='table' AND name=?")
-         (result (dbi:fetch-all (sql-query sql name))))
+         (result (dbi:fetch-all (sql-query sql table-name))))
     (and result (stringp (getf (first result) :|name|)))))
