@@ -4,6 +4,7 @@
   (:import-from :crane.database
 	        :database
                 :database-connection
+                :connect
                 :connectedp
                 :sql-query
                 :table-exists-p)
