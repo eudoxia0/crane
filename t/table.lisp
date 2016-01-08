@@ -20,14 +20,12 @@
   (let ((class (find-class 'person)))
     (is-false
      (crane.table:table-abstract-p class))
-    (is-false
-     (crane.table:table-auto-id-p class))
     (is
      (equal (crane.table:table-name class)
             "person"))
     (is
      (equal (length (crane.table:table-columns class))
-            1)))
+            2)))
   (let ((person (make-instance 'person :age 10)))
     (is
      (typep person 'person))

@@ -7,17 +7,14 @@
   :description "Serialization tests.")
 (in-suite serialization-tests)
 
-(test column
+(test serialize
   (is
-   (stringp
-    (yason:with-output-to-string* (:indent t)
-      (yason:encode-object
-       (first
-        (crane.table:table-columns (find-class 'crane-test.table::person))))))))
+   (listp
+    (crane.serialize:serialize (find-class 'crane-test.table::person)))))
 
-(test table
+(test deserialize
   (is
-   (stringp
-    (yason:with-output-to-string* (:indent t)
-      (yason:encode-object
-       (find-class 'crane-test.table::person))))))
+   (typep (crane.serialize:deserialize
+           (crane.serialize:serialize
+            (find-class 'crane-test.table::person)))
+          'crane.table:table-class)))
