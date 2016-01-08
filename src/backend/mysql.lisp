@@ -79,7 +79,7 @@
 
 ;;; Other methods
 
-(defmethod table-exists-p ((database sqlite3) table-name)
+(defmethod table-exists-p ((database mysql) table-name)
   "On MySQL, we can use the information schema to find whether the table exists."
   (declare (type string name))
   (let* ((sql "SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = ? AND table_name = ?")
