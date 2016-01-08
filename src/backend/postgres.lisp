@@ -5,7 +5,8 @@
 	        :database
                 :database-connection
                 :connect
-                :connectedp)
+                :connectedp
+                :table-exists-p)
   (:import-from :crane.convert
                 :lisp-to-database
                 :database-to-lisp)
@@ -80,3 +81,15 @@
 
 (defmethod database-to-lisp ((database postgres) (value t) (type crane.types:sql-type))
   value)
+
+;;; Other methods
+
+(defmethod table-exists-p ((database postgres) table-name)
+  "On Postgres, we can use the information schema to find whether the table
+exists. Since table names are unqualified, they go into the public schema. There
+may be a way to change this default, maybe the schema name should be an option
+in the database object."
+  (declare (type string name))
+  (let* ((sql "SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'public' AND table_name = ?")
+         (result (dbi:fetch-all (sql-query sql table-name))))
+    (and result (stringp (getf (first result) :|table-name|)))))
