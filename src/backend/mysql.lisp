@@ -84,4 +84,4 @@
   (declare (type string name))
   (let* ((sql "SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = ? AND table_name = ?")
          (result (dbi:fetch-all (sql-query sql (database-name database) table-name))))
-    (and result (stringp (getf (first result) :|name|)))))
+    (and result (stringp (getf (first result) :|table-name|)))))
