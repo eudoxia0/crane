@@ -83,7 +83,16 @@
                                              'truck
                                              '(:> :mileage 60))))
         (is
-         (= (length instances) 1)))
+         (= (length instances) 1))
+        (let ((first (first instances)))
+          (is
+           (typep first 'truck))
+          (is
+           (integerp (crane.table:id first)))
+          (is
+           (string= (truck-model first) "xyz"))
+          (is
+           (= (truck-mileage first) 70))))
       ;; Delete
       (finishes
         (crane.session:delete-instance session instance)))
