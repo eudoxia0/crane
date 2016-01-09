@@ -81,24 +81,25 @@
                      arguments))
         (error "Not connected"))))
 
-(defgeneric compile-statement (database statement)
+(defgeneric compile-statement (database statement &key quote-character)
   (:documentation "Yield an SxQL statement, returning two values: an SQL string
   and a list of arguments to be interpolated into it.")
 
-  (:method ((database database) statement)
+  (:method ((database database) statement &key (quote-character #\"))
     "The default implementation."
     (declare (ignore database))
-    (multiple-value-bind (sql arguments)
-        (let ((sxql:*quote-character* #\"))
-          (sxql:yield statement))
-      (cons sql arguments))))
+    (let ((sxql:*quote-character* quote-character))
+      (sxql:yield statement))))
 
-(defgeneric query (database statement)
+(defgeneric query (database statement &key quote-character)
   (:documentation "Send an SxQL query.")
 
-  (:method ((database database) statement)
-    (let ((pair (compile-statement database statement)))
-      (sql-query database (first pair) (rest pair)))))
+  (:method ((database database) statement &key (quote-character #\"))
+    (multiple-value-bind (sql args)
+        (compile-statement database
+                           statement
+                           :quote-character quote-character)
+      (sql-query database sql args))))
 
 (defmacro with-transaction ((database) &body body)
   "Execute @cl:param(body) within the context of a transaction."
