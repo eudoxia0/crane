@@ -8,7 +8,8 @@
                :dbi
                :clos-fixtures
                :uiop
-               :local-time)
+               :local-time
+               :alexandria)
   :components ((:module "src"
                 :serial t
                 :components
