@@ -12,16 +12,21 @@ Support for different databases is added by creating a subclass of the
 @cl:doc(generic connect)
 @cl:doc(generic connectedp)
 @cl:doc(generic disconnect)
-@cl:doc(generic send-sql)
-@cl:doc(generic yield-statement)
-@cl:doc(generic send-statement)
+@cl:doc(generic sql-query)
+@cl:doc(generic compile-statement)
+@cl:doc(generic query)
+@cl:doc(generic table-exists-p)
 )
 
 Database classes:
 
-@cl:with-package[name="crane.database"](
+@cl:with-package[name="crane.database.postgres"](
 @cl:doc(class postgres)
+)
+@cl:with-package[name="crane.database.mysql"](
 @cl:doc(class mysql)
+)
+@cl:with-package[name="crane.database.sqlite3"](
 @cl:doc(class sqlite3)
 )
 
@@ -33,10 +38,6 @@ Database classes:
 @cl:with-package[name="crane.config"](
 @cl:doc(variable *debug*)
 @cl:doc(variable *database-registry*)
-@cl:doc(variable *default-database*)
-@cl:doc(variable *migrations-directory*)
-@cl:doc(macro with-configuration)
-@cl:doc(function configure)
 @cl:doc(function add-database)
 @cl:doc(macro define-postgres-database)
 @cl:doc(macro define-mysql-database)
