@@ -269,6 +269,9 @@ the session."
          (results (apply #'select (append (list columns session class-name)
                                           arguments))))
     (mapcar #'(lambda (result)
-                (print result)
-                t)
+                (apply #'make-instance
+                       (cons class-name
+                             (loop for (key value) on result by #'cddr appending
+                               (list (read-from-string (symbol-name key))
+                                     value)))))
             (dbi:fetch-all results))))
