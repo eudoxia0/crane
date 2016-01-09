@@ -33,6 +33,7 @@
            :stop
            :create
            :exists-in-database-p
+           :save
            :delete-instance)
   (:documentation "Sessions tie table definitions, which are abstract and
   reusable, to specific databases."))
@@ -233,7 +234,15 @@ the session."
     (setf (slot-value instance 'crane.table:id) id)
     instance))
 
-;; defmethod save ((session session) (instance standard-db-object))
+(defmethod save ((session session) (instance standard-db-object))
+  "Save an object in the database."
+  (let ((database (database-for-instance session instance)))
+    (query database
+           (sxql:update (class-name (class-of instance))
+             (apply #'sxql.clause:make-clause
+                    (cons :set= (insertable-plist database instance)))
+             (sxql:where (:= :id (crane.table:id instance))))))
+  instance)
 
 (defmethod delete-instance ((session session) (instance standard-db-object))
   "Delete an instance in the database. Return @c(nil)."
