@@ -48,7 +48,9 @@
                                    :model "abc"
                                    :mileage 50)))
       (is
-       (integerp (crane.session:create session instance))))
+       (typep (crane.session:create session instance) 'truck))
+      (is
+       (integerp (crane.table:id instance))))
     (finishes
       (crane.session:stop session))))
 

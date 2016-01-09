@@ -218,8 +218,10 @@ SxQL for insertion. Conversion of Lisp values to database values happens here."
 (defmethod create ((session session) (instance standard-db-object))
   "Create an instance in the database the instance's class is associated to in
 the session."
-  (create-in-database (database-for-instance session instance)
-                      instance))
+  (let ((id (create-in-database (database-for-instance session instance)
+                                instance)))
+    (setf (slot-value instance 'crane.table:id) id)
+    instance)
 
 ;; defmethod save ((session session) (instance standard-db-object))
 
