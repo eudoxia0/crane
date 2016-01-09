@@ -35,7 +35,8 @@
            :exists-in-database-p
            :save
            :delete-instance
-           :select)
+           :select
+           :filter)
   (:documentation "Sessions tie table definitions, which are abstract and
   reusable, to specific databases."))
 (in-package :crane.session)
@@ -154,7 +155,7 @@ Returns the table name."
 
 ;;; Queries
 
-(defun slot-names (instance)
+(defun bound-slot-names (instance)
   "Given an instance of a standard-db-object object, return a list of symbols,
 the names of its bound slots."
   (remove-if-not #'(lambda (slot)
@@ -165,7 +166,7 @@ the names of its bound slots."
 (defun insertable-plist (database instance)
   "Given an instance of standard-db-object, return a plist that can be sent to
 SxQL for insertion. Conversion of Lisp values to database values happens here."
-  (loop for name in (slot-names instance) appending
+  (loop for name in (bound-slot-names instance) appending
     (list (alexandria:make-keyword name)
           (crane.convert:lisp-to-database database
                                           (slot-value instance name)))))
@@ -258,8 +259,15 @@ the session."
          (sxql:select columns
            (sxql:from class-name)
            (sxql:make-clause :where (cons :and arguments)))))
-#|
+
 (defun filter (session class-name &rest arguments)
   "Find instances of @c(class-name) that match the constraints in
 @c(arguments)."
-|#
+  (let* ((columns (mapcar #'alexandria:make-keyword
+                          (mapcar #'column-name
+                                  (table-columns (find-class class-name)))))
+         (results (select columns session class-name arguments)))
+    (mapcar #'(lambda (result)
+                (print result)
+                t)
+            results)))
