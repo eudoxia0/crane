@@ -260,6 +260,17 @@ the session."
            (sxql:from class-name)
            (sxql:make-clause :where (cons :and arguments)))))
 
+(defun sql-keyword-to-initarg (keyword)
+  (let ((*package* (find-package :keyword)))
+    (read-from-string (symbol-name keyword))))
+
+(defun sql-plist-to-object (class-name plist)
+  (apply #'make-instance
+         (cons class-name
+               (loop for (key value) on plist by #'cddr appending
+                 (list (sql-keyword-to-initarg key)
+                       value)))))
+
 (defun filter (session class-name &rest arguments)
   "Find instances of @c(class-name) that match the constraints in
 @c(arguments)."
@@ -268,10 +279,5 @@ the session."
                                   (table-columns (find-class class-name)))))
          (results (apply #'select (append (list columns session class-name)
                                           arguments))))
-    (mapcar #'(lambda (result)
-                (apply #'make-instance
-                       (cons class-name
-                             (loop for (key value) on result by #'cddr appending
-                               (list (read-from-string (symbol-name key))
-                                     value)))))
+    (mapcar (alexandria:curry #'sql-plist-to-object class-name)
             (dbi:fetch-all results))))
