@@ -21,26 +21,23 @@
             :initarg :mileage
             :type crane.types:int)))
 
-(test basic
-  (finishes
-    (crane.config:define-sqlite3-database memory
-      :name ":memory:"))
+(defun test-session (database-tag)
   (let ((session (make-session :migratep nil)))
     (is
      (typep session 'session))
     (is
      (null (session-databases session)))
     (finishes
-      (register-database session 'memory))
+      (register-database session database-tag))
     (is
      (equal (length (session-databases session))
             1))
     (finishes
-      (register-table session 'truck 'memory))
+      (register-table session 'truck database-tag))
     (finishes
       (crane.session:start session))
     (is-true
-     (crane.database:table-exists-p (crane.config:get-database 'memory)
+     (crane.database:table-exists-p (crane.config:get-database database-tag)
                                     (crane.table:table-name
                                      (find-class 'truck))))
     (finishes
@@ -48,3 +45,12 @@
       (crane.session:start session))
     (finishes
       (crane.session:stop session))))
+
+(test postgres-session
+  (test-session 'crane-test.config:postgres))
+
+(test mysql-session
+  (test-session 'crane-test.config:mysql))
+
+(test sqlite3-session
+  (test-session 'crane-test.config:sqlite))
