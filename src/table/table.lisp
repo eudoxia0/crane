@@ -173,16 +173,18 @@
   "Return the name of the column, a symbol."
   (closer-mop:slot-definition-name column))
 
+(defun type-specifier-to-instance (specifier)
+  (if (listp specifier)
+      (apply #'make-instance specifier)
+      (make-instance specifier)))
+
 (defmethod compute-effective-slot-definition ((class table-class)
                                               slot-name direct-slot-definitions)
   (declare (ignore slot-name))
   (let ((direct-slot (first direct-slot-definitions))
         (column (call-next-method)))
     (setf (slot-value column 'column-type)
-          (let ((type (direct-slot-type direct-slot)))
-            (if (listp type)
-                (apply #'make-instance type)
-                (make-instance type)))
+          (type-specifier-to-instance (direct-slot-type direct-slot))
 
           (slot-value column 'column-null-p)
           (direct-slot-null-p direct-slot)
@@ -228,6 +230,9 @@
                                                        &rest initargs)
   (declare (ignore class initargs))
   (find-class 'column))
+
+(defgeneric slot-type (table-class slot-name)
+  (:documentation "Given the name of a slot, return its type instance."))
 
 ;;; The deftable macro
 
