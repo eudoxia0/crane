@@ -194,14 +194,23 @@ SxQL for insertion. Conversion of Lisp values to database values happens here."
                (class-name (class-of instance))
                (insertable-plist database instance)))
 
+(defun database-for-instance (session instance)
+  (declare (type standard-db-object instance))
+  (get-database
+   (gethash (class-name (class-of instance))
+            (session-tables session))))
+
 (defmethod create ((session session) (instance standard-db-object))
   "Create an instance in the database the instance's class is associated to in
 the session."
-  (create-in-database (get-database
-                       (gethash (class-name (class-of instance))
-                                (session-tables session)))
+  (create-in-database (database-for-instance session instance)
                       instance))
 
 ;; defmethod save ((session session) (instance standard-db-object))
 
-;; defmethod delete ((session session) (instance standard-db-object))
+(defmethod delete ((session session) (instance standard-db-object))
+  "Delete an instance in the database. Return @c(nil)."
+  (query (database-for-instance session instance)
+         (sxql:delete-from (class-name (class-of instance))
+           (sxql:where (:= :id (crane.table:id instance)))))
+  nil)
