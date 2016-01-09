@@ -20,17 +20,48 @@
   (:documentation "A database."))
 
 (defgeneric connect (database)
-  (:documentation "Connect to the database, returning t. If there's already a
-  connection, return nil."))
+  (:documentation "Connects to the database, returning @c(T). If there's already
+  a connection, returns @c(NIL) and does nothing.
+
+@begin(deflist)
+
+@term(Exceptional Situations)
+
+@def(If the parameters are invalid, a driver-specific condition will be signalled.)
+
+@term(See Also)
+
+@def(@c(connectedp), @c(disconnect))
+
+@end(deflist)"))
 
 (defgeneric connectedp (database)
-  (:documentation "Whether or not the database is connected.")
+  (:documentation "Whether or not the database is connected.
+@begin(deflist)
+
+@term(Exceptional Situations)
+
+@def(None.)
+
+@end(deflist)")
   (:method ((db database))
     "The trivial default implementation."
     (slot-boundp db 'connection)))
 
 (defgeneric disconnect (database)
-  (:documentation "Disconnect from the database.")
+  (:documentation "Disconnect from the database. Returns @c(T).
+
+@begin(deflist)
+
+@term(Exceptional Situations)
+
+@def(None.)
+
+@term(See Also)
+
+@def(@c(connect), @c(connectedp))
+
+@end(deflist)")
   (:method ((database database))
     (dbi:disconnect (database-connection database))
     (slot-makunbound database 'connection)
@@ -40,7 +71,8 @@
   (:documentation "Send SQL and interpolated arguments to a database. Returns a
   DBI result object.")
 
-  (:method ((database database) (sql string) arguments)
+  (:method ((database database) sql arguments)
+    (format t "~%Sending SQL: ~A~%~%" sql)
     (if (connectedp database)
         (apply #'dbi:execute
                (cons (dbi:prepare (database-connection database)
@@ -68,4 +100,12 @@
       (sql-query database (first pair) (rest pair)))))
 
 (defgeneric table-exists-p (database table-name)
-  (:documentation "Check whether a database table exists."))
+  (:documentation "Check whether a database table exists.
+
+Some database systems, notably Postgres and MySQL, support the information
+schema interface. Other systems, like SQLite and Oracle, don't. Furthermore
+there are subtle differences @i(among) systems which do support the information
+schema. For instance, in MySQL the name of the table schema is just the name of
+the database, while in Postgres is can be any schema name (but is 'public' by
+default). This clearly introduces the need for a generic function to handle
+these different cases portably."))
