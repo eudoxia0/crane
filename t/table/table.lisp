@@ -32,3 +32,11 @@
     (is
      (equal (person-age person)
             10))))
+
+(test slot-type
+  (let* ((class (find-class 'person))
+         (column-names (mapcar #'crane.table:column-name
+                               (crane.table:table-columns class))))
+    (loop for name in column-names do
+      (is
+       (typep (crane.table:slot-type class name) 'crane.types:sql-type)))))
