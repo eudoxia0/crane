@@ -1,8 +1,11 @@
 (in-package :cl-user)
 (defpackage crane.types
   (:use :cl)
+  (:import-from :crane.database
+                :database)
   ;; Classes
   (:export :sql-type
+           :column-id
            :int
            :bigint
            :smallint
@@ -25,12 +28,20 @@
   ()
   (:documentation "The base class of all SQL types."))
 
-(defgeneric type-sql (type)
-  (:documentation "Return the SQL string that denotes a type."))
+(defgeneric type-sql (type database)
+  (:documentation "Return the SQL string that denotes the @cl:param(type).
+
+The @cl:param(database) argument is provided in case a type has a different SQL
+representation on another database, or to signal an error if a certain type is
+only available on a particular database system."))
 
 ;;; Types
 
 ;; Numeric types
+
+(defclass column-id (sql-type)
+  ()
+  (:documentation "The type of the ID column."))
 
 (defclass int (sql-type)
   ()
@@ -78,7 +89,7 @@
 ;;; SQL
 
 (macrolet ((type-name (class name)
-             `(defmethod type-sql ((type ,class))
+             `(defmethod type-sql ((type ,class) (database database))
                 ,(format nil "Type string of the ~A type." (string-downcase class))
                 (declare (ignore type))
                 ,name)))
@@ -92,6 +103,6 @@
   (type-name timestamp "TIMESTAMP")
   (type-name datetime "DATETIME"))
 
-(defmethod type-sql ((type varchar))
+(defmethod type-sql ((type varchar) (database database))
   "Type string of the varchar type."
   (format nil "VARCHAR(~D)" (varchar-length type)))
