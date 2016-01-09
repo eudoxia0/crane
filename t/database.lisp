@@ -24,12 +24,11 @@
     (is
      (equal (cadr (dbi:fetch result))
             2)))
-  (unless (typep database 'crane.database.postgres:postgres)
-    (let ((result (crane.database:query database
-                                        (sxql:select ((:+ 1 1))))))
-      (is
-       (equal (cadr (dbi:fetch result))
-              2))))
+  (let ((result (crane.database:query database
+                                      (sxql:select ((:+ 1 1))))))
+    (is
+     (equal (cadr (dbi:fetch result))
+            2)))
   ;; table existence
   (is-false
    (crane.database:table-exists-p database "my_table"))
