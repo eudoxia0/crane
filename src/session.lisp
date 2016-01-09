@@ -189,8 +189,8 @@ SxQL for insertion. Conversion of Lisp values to database values happens here."
              (sxql:insert-into table-name
                                (apply #'sxql.clause:make-clause
                                       (cons :set= plist))))
-      (let ((sxql:*quote-character* nil))
-        (second (dbi:fetch (query database (sxql:select :|last_insert_id()|)))))))
+      (second (dbi:fetch (query database (sxql:select :|last_insert_id()|)
+                                :quote-character #\")))))
 
   (:method ((database crane.database.sqlite3:sqlite3) table-name plist)
     (declare (type symbol table-name)
@@ -200,8 +200,8 @@ SxQL for insertion. Conversion of Lisp values to database values happens here."
              (sxql:insert-into table-name
                                (apply #'sxql.clause:make-clause
                                       (cons :set= plist))))
-      (let ((sxql:*quote-character* nil))
-        (second (dbi:fetch (query database (sxql:select :|last_insert_rowid()|))))))))
+      (second (dbi:fetch (query database (sxql:select :|last_insert_rowid()|)
+                                :quote-character nil))))))
 
 (defmethod create-in-database ((database database) (instance standard-db-object))
   "Given an instance of a database object, create it in the database."
