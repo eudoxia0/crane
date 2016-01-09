@@ -31,7 +31,8 @@
                    (:file "serialize")
                    (:file "sql")
                    (:file "diff")))
-                 (:file "session"))))
+                 (:file "session")
+                 (:file "query"))))
   :description "An ORM for Common Lisp."
   :long-description
   #.(uiop:read-file-string
