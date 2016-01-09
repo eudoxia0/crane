@@ -271,4 +271,4 @@ the session."
     (mapcar #'(lambda (result)
                 (print result)
                 t)
-            results)))
+            (dbi:fetch-all results))))
