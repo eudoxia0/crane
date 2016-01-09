@@ -45,12 +45,12 @@
       (crane.session:start session))
     ;; Queries
     (let ((instance (make-instance 'truck
-                                   :model "ford" ;; fuck it don't know about cars
+                                   :model "abc"
                                    :mileage 50)))
       (is
        (integerp (crane.session:create session instance))))
     (finishes
-      (crane.session:stop session))
+      (crane.session:stop session))))
 
 (test postgres-session
   (test-session 'crane-test.config:pg))
