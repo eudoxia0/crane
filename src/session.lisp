@@ -221,7 +221,7 @@ the session."
   (let ((id (create-in-database (database-for-instance session instance)
                                 instance)))
     (setf (slot-value instance 'crane.table:id) id)
-    instance)
+    instance))
 
 ;; defmethod save ((session session) (instance standard-db-object))
 

@@ -50,7 +50,9 @@
       (is
        (typep (crane.session:create session instance) 'truck))
       (is
-       (integerp (crane.table:id instance))))
+       (integerp (crane.table:id instance)))
+      (finishes
+        (crane.session:delete-instance session)))
     (finishes
       (crane.session:stop session))))
 
