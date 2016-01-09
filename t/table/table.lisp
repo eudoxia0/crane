@@ -32,9 +32,8 @@
             10))))
 
 (test slot-type
-  (let* ((class (find-class 'person))
-         (column-names (mapcar #'crane.table:column-name
-                               (crane.table:table-columns class))))
+  (let* ((column-names (mapcar #'crane.table:column-name
+                               (crane.table:table-columns (find-class 'person)))))
     (loop for name in column-names do
       (is
-       (typep (crane.table:slot-type class name) 'crane.types:sql-type)))))
+       (typep (crane.table:slot-type 'person name) 'crane.types:sql-type)))))
