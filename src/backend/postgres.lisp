@@ -95,7 +95,12 @@ may be a way to change this default, maybe the schema name should be an option
 in the database object."
   (declare (type string table-name))
   (let* ((sql "SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'public' AND table_name = ?")
-         (result (dbi:fetch-all (sql-query database sql (list table-name)))))
+         (result (dbi:fetch-all (sql-query database
+                                           sql
+                                           (list
+                                            (subseq table-name
+                                                    1
+                                                    (1- (length table-name))))))))
     (and result (stringp (getf (first result) :|table-name|)))))
 
 ;;; SQL types
