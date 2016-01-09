@@ -32,7 +32,8 @@
                    (:file "sql")
                    (:file "diff")))
                  (:file "session")
-                 (:file "query"))))
+                 (:file "query")
+                 (:file "crane"))))
   :description "An ORM for Common Lisp."
   :long-description
   #.(uiop:read-file-string
