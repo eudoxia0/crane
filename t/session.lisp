@@ -47,7 +47,7 @@
       (crane.session:stop session))))
 
 (test postgres-session
-  (test-session 'crane-test.config:postgres))
+  (test-session 'crane-test.config:pg))
 
 (test mysql-session
   (test-session 'crane-test.config:mysql))
