@@ -42,7 +42,7 @@
 
 ;;; Value conversion
 
-(defmethod lisp-to-database ((database sqlite3) (value t) (type crane.types:sql-type))
+(defmethod lisp-to-database ((database sqlite3) (value t))
   value)
 
 (defmethod database-to-lisp ((database sqlite3) (value t) (type crane.types:sql-type))

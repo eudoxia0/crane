@@ -74,7 +74,7 @@
 
 ;;; Value conversion
 
-(defmethod lisp-to-database ((database mysql) (value t) (type crane.types:sql-type))
+(defmethod lisp-to-database ((database mysql) (value t))
   value)
 
 (defmethod database-to-lisp ((database mysql) (value t) (type crane.types:sql-type))

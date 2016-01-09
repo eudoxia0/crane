@@ -80,7 +80,7 @@
 
 ;;; Value conversion
 
-(defmethod lisp-to-database ((database postgres) (value t) (type crane.types:sql-type))
+(defmethod lisp-to-database ((database postgres) (value t))
   value)
 
 (defmethod database-to-lisp ((database postgres) (value t) (type crane.types:sql-type))
