@@ -19,6 +19,7 @@
            :table-columns)
   ;; Columns
   (:export :column
+           :column-name
            :column-type
            :column-null-p
            :column-unique-p
@@ -95,7 +96,7 @@
 
 (defmethod table-name ((class table-class))
   "Return the SQL name of the table, a string."
-  (string-downcase (symbol-name (class-name class))))
+  (crane.util:symbol-to-sql (class-name class)))
 
 (defmethod table-columns ((class table-class))
   "Return a list of column objects."
@@ -167,6 +168,10 @@
   (:documentation "A slot of a table class. This is what the slots look like in
   the end: the values stored in the slots are computed from the forms in the
   direct slot definition by the @c(compute-effective-slot-definition) method."))
+
+(defmethod column-name ((column column))
+  "Return the name of the column, a symbol."
+  (closer-mop:slot-definition-name column))
 
 (defmethod compute-effective-slot-definition ((class table-class)
                                               slot-name direct-slot-definitions)
@@ -246,10 +251,8 @@
          ,(append
            `((id ,@(process-slot '(:accessor id
                                    :initarg :id
-                                   :type crane.types:int
-                                   :primaryp t
-                                   :nullp nil
-                                   :autoincrementp t))))
+                                   :type crane.types:column-id
+                                   :primaryp t))))
            (mapcar #'(lambda (slot)
                        (cons (first slot)
                              (process-slot (rest slot))))
