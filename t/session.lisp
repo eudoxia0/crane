@@ -1,7 +1,5 @@
 (defpackage crane-test.session
   (:use :cl :fiveam)
-  (:import-from :crane-test.config
-                :sqlite)
   (:import-from :crane.session
                 :make-session
                 :session
@@ -24,19 +22,29 @@
             :type crane.types:int)))
 
 (test basic
+  (finishes
+    (crane.config:define-sqlite3-database memory
+      :name ":memory:"))
   (let ((session (make-session :migratep nil)))
     (is
      (typep session 'session))
     (is
      (null (session-databases session)))
     (finishes
-      (register-database session 'sqlite))
+      (register-database session 'memory))
     (is
      (equal (length (session-databases session))
             1))
     (finishes
-      (register-table session 'truck 'sqlite))
+      (register-table session 'truck 'memory))
     (finishes
       (crane.session:start session))
+    (is-true
+     (crane.database:table-exists-p (crane.config:get-database 'memory)
+                                    (crane.table:table-name
+                                     (find-class 'truck))))
     (finishes
-      (crane.session:start session))))
+      ;; Starting a session again does nothing
+      (crane.session:start session))
+    (finishes
+      (crane.session:stop session))))

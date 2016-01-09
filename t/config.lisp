@@ -31,7 +31,7 @@
       :password *mysql-password*))
   (finishes
     (crane.config:define-sqlite3-database sqlite
-      :pathname *sqlite3-pathname*)))
+      :name (namestring *sqlite3-pathname*))))
 
 (test queries
   (let ((number 0))
