@@ -72,7 +72,7 @@
   DBI result object.")
 
   (:method ((database database) sql arguments)
-    (format t "~%Sending SQL: ~A~%~%" sql)
+    (format t "~%Sending SQL: ~A~%" sql)
     (if (connectedp database)
         (apply #'dbi:execute
                (cons (dbi:prepare (database-connection database)
