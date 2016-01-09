@@ -267,7 +267,7 @@
        (closer-mop:finalize-inheritance (find-class ',name))
 
        (defmethod slot-type ((table-name (eql ',name)) slot-name)
-         (declare (type keyword slot-name))
+         (declare (type symbol slot-name))
          (case slot-name
            ,@(mapcar #'(lambda (slot)
                          `(,(first slot)
