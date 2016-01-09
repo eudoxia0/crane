@@ -34,7 +34,8 @@
            :create
            :exists-in-database-p
            :save
-           :delete-instance)
+           :delete-instance
+           :class-query)
   (:documentation "Sessions tie table definitions, which are abstract and
   reusable, to specific databases."))
 (in-package :crane.session)
@@ -250,3 +251,8 @@ the session."
          (sxql:delete-from (class-name (class-of instance))
            (sxql:where (:= :id (crane.table:id instance)))))
   nil)
+
+(defun class-query (session instance statement)
+  "Execute an SxQL query on the database this instance resides in."
+  (query (database-for-instance session instance)
+         statement))
