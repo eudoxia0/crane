@@ -178,7 +178,7 @@ SxQL for insertion. Conversion of Lisp values to database values happens here."
              (sxql:insert-into table-name
                (apply #'sxql.clause:make-clause
                       (cons :set= plist))
-               :returning :id)))))
+               (sxql:make-op :raw "RETURNING") :id)))))
 
   (:method ((database crane.database.sqlite3:sqlite3) table-name plist)
     (declare (type symbol table-name)
