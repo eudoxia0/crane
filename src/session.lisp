@@ -266,7 +266,8 @@ the session."
   (let* ((columns (mapcar #'alexandria:make-keyword
                           (mapcar #'column-name
                                   (table-columns (find-class class-name)))))
-         (results (select columns session class-name arguments)))
+         (results (apply #'select (append (list columns session class-name)
+                                          arguments))))
     (mapcar #'(lambda (result)
                 (print result)
                 t)
