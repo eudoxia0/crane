@@ -272,7 +272,7 @@
            ,@(mapcar #'(lambda (slot)
                          `(,(first slot)
                            (type-specifier-to-instance ',(getf (rest slot) :type))))
-              slots)))
+              (cons '(id :type crane.types:column-id) slots))))
 
        ',name)))
 
