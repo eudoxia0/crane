@@ -56,8 +56,12 @@
       (is-true
        (crane.session:exists-in-database-p session instance))
       ;; Make changes, save them, verify they happen
+      (let ((results (crane.session:select (:model :mileage) session 'truck
+                                           (:= :id (crane.table:id instance)))))
+        (print results))
       (finishes
         (crane.session:save session instance))
+      ;; Delete
       (finishes
         (crane.session:delete-instance session instance)))
     (finishes
