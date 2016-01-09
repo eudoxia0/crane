@@ -249,8 +249,7 @@
     `(progn
        (defclass ,name ,(if superclasses superclasses `(standard-db-object))
          ,(append
-           `((id ,@(process-slot '(:accessor id
-                                   :initarg :id
+           `((id ,@(process-slot '(:initarg :id
                                    :type crane.types:column-id
                                    :primaryp t))))
            (mapcar #'(lambda (slot)
@@ -261,3 +260,7 @@
          (:metaclass table-class))
        (closer-mop:finalize-inheritance (find-class ',name))
      ',name)))
+
+(defmethod id ((object standard-db-object))
+  "Retrieve the object's ID."
+  (slot-value object 'id))
