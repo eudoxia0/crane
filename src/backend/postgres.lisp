@@ -98,10 +98,9 @@ in the database object."
          (result (dbi:fetch-all (sql-query database
                                            sql
                                            (list
-                                            (subseq table-name
-                                                    1
-                                                    (1- (length table-name))))))))
-    (and result (stringp (getf (first result) :|table-name|)))))
+                                            (string-trim '(#\") table-name))))))
+    (print result)
+    (and result (stringp (second (first result))))))
 
 ;;; SQL types
 

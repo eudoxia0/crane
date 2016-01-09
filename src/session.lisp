@@ -11,7 +11,10 @@
                 :sql-query)
   (:import-from :crane.table
                 :table-class
-                :table-name)
+                :table-name
+                :table-columns
+                :column-name
+                :standard-db-object)
   (:import-from :crane.table.sql
                 :make-table-definition
                 :table-definition-sql)
@@ -142,7 +145,19 @@ Returns the table name."
           (table-definition-sql
            (make-table-definition table database))))
 
-;; defmethod create-in-database ((database database) (instance standard-db-object))
+;;; Queries
+
+(defun slot-names (instance)
+  "Given an instance of a standard-db-object object, return a list of symbols,
+the names of its bound slots."
+  (remove-if-not #'(lambda (slot)
+                     (slot-boundp instance slot))
+                 (mapcar #'column-name
+                         (table-columns (class-of instance)))))
+
+
+(defmethod create-in-database ((database database) (instance standard-db-object))
+  "Given an instance of a database object, create it in the database.")
 
 ;; defmethod create ((session session) (instance standard-db-object))
 

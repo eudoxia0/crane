@@ -58,10 +58,7 @@ SQL."
          (result (dbi:fetch-all (sql-query database
                                            sql
                                            (list
-                                            ;; We gotta remove the quotes on sqlite
-                                            (subseq table-name
-                                                    1
-                                                    (1- (length table-name))))))))
+                                            (string-trim '(#\") table-name))))))
     (and result (stringp (getf (first result) :|name|)) t)))
 
 ;;; SQL types
