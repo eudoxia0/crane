@@ -253,9 +253,12 @@ the session."
            (sxql:where (:= :id (crane.table:id instance)))))
   nil)
 
+(defun database-for-class (session class-name)
+  (crane.config:get-database (gethash class-name (session-tables session))))
+
 (defun select (columns session class-name &rest arguments)
   "Execute a @c(SELECT) on a particular class."
-  (query (crane.config:get-database (gethash class-name (session-tables session)))
+  (query (database-for-class session class-name)
          (sxql:select columns
            (sxql:from class-name)
            (sxql:make-clause :where (cons :and arguments)))))
@@ -264,20 +267,29 @@ the session."
   (let ((*package* (find-package :keyword)))
     (read-from-string (symbol-name keyword))))
 
-(defun sql-plist-to-object (class-name plist)
-  (apply #'make-instance
-         (cons class-name
-               (loop for (key value) on plist by #'cddr appending
-                 (list (sql-keyword-to-initarg key)
-                       value)))))
+(defun column-names (table-name)
+  "Return a list of column names for table name."
+  (mapcar #'column-name
+          (table-columns (find-class table-name))))
+
+(defun sql-plist-to-object (database class-name plist)
+  "Convert an SQL plist to an instance."
+  (let ((instance (make-instance class-name)))
+    (loop for (key value) on plist by #'cddr
+          for slot-name in (column-names class-name)
+          do
+      (let ((slot-type (crane.table:slot-type (find-class class-name)
+                                              slot-name)))
+        (setf (slot-value instance slot-name)
+              (crane.convert:database-to-lisp database value slot-type))))
+    instance))
 
 (defun filter (session class-name &rest arguments)
   "Find instances of @c(class-name) that match the constraints in
 @c(arguments)."
-  (let* ((columns (mapcar #'alexandria:make-keyword
-                          (mapcar #'column-name
-                                  (table-columns (find-class class-name)))))
+  (let* ((columns (mapcar #'alexandria:make-keyword (column-names class-name)))
          (results (apply #'select (append (list columns session class-name)
-                                          arguments))))
-    (mapcar (alexandria:curry #'sql-plist-to-object class-name)
+                                          arguments)))
+         (database (database-for-class session class-name)))
+    (mapcar (alexandria:curry #'sql-plist-to-object database class-name)
             (dbi:fetch-all results))))
