@@ -49,7 +49,7 @@ script:
         -e '(setf *debugger-hook*
                   (lambda (c h)
                     (declare (ignore h))
-                    (princ c)
+                    (uiop:print-backtrace :condition c)
                     (uiop:quit -1)))'
         -e '(ql:quickload :crane-test)'
         -e '(crane-test:run-tests)'
