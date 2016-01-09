@@ -30,7 +30,8 @@
   ;; Deftable
   (:export :standard-db-object
            :deftable
-           :id)
+           :id
+           :slot-type)
   (:documentation "This package defines the metaclasses that map CLOS objects to
   SQL tables, and some basic operations on them."))
 (in-package :crane.table)
@@ -264,6 +265,14 @@
          ,@options
          (:metaclass table-class))
        (closer-mop:finalize-inheritance (find-class ',name))
+
+       (defmethod slot-type ((table-class ,name) slot-name)
+         (declare (type keyword slot-name))
+         (case slot-name
+             ,@(mapcar #'(lambda (slot)
+                           `(,(first slot)
+                             (type-specifier-to-instance ',(getf (rest slot) :type))))
+                       slots)))
      ',name)))
 
 (defmethod id ((object standard-db-object))
