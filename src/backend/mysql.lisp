@@ -90,7 +90,7 @@
                                            (list (database-name database)
                                                  (string-trim '(#\")
                                                               table-name))))))
-    (and result (stringp (second (first result)))))
+    (and result (stringp (second (first result))))))
 
 ;;; SQL types
 
