@@ -1,9 +1,17 @@
 (in-package :cl-user)
 (defpackage crane.table.sql
   (:use :cl)
+  (:import-from :crane.util
+                :symbol-to-sql)
+  (:import-from :crane.database
+                :database)
+  (:import-from :crane.types
+                :type-sql)
   (:import-from :crane.table
                 ;; Column
                 :column
+                :column-name
+                :column-type
                 :column-null-p
                 :column-unique-p
                 :column-primary-p
@@ -14,18 +22,14 @@
                 :foreign-key-table
                 :foreign-key-on-delete
                 :foreign-key-on-update
-                :referential-action-name)
+                :referential-action-name
+                ;; Table
+                :table-class
+                :table-name
+                :table-columns)
   (:documentation "A tiny DSL for building the SQL code to generate and alter
   tables. This is necessary because of SxQL's limitations."))
 (in-package :crane.table.sql)
-
-;;; Utilities
-
-(defun symbol-to-sql (symbol)
-  "Return a valid SQL string equivalent of a Lisp symbol. Identical to SxQL's
-behaviour."
-  (let ((sxql:*quote-character* #\"))
-    (sxql:yield (sxql.operator:detect-and-convert symbol))))
 
 ;;; Constraints
 
@@ -60,10 +64,6 @@ behaviour."
   ()
   (:documentation "Represents a @c(PRIMARY KEY) constraint."))
 
-(defclass index (single-column)
-  ()
-  (:documentation "Represents an @c(INDEX) constraint."))
-
 (defclass foreign-key (constraint)
   ((column :reader constraint-column
            :initarg :column
@@ -87,108 +87,211 @@ behaviour."
               :documentation "A string describing the @c(ON UPDATE) action."))
   (:documentation "Represents a @c(FOREIGN KEY) constraint."))
 
-(defgeneric add-constraint (constraint name table-name)
-  (:documentation "Return a string with the SQL required to add the constraint
-  to the table.
+;;; Constraint methods
 
-For instance, a @c(not-null) constraint on a column @c(\"username\") with name
-@c(\"non-null\") and table name @c(\"user\") should generate something like
-@c(\"ALTER TABLE \"user\" ADD CONSTRAINT \"not-null\" CHECK (\"username\") IS
-NOT NULL\").
+(defgeneric constraint-partial-name (constraint)
+  (:documentation "Given a constraint, return a string that will be used as part
+  of its name to make it more human readable.")
 
-The @cl:param(name) and @cl:param(table-name) arguments are strings."))
+  (:method ((constraint unique))
+    (declare (ignore constraint))
+    "unique")
 
-(defgeneric drop-constraint (constraint name table-name)
-  (:documentation "Return a string with the SQL required to drop the constraint
-  from the table.
+  (:method ((constraint not-null))
+    (declare (ignore constraint))
+    "non-null")
 
-The types of the arguments are as in @c(add-constraint)."))
+  (:method ((constraint primary-key))
+    (declare (ignore constraint))
+    "primary")
 
-(defun alter-table-add (table-name constraint-name)
-  "Return an SQL string with the first part of an @c(ALTER TABLE ADD CONSTRAINT)
-statement."
-  (declare (type symbol table-name)
-           (type string constraint-name))
-  (format nil "ALTER TABLE ~A ADD CONSTRAINT ~A "
-          table-name
-          constraint-name))
+  (:method ((constraint foreign-key))
+    "foreign"))
 
-(defun alter-table-drop (table-name constraint-name)
-  "Return SQL to drop a constraint."
-  (declare (type symbol table-name)
-           (type string constraint-name))
-  (format nil "ALTER TABLE ~A DROP CONSTRAINT ~A"
-          table-name
-          constraint-name))
+(defgeneric constraint-sql (constraint)
+  (:documentation "Return a string with the SQL representing the constraint.
 
-(defmethod add-constraint ((constraint unique) name table-name)
-  "Add a @c(UNIQUE) constraint."
-  (format nil "~A UNIQUE (~{~A~^, ~})"
-          (alter-table-add table-name name)
-          (constraint-columns constraint)))
+This is the text after a @c(CONSTRAINT [name]) declaration in a @c(CREATE
+TABLE), or after an @c(ALTER TABLE [table] ADD CONSTRAINT) statement.")
 
-(defmethod drop-condtraint ((constraint unique) name table-name)
-  "Drop a @c(UNIQUE) constraint."
-  (declare (ignore constraint))
-  (alter-table-drop table-name name))
+  (:method ((constraint unique))
+    (with-slots (columns) constraint
+      (format nil "UNIQUE (~{~A~^, ~})" columns)))
 
-(defmethod add-constraint ((constraint not-null) name table-name)
-  "Add a @c(NOT NULL) constraint."
-  (format nil "~A CHECK (~A IS NOT NULL)"
-          (alter-table-add table-name name)
-          (constraint-column constraint)))
+  (:method ((constraint not-null))
+    (with-slots (column) constraint
+      (format nil "CHECK (~A IS NOT NULL)" column)))
 
-(defmethod drop-condtraint ((constraint not-null) name table-name)
-  "Drop a @c(NOT NULL) constraint."
-  (declare (ignore constraint))
-  (alter-table-drop table-name name))
+  (:method ((constraint primary-key))
+    (with-slots (columns) constraint
+      (format nil "PRIMARY KEY (~{~A~^, ~})" columns)))
 
-(defmethod add-constraint ((constraint primary-key) name table-name)
-  "Add a @c(PRIMARY KEY) constraint."
-  (format nil "~A PRIMARY KEY (~{~A~^, ~})"
-          (alter-table-add table-name name)
-          (constraint-columns constraint)))
+  (:method ((constraint foreign-key))
+    (with-slots (column foreign-table foreign-column on-delete on-update) constraint
+      (format nil "FOREIGN KEY (~A) REFERENCES ~A(~A) ON DELETE ~A ON UPDATE ~A"
+              column
+              foreign-table
+              foreign-column
+              on-delete
+              on-update))))
 
-(defmethod drop-condtraint ((constraint primary-key) name table-name)
-  "Drop a @c(PRIMARY) constraint."
-  (declare (ignore constraint))
-  (alter-table-drop table-name name))
+(defun render-constraint (constraint name)
+  "Given a constraint, and its name, return an SQL string ready for inclusion in
+a @c(CREATE TABLE) statement."
+  (declare (type constraint constraint)
+           (type string name))
+  (format nil "CONSTRAINT ~A ~A" name (constraint-sql constraint)))
 
-(defmethod add-constraint ((constraint index) name table-name)
-  "Add an @c(INDEX) constraint."
-  (format nil "CREATE INDEX ~A on ~A (~A)"
-          name
-          table-name
-          (constraint-column constraint)))
+;;; Indices
 
-(defmethod drop-constraint ((constraint index) name table-name)
-  "Drop an @c(INDEX) constraint."
-  (declare (ignore constraint))
-  (format nil "DROP INDEX ~A on ~A"
-          name
-          table-name))
+(defclass index ()
+  ((column :reader index-column
+           :initarg :column
+           :type string
+           :documentation "The SQL name of the column to be indexed."))
+  (:documentation "Represents an index."))
+
+(defun add-index (index index-name table-name)
+  "Given an index, its name and the name of the table it belongs to, return the
+SQL statement to create it."
+  (with-slots (column) index
+    (format nil "CREATE INDEX ~A ON ~A(~A)" index-name table-name column)))
+
+(defun drop-index (index-name table-name)
+  "Given an index, its name and the name of the table it belongs to, return the
+SQL statement to drop it."
+  (format nil "DROP INDEX ~A ON ~A" index-name table-name))
+
+;;; Table definition
+
+(defclass column-definition ()
+  ((name :reader column-name
+         :initarg :name
+         :type string
+         :documentation "The column's SQL name, a string.")
+   (type :reader column-type
+         :initarg :type
+         :type string
+         :documentation "The column SQL type, a string."))
+  (:documentation "All the information needed to define an SQL column."))
+
+(defclass table-definition ()
+  ((name :reader table-definition-name
+         :initarg :name
+         :type string
+         :documentation "The table's SQL name.")
+   (columns :reader table-definition-columns
+            :initarg :columns
+            :type list
+            :documentation "A list of column definitions.")
+   (constraints :reader table-definition-constraints
+                :initarg :constraints
+                :type list
+                :documentation "A list of constraint objects.")
+   (indices :reader table-definition-indices
+            :initarg :indices
+            :type list
+            :documentation "A list of indices."))
+  (:documentation "All the information needed to create a table."))
 
 ;;; Extract info from tables
 
-(defun column-constraints (name column)
+(defun column-constraints (column)
   "Extract a list of constraints from a column."
-  (declare (type symbol name)
-           (type column column))
+  (declare (type column column))
+  (let ((name (column-name column)))
+    (remove-if #'null
+               (list
+                (when (column-null-p column)
+                  (make-instance 'not-null :column (symbol-to-sql name)))
+                (when (column-unique-p column)
+                  (make-instance 'unique :columns (list (symbol-to-sql name))))
+                (when (column-primary-p column)
+                  (make-instance 'primary-key :columns (list (symbol-to-sql name))))
+                (when (slot-boundp column 'column-foreign)
+                  (let ((foreign (column-foreign column)))
+                    (make-instance 'foreign
+                                   :column (symbol-to-sql name)
+                                   :foreign-table (symbol-to-sql (foreign-key-table foreign))
+                                   :foreign-column (symbol-to-sql 'crane.table:id)
+                                   :on-delete (foreign-key-on-delete foreign)
+                                   :on-update (foreign-key-on-update foreign))))))))
+
+(defun table-constraints (table-class)
+  "Extract a list of contraints from a table."
+  (declare (type table-class table-class))
+  (loop for column in (table-columns table-class) appending
+    (column-constraints column)))
+
+(defun table-indices (table-class)
+  "Extract a list of index objects from a table."
   (remove-if #'null
-             (list
-              (when (column-null-p column)
-                (make-instance 'not-null :column (symbol-to-sql name)))
-              (when (column-unique-p column)
-                (make-instance 'unique :columns (list (symbol-to-sql name))))
-              (when (column-primary-p column)
-                (make-instance 'primary-key :column (symbol-to-sql name)))
-              (when (column-index-p column)
-                (make-instance 'index :column (symbol-to-sql name)))
-              (when (slot-boundp column 'column-foreign)
-                (let ((foreign (column-foreign column)))
-                  (make-instance 'foreign
-                                 :column (symbol-to-sql name)
-                                 :foreign-table (symbol-to-sql (foreign-key-table foreign))
-                                 :foreign-column (symbol-to-sql 'crane.table:id)
-                                 :on-delete (foreign-key-on-delete foreign)
-                                 :on-update (foreign-key-on-update foreign)))))))
+             (mapcar #'(lambda (column)
+                         (when (column-index-p column)
+                           (make-instance 'index
+                                          :column (symbol-to-sql (column-name column)))))
+                     (table-columns table-class))))
+
+(defun table-column-definitions (table-class database)
+  "Extract a list of column definitions from a table.
+
+The database parameter is used to convert the type objects to SQL strings."
+  (declare (type table-class table-class)
+           (type database database))
+  (mapcar #'(lambda (column)
+              (make-instance 'column-definition
+                             :name (symbol-to-sql (column-name column))
+                             :type (type-sql (column-type column)
+                                             database)))
+          (table-columns table-class)))
+
+;;; Create table definitions
+
+(defun make-table-definition (table-class database)
+  "Create a @c(table-definition) object given a @c(table-class) instance and the
+database where the definition will be applied."
+  (declare (type table-class table-class)
+           (type database database))
+  (make-instance 'table-definition
+                 :name (table-name table-class)
+                 :columns (table-column-definitions table-class database)
+                 :constraints (table-constraints table-class)
+                 :indices (table-indices table-class)))
+
+;; Jesus Christ this is horrible
+(defparameter +create-table-format+
+  "CREATE TABLE ~A (
+~{  ~A~^,
+~}~{,
+  ~A~}
+)"
+  "The format string to create tables.")
+
+(defun constraint-name (constraint constraints)
+  "Return the constraint's string name."
+  (format nil "\"~A_~D\""
+          (constraint-partial-name constraint)
+          (position constraint constraints :test #'eq)))
+
+(defun index-name (index indices)
+  "Return the index's string name."
+  (format nil "\"index_~D\"" (position index indices :test #'eq)))
+
+(defun table-definition-sql (table-definition)
+  "Return a list of SQL statements needed to create a table from its definition."
+  (with-slots (name columns constraints indices) table-definition
+    (append
+     (list
+      (format nil +create-table-format+
+              name
+              (mapcar #'(lambda (column)
+                          (with-slots (name type) column
+                            (format nil "~A ~A" name type)))
+                      columns)
+              (mapcar #'(lambda (constraint)
+                          (render-constraint constraint
+                                             (constraint-name constraint constraints)))
+                      constraints)))
+     (mapcar #'(lambda (index)
+                 (add-index index (index-name index indices) name))
+             indices))))
