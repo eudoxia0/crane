@@ -14,10 +14,10 @@
 (in-suite session-tests)
 
 (crane.table:deftable truck ()
-  ((model :reader truck-model
+  ((model :accessor truck-model
           :initarg :model
           :type crane.types:text)
-   (mileage :reader truck-mileage
+   (mileage :accessor truck-mileage
             :initarg :mileage
             :type crane.types:int)))
 
@@ -56,11 +56,28 @@
       (is-true
        (crane.session:exists-in-database-p session instance))
       ;; Make changes, save them, verify they happen
-      (let ((results (crane.session:select (:model :mileage) session 'truck
-                                           (:= :id (crane.table:id instance)))))
-        (print (dbi:fetch results)))
-      (finishes
-        (crane.session:save session instance))
+      (let ((results (dbi:fetch
+                      (crane.session:select (:model :mileage)
+                                            session
+                                            'truck
+                                            (:= :id (crane.table:id instance))))))
+        (is
+         (string= (getf results :|model|) "abc"))
+        (is
+         (= (getf results :|mileage|) 50))
+        (setf (truck-model instance) "xyz"
+              (truck-mileage instance) 70)
+        (finishes
+          (crane.session:save session instance))
+        (let ((results (dbi:fetch
+                        (crane.session:select (:model :mileage)
+                                              session
+                                              'truck
+                                              (:= :id (crane.table:id instance))))))
+          (is
+           (string= (getf results :|model|) "xyz"))
+          (is
+           (= (getf results :|mileage|) 70))))
       ;; Delete
       (finishes
         (crane.session:delete-instance session instance)))
