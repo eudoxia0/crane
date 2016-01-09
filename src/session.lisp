@@ -155,9 +155,17 @@ the names of its bound slots."
                  (mapcar #'column-name
                          (table-columns (class-of instance)))))
 
+(defun insertable-plist (instance database)
+  "Given an instance of standard-db-object, return a plist that can be sent to
+SxQL for insertion. Conversion of Lisp values to database values happens here."
+  (loop for name in (slot-names instance) appending
+    (list (alexandria:make-keyword name)
+          (crane.convert:lisp-to-database database
+                                          (slot-value instance name)))))
 
 (defmethod create-in-database ((database database) (instance standard-db-object))
-  "Given an instance of a database object, create it in the database.")
+  "Given an instance of a database object, create it in the database."
+  (declare (ignore database instance)))
 
 ;; defmethod create ((session session) (instance standard-db-object))
 
