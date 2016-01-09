@@ -15,7 +15,8 @@
   (:import-from :crane.table.sql
                 :make-table-definition
                 :table-definition-sql)
-  (:export :session
+  (:export :*session*
+           :session
            :make-session
            :session-databases
            :session-tables
@@ -28,6 +29,8 @@
   (:documentation "Sessions tie table definitions, which are abstract and
   reusable, to specific databases."))
 (in-package :crane.session)
+
+(defvar *session*)
 
 (defclass session ()
   ((databases :accessor session-databases
@@ -59,16 +62,20 @@
   (:documentation "A session ties table definitions, which are not tied to any
   particular database, to the actual databases where they will be created. It also manages the storage of migrations."))
 
-(defun make-session (&key databases migratep (migrations-directory nil dirp))
+(defun make-session (&key databases migratep (migrations-directory nil dirp)
+                       defaultp)
   "Create a session object."
-  (if dirp
-      (make-instance 'session
-                     :databases databases
-                     :migratep migratep
-                     :migrations-directory migrations-directory)
-      (make-instance 'session
-                     :migratep migratep
-                     :databases databases)))
+  (let ((instance (if dirp
+                      (make-instance 'session
+                                     :databases databases
+                                     :migratep migratep
+                                     :migrations-directory migrations-directory)
+                      (make-instance 'session
+                                     :migratep migratep
+                                     :databases databases))))
+    (when defaultp
+      (setf *session* instance))
+    instance))
 
 (defun register-database (session database-tag)
   "Add a database tag to a session, so a connection will be created when the
@@ -95,27 +102,28 @@ Returns the table name."
 
 (defmethod start ((session session))
   "Start the session, connecting to all the databases."
-  (with-slots (databases tables migratep) session
-    ;; Iterate over the databases, connecting them
-    (loop for tag in databases do
-      (let ((db (get-database tag)))
-        (when db
-          (crane.database:connect db))))
-    ;; Iterate over the tables, ensuring they exist
-    (loop for table-name being the hash-keys of tables
-          for database-tag being the hash-values of tables
-          do
-      (let ((table (find-class table-name))
-            (database (get-database database-tag)))
-        (when table
-          (if migratep
-              (error "Migrations not implemented yet :^)")
-              (progn
-                ;; Check if the table exists
-                (unless (table-exists-p database (table-name table))
-                  (format t "Creating table ~A" table-name)
-                  (create-table table database))))))))
-  (setf (session-started-p session) t)
+  (with-slots (databases tables migratep %startedp) session
+    (unless %startedp
+      ;; Iterate over the databases, connecting them
+      (loop for tag in databases do
+        (let ((db (get-database tag)))
+          (when db
+            (crane.database:connect db))))
+      ;; Iterate over the tables, ensuring they exist
+      (loop for table-name being the hash-keys of tables
+            for database-tag being the hash-values of tables
+            do
+        (let ((table (find-class table-name))
+              (database (get-database database-tag)))
+          (when (and table database)
+            (if migratep
+                (error "Migrations not implemented yet :^)")
+                (progn
+                  ;; Check if the table exists
+                  (unless (table-exists-p database (table-name table))
+                    (format t "Creating table ~A" table-name)
+                    (create-table table database))))))))
+    (setf %startedp t))
   nil)
 
 (defmethod stop ((session session))
@@ -133,3 +141,11 @@ Returns the table name."
               (sql-query database sql nil))
           (table-definition-sql
            (make-table-definition table database))))
+
+;; defmethod create-in-database ((database database) (instance standard-db-object))
+
+;; defmethod create ((session session) (instance standard-db-object))
+
+;; defmethod save ((session session) (instance standard-db-object))
+
+;; defmethod delete ((session session) (instance standard-db-object))
