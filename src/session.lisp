@@ -35,7 +35,7 @@
            :exists-in-database-p
            :save
            :delete-instance
-           :class-query)
+           :select)
   (:documentation "Sessions tie table definitions, which are abstract and
   reusable, to specific databases."))
 (in-package :crane.session)
@@ -252,7 +252,9 @@ the session."
            (sxql:where (:= :id (crane.table:id instance)))))
   nil)
 
-(defun class-query (session instance statement)
-  "Execute an SxQL query on the database this instance resides in."
-  (query (database-for-instance session instance)
-         statement))
+(defmacro select ((&rest columns) session class-name &rest arguments)
+  "Execute a @c(SELECT) on a particular class."
+  `(query (crane.config:get-database (gethash ,class-name (session-tables ,session)))
+          (sxql:select (,@columns)
+            (sxql:from ,class-name)
+            (sxql:where ,@arguments))))
