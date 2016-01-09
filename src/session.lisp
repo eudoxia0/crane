@@ -32,6 +32,7 @@
            :start
            :stop
            :create
+           :exists-in-database-p
            :delete-instance)
   (:documentation "Sessions tie table definitions, which are abstract and
   reusable, to specific databases."))
@@ -214,6 +215,15 @@ SxQL for insertion. Conversion of Lisp values to database values happens here."
   (get-database
    (gethash (class-name (class-of instance))
             (session-tables session))))
+
+(defmethod exists-in-database-p ((session session) (instance standard-db-object))
+  (when (slot-boundp instance 'crane.table:id)
+    (let* ((query (sxql:select :id
+                    (sxql:from (class-name (class-of instance)))
+                    (sxql:where (:= :id (crane.table:id instance)))))
+           (result (dbi:fetch (query (database-for-instance session instance)
+                                     query))))
+      (and result (integerp (second result)) t))))
 
 (defmethod create ((session session) (instance standard-db-object))
   "Create an instance in the database the instance's class is associated to in
