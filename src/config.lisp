@@ -51,11 +51,11 @@
                                 :host ,host
                                 :port ,port)))
 
-(defmacro define-sqlite3-database (tag &key pathname)
+(defmacro define-sqlite3-database (tag &key (name ":memory:"))
   "Define an SQLite3 database."
   `(add-database ',tag
                  (make-instance 'crane.database.sqlite3:sqlite3
-                                :name (namestring ,pathname))))
+                                :name ,name)))
 
 ;;; Querying the database registry
 
