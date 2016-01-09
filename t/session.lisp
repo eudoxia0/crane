@@ -57,10 +57,10 @@
        (crane.session:exists-in-database-p session instance))
       ;; Make changes, save them, verify they happen
       (let ((results (dbi:fetch
-                      (crane.session:select (:model :mileage)
+                      (crane.session:select '(:model :mileage)
                                             session
                                             'truck
-                                            (:= :id (crane.table:id instance))))))
+                                            (list := :id (crane.table:id instance))))))
         (is
          (string= (getf results :|model|) "abc"))
         (is
@@ -70,10 +70,10 @@
         (finishes
           (crane.session:save session instance))
         (let ((results (dbi:fetch
-                        (crane.session:select (:model :mileage)
+                        (crane.session:select '(:model :mileage)
                                               session
                                               'truck
-                                              (:= :id (crane.table:id instance))))))
+                                              (list := :id (crane.table:id instance))))))
           (is
            (string= (getf results :|model|) "xyz"))
           (is

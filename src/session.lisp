@@ -252,9 +252,14 @@ the session."
            (sxql:where (:= :id (crane.table:id instance)))))
   nil)
 
-(defmacro select ((&rest columns) session class-name &rest arguments)
+(defun select (columns session class-name &rest arguments)
   "Execute a @c(SELECT) on a particular class."
-  `(query (crane.config:get-database (gethash ,class-name (session-tables ,session)))
-          (sxql:select (,@columns)
-            (sxql:from ,class-name)
-            (sxql:where ,@arguments))))
+  (query (crane.config:get-database (gethash class-name (session-tables session)))
+         (sxql:select columns
+           (sxql:from class-name)
+           (sxql:make-clause :where (cons :and arguments)))))
+#|
+(defun filter (session class-name &rest arguments)
+  "Find instances of @c(class-name) that match the constraints in
+@c(arguments)."
+|#
