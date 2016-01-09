@@ -78,6 +78,12 @@
            (string= (getf results :|model|) "xyz"))
           (is
            (= (getf results :|mileage|) 70))))
+      ;; Filtering
+      (let ((instances (crane.session:filter session
+                                             'truck
+                                             '(:> :mileage 60))))
+        (is
+         (= (length instances) 1)))
       ;; Delete
       (finishes
         (crane.session:delete-instance session instance)))
