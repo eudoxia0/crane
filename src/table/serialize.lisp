@@ -12,6 +12,7 @@
                 :varchar-length)
   (:import-from :crane.table
                 :column
+                :column-name
                 :column-type
                 :column-null-p
                 :column-unique-p
@@ -35,7 +36,7 @@
 ;; Columns
 
 (defmethod to-plist ((object column))
-  (append (list :name (closer-mop:slot-definition-name object)
+  (append (list :name (column-name object)
                 :type (serialize (column-type object))
                 :nullp (column-null-p object)
                 :uniquep (column-unique-p object)
