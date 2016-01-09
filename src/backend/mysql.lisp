@@ -8,6 +8,9 @@
                 :connectedp
                 :sql-query
                 :table-exists-p)
+  (:import-from :crane.types
+                :type-sql
+                :column-id)
   (:import-from :crane.convert
                 :lisp-to-database
                 :database-to-lisp)
@@ -81,7 +84,13 @@
 
 (defmethod table-exists-p ((database mysql) table-name)
   "On MySQL, we can use the information schema to find whether the table exists."
-  (declare (type string name))
+  (declare (type string table-name))
   (let* ((sql "SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = ? AND table_name = ?")
-         (result (dbi:fetch-all (sql-query sql (database-name database) table-name))))
+         (result (dbi:fetch-all (sql-query database sql
+                                           (list (database-name database) table-name)))))
     (and result (stringp (getf (first result) :|table-name|)))))
+
+;;; SQL types
+
+(defmethod type-sql ((type column-id) (database mysql))
+  "INTEGER AUTO_INCREMENT")
