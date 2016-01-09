@@ -58,6 +58,8 @@
                 :*session*
                 :session
                 :make-session
+                :start
+                :stop
                 :session-databases
                 :session-tables
                 :session-migrate-p
@@ -122,6 +124,8 @@
            :*session*
            :session
            :make-session
+           :start
+           :stop
            :session-databases
            :session-tables
            :session-migrate-p
