@@ -190,7 +190,9 @@ SxQL for insertion. Conversion of Lisp values to database values happens here."
 
 (defmethod create-in-database ((database database) (instance standard-db-object))
   "Given an instance of a database object, create it in the database."
-  (declare (ignore database instance)))
+  (insert-into database
+               (class-name (class-of instance))
+               (insertable-plist database instance)))
 
 ;; defmethod create ((session session) (instance standard-db-object))
 
