@@ -52,7 +52,7 @@
       (is
        (integerp (crane.table:id instance)))
       (finishes
-        (crane.session:delete-instance session)))
+        (crane.session:delete-instance session instance)))
     (finishes
       (crane.session:stop session))))
 
