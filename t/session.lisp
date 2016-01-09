@@ -58,7 +58,7 @@
       ;; Make changes, save them, verify they happen
       (let ((results (crane.session:select (:model :mileage) session 'truck
                                            (:= :id (crane.table:id instance)))))
-        (print results))
+        (print (dbi:fetch results)))
       (finishes
         (crane.session:save session instance))
       ;; Delete
