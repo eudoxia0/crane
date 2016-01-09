@@ -8,7 +8,10 @@
                 :*mysql-username*
                 :*mysql-password*
                 :*sqlite3-pathname*)
-  (:export :config-tests))
+  (:export :config-tests
+           :pg
+           :mysql
+           :sqlite))
 (in-package :crane-test.config)
 
 (def-suite config-tests

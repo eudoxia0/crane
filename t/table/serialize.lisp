@@ -1,7 +1,7 @@
-(defpackage crane-test.serialize
+(defpackage crane-test.table.serialize
   (:use :cl :fiveam)
   (:export :serialization-tests))
-(in-package :crane-test.serialize)
+(in-package :crane-test.table.serialize)
 
 (def-suite serialization-tests
   :description "Serialization tests.")

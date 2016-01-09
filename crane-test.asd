@@ -12,7 +12,12 @@
                 ((:file "crane")
                  (:file "database")
                  (:file "config")
-                 (:file "table")
-                 (:file "serialize")
+                 (:module "table"
+                  :serial t
+                  :components
+                  ((:file "table")
+                   (:file "serialize")
+                   (:file "sql")))
+                 (:file "session")
                  (:file "final"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))

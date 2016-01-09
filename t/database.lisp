@@ -32,7 +32,7 @@
               2))))
   ;; table existence
   (is-false
-   (crane.database:table-exists-p "my_table"))
+   (crane.database:table-exists-p database "my_table"))
   ;; disconnect
   (is-true
    (crane.database:disconnect database)))

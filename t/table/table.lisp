@@ -22,7 +22,7 @@
      (crane.table:table-abstract-p class))
     (is
      (equal (crane.table:table-name class)
-            "person"))
+            "\"person\""))
     (is
      (equal (length (crane.table:table-columns class))
             2)))
