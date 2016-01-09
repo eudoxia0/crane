@@ -29,7 +29,9 @@
            :register-database
            :register-table
            :start
-           :stop)
+           :stop
+           :create
+           :delete-instance)
   (:documentation "Sessions tie table definitions, which are abstract and
   reusable, to specific databases."))
 (in-package :crane.session)
