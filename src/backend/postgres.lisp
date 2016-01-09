@@ -6,7 +6,11 @@
                 :database-connection
                 :connect
                 :connectedp
+                :sql-query
                 :table-exists-p)
+  (:import-from :crane.types
+                :type-sql
+                :column-id)
   (:import-from :crane.convert
                 :lisp-to-database
                 :database-to-lisp)
@@ -89,7 +93,12 @@
 exists. Since table names are unqualified, they go into the public schema. There
 may be a way to change this default, maybe the schema name should be an option
 in the database object."
-  (declare (type string name))
+  (declare (type string table-name))
   (let* ((sql "SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'public' AND table_name = ?")
-         (result (dbi:fetch-all (sql-query sql table-name))))
+         (result (dbi:fetch-all (sql-query database sql (list table-name)))))
     (and result (stringp (getf (first result) :|table-name|)))))
+
+;;; SQL types
+
+(defmethod type-sql ((type column-id) (database postgres))
+  "SERIAL")
