@@ -47,10 +47,14 @@
     (let ((instance (make-instance 'truck
                                    :model "abc"
                                    :mileage 50)))
+      (is-false
+       (crane.session:exists-in-database-p session instance))
       (is
        (typep (crane.session:create session instance) 'truck))
       (is
        (integerp (crane.table:id instance)))
+      (is-true
+       (crane.session:exists-in-database-p session instance))
       (finishes
         (crane.session:delete-instance session instance)))
     (finishes
