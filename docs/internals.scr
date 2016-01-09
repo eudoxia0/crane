@@ -2,6 +2,41 @@
 @title(Internals)
 
 @begin(section)
+@title(Databases)
+
+Database objects manage connecting to the databases and sending queries, as well
+as providing us with information about the database. We start with a base class
+@c(database):
+
+@cl:with-package[name="crane.database"](
+@cl:doc(class database)
+)
+
+Then, we have a couple of functions for managing the connection lifecycle:
+
+@cl:with-package[name="crane.database"](
+@cl:doc(generic connect)
+@cl:doc(generic disconnect)
+@cl:doc(generic connectedp)
+)
+
+As well as functions for sending both raw SQL queries and SxQL queries:
+
+@cl:with-package[name="crane.database"](
+@cl:doc(generic sql-query)
+@cl:doc(generic query)
+)
+
+Finally, we want to be able to query some information from the databases in a
+portable way:
+
+@cl:with-package[name="crane.database"](
+@cl:doc(generic table-exists-p)
+)
+
+@end(section)
+
+@begin(section)
 @title(Migrations)
 
 Every time a table is changed, the migrations system stores the present state of
@@ -39,6 +74,81 @@ constraint):
 @cl:doc(generic add-constraint)
 @cl:doc(generic drop-constraint)
 )
+
+Constraints are extracted from @c(table-class) objects using a couple of
+functions:
+
+@cl:with-package[name="crane.table.sql"](
+@cl:doc(function column-constraints)
+@cl:doc(function table-constraints)
+)
+
+Finally, we have a class, @c(table-definition), to represent all the data needed
+to define a table:
+
+@cl:with-package[name="crane.table.sql"](
+@cl:doc(class table-definition)
+)
+
+As the documentation of the @c(columns) slot implies, instantiating this object
+requires knwledge of the underlying database we're creating it for.
+
+To put it another way: in Postgres, the usual @c(id) column has type @c(SERIAL),
+and that's it (the primary key constraint, like all constraints in Crane, is
+defined later). In SQLite3, however, the @c(id) column has type @c(INTEGER
+PRIMARY KEY), and the @c(AUTOINCREMENT) keyword is elided for performance
+reason.
+
+So, when building a @c(table-definition) object, we look at the type of the
+database we're building it for, and use that information to choose the SQL we'll
+generate for each column definition.
+
+We do it in this function:
+
+@cl:with-package[name="crane.table.sql"](
+@cl:doc(function make-table-definition)
+)
+
+@end(section)
+
+@end(section)
+
+@begin(section)
+@title(Consistency)
+
+Relational databases have inconsistent default behaviour. Crane's basic duty,
+before providing an ORM or migrations, is to ensure consistent behaviour. This
+section lists the steps taken to ensure consistency in the different supported
+database systems.
+
+@begin(section)
+@title(Postgres)
+
+Nothing, really.
+
+@end(section)
+
+@begin(section)
+@title(MySQL)
+
+@begin(deflist)
+@term(Quotes)
+@def(Upon connecting, Crane sends @c(SET SQL_MODE=ANSI_QUOTES) to the server to
+allow identifiers, such as table and column names, to be wrapped in double
+quotes.)
+@end(deflist)
+
+@end(section)
+
+@begin(section)
+@title(SQLite)
+
+@begin(deflist)
+@term(Foreign Keys)
+@def(Upon connecting, Crane sends @c(PRAGMA foreign_keys = ON) to SQLite to
+enable foreign key constraints.)
+
+@end(deflist)
 
 @end(section)
 
