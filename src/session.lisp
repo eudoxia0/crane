@@ -190,7 +190,7 @@ SxQL for insertion. Conversion of Lisp values to database values happens here."
                                (apply #'sxql.clause:make-clause
                                       (cons :set= plist))))
       (second (dbi:fetch (query database (sxql:select :|last_insert_id()|)
-                                :quote-character #\")))))
+                                :quote-character nil)))))
 
   (:method ((database crane.database.sqlite3:sqlite3) table-name plist)
     (declare (type symbol table-name)
