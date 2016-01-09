@@ -12,7 +12,7 @@
   :components ((:module "src"
                 :serial t
                 :components
-                ((:file "serialize")
+                ((:file "util")
                  (:file "database")
                  (:file "types")
                  (:file "convert")
@@ -22,15 +22,14 @@
                    (:file "mysql")
                    (:file "sqlite3")))
                  (:file "config")
+                 (:file "serialize")
                  (:module "table"
                   :serial t
                   :components
                   ((:file "table")
                    (:file "serialize")
                    (:file "sql")
-                   (:file "diff")
-                   (:file "create")
-                   (:file "alter")))
+                   (:file "diff")))
                  (:file "session"))))
   :description "An ORM for Common Lisp."
   :long-description
