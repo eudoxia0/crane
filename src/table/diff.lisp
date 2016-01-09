@@ -19,4 +19,6 @@
 
 (defun differences (past present)
   "Compute the differences between two table definitions."
-  (declare (type table-class past present)))
+  (declare (type table-class past present)
+           (ignore past present))
+  t)
