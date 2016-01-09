@@ -55,8 +55,14 @@
 SQL."
   (declare (type string table-name))
   (let* ((sql "SELECT name FROM sqlite_master WHERE type='table' AND name=?")
-         (result (dbi:fetch-all (sql-query database sql (list table-name)))))
-    (and result (stringp (getf (first result) :|name|)))))
+         (result (dbi:fetch-all (sql-query database
+                                           sql
+                                           (list
+                                            ;; We gotta remove the quotes on sqlite
+                                            (subseq table-name
+                                                    1
+                                                    (1- (length table-name))))))))
+    (and result (stringp (getf (first result) :|name|)) t)))
 
 ;;; SQL types
 
