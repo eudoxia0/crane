@@ -55,6 +55,9 @@
        (integerp (crane.table:id instance)))
       (is-true
        (crane.session:exists-in-database-p session instance))
+      ;; Make changes, save them, verify they happen
+      (finishes
+        (crane.session:save session instance))
       (finishes
         (crane.session:delete-instance session instance)))
     (finishes
