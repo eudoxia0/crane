@@ -278,8 +278,7 @@ the session."
     (loop for (key value) on plist by #'cddr
           for slot-name in (column-names class-name)
           do
-      (let ((slot-type (crane.table:slot-type (find-class class-name)
-                                              slot-name)))
+      (let ((slot-type (crane.table:slot-type class-name slot-name)))
         (setf (slot-value instance slot-name)
               (crane.convert:database-to-lisp database value slot-type))))
     instance))

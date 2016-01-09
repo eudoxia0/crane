@@ -7,14 +7,12 @@
   :description "Table definition tests.")
 (in-suite table-tests)
 
-(test define-person
-  (finishes
-    (crane.table:deftable person ()
-      ((age :accessor person-age
-            :initarg :age
-            :initform 0
-            :type crane.types:int
-            :documentation "The person's age.")))))
+(crane.table:deftable person ()
+  ((age :accessor person-age
+        :initarg :age
+        :initform 0
+        :type crane.types:int
+        :documentation "The person's age.")))
 
 (test person-table
   (let ((class (find-class 'person)))

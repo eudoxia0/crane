@@ -232,7 +232,7 @@
   (declare (ignore class initargs))
   (find-class 'column))
 
-(defgeneric slot-type (table-class slot-name)
+(defgeneric slot-type (table-name slot-name)
   (:documentation "Given the name of a slot, return its type instance."))
 
 ;;; The deftable macro
@@ -242,7 +242,7 @@
   (:metaclass table-class)
   (:documentation "The base class of all database objects."))
 
-(defmacro deftable (name (&rest superclasses) slots &rest options)
+(defmacro deftable (name (&rest superclasses) slots &body options)
   "Define a table."
   (flet ((process-slot (plist)
            (let ((options (alexandria:remove-from-plist plist :type :initform)))
@@ -266,7 +266,7 @@
          (:metaclass table-class))
        (closer-mop:finalize-inheritance (find-class ',name))
 
-       (defmethod slot-type ((table-class ,name) slot-name)
+       (defmethod slot-type ((table-name (eql ',name)) slot-name)
          (declare (type keyword slot-name))
          (case slot-name
            ,@(mapcar #'(lambda (slot)
