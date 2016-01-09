@@ -8,6 +8,7 @@
            :sql-query
            :compile-statement
            :query
+           :with-transaction
            :table-exists-p)
   (:documentation "Database base class and functionality."))
 (in-package :crane.database)
@@ -98,6 +99,11 @@
   (:method ((database database) statement)
     (let ((pair (compile-statement database statement)))
       (sql-query database (first pair) (rest pair)))))
+
+(defmacro with-transaction ((database) &body body)
+  "Execute @cl:param(body) within the context of a transaction."
+  `(dbi:with-transaction (database-connection ,database)
+     ,@body))
 
 (defgeneric table-exists-p (database table-name)
   (:documentation "Check whether a database table exists.
