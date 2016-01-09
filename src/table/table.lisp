@@ -269,11 +269,12 @@
        (defmethod slot-type ((table-class ,name) slot-name)
          (declare (type keyword slot-name))
          (case slot-name
-             ,@(mapcar #'(lambda (slot)
-                           `(,(first slot)
-                             (type-specifier-to-instance ',(getf (rest slot) :type))))
-                       slots)))
-     ',name)))
+           ,@(mapcar #'(lambda (slot)
+                         `(,(first slot)
+                           (type-specifier-to-instance ',(getf (rest slot) :type))))
+              slots)))
+
+       ',name)))
 
 (defmethod id ((object standard-db-object))
   "Retrieve the object's ID."
