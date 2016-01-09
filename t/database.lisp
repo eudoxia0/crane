@@ -20,15 +20,16 @@
   (is-true
    (crane.database:connect database))
   ;; simple queries
-  (let ((result (crane.database:sql-query database "SELECT 1+1" nil)))
-    (is
-     (equal (cadr (dbi:fetch result))
-            2)))
-  (let ((result (crane.database:query database
-                                      (sxql:select ((:+ 1 1))))))
-    (is
-     (equal (cadr (dbi:fetch result))
-            2)))
+  (is
+   (equal (second
+           (dbi:fetch
+            (crane.database:sql-query database "SELECT 1+1" nil)))
+          2))
+  (is
+   (equal (second
+           (dbi:fetch
+            (crane.database:sql-query database "SELECT 1+?" (list 1))))
+          2))
   ;; table existence
   (is-false
    (crane.database:table-exists-p database "my_table"))
