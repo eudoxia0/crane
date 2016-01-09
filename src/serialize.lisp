@@ -1,4 +1,3 @@
-
 (in-package :cl-user)
 (defpackage crane.serialize
   (:use :cl)
