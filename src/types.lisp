@@ -6,6 +6,7 @@
   ;; Classes
   (:export :sql-type
            :column-id
+           :bool
            :int
            :bigint
            :smallint
@@ -42,6 +43,10 @@ only available on a particular database system."))
 (defclass column-id (sql-type)
   ()
   (:documentation "The type of the ID column."))
+
+(defclass bool (sql-type)
+  ()
+  (:documentation "Represents a @c(BOOLEAN) type."))
 
 (defclass int (sql-type)
   ()
@@ -93,6 +98,7 @@ only available on a particular database system."))
                 ,(format nil "Type string of the ~A type." (string-downcase class))
                 (declare (ignore type))
                 ,name)))
+  (type-name bool "BOOLEAN")
   (type-name int "INTEGER")
   (type-name bigint "BIGINT")
   (type-name smallint "SMALLINT")

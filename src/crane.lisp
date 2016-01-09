@@ -13,6 +13,7 @@
   (:import-from :crane.types
                 :sql-type
                 :column-id
+                :bool
                 :int
                 :bigint
                 :smallint
@@ -79,6 +80,7 @@
            :table-exists-p
            :sql-type
            :column-id
+           :bool
            :int
            :bigint
            :smallint
