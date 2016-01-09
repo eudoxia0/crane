@@ -144,7 +144,7 @@ Returns the table name."
   (mapcar #'(lambda (sql)
               (sql-query database sql nil))
           (table-definition-sql
-           (make-table-definition table database))))
+          (make-table-definition table database))))
 
 ;;; Queries
 
@@ -194,7 +194,13 @@ SxQL for insertion. Conversion of Lisp values to database values happens here."
                (class-name (class-of instance))
                (insertable-plist database instance)))
 
-;; defmethod create ((session session) (instance standard-db-object))
+(defmethod create ((session session) (instance standard-db-object))
+  "Create an instance in the database the instance's class is associated to in
+the session."
+  (create-in-database (get-database
+                       (gethash (class-name (class-of instance))
+                                (session-tables session)))
+                      instance))
 
 ;; defmethod save ((session session) (instance standard-db-object))
 
