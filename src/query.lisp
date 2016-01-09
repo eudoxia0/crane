@@ -29,7 +29,7 @@ Returns the instance."
 
 (defun save (instance)
   "Save any changes made to an instance of a database object."
-  (crane.session:save *session* intance))
+  (crane.session:save *session* instance))
 
 (defun del (instance)
   "Delete this instance from the database."
