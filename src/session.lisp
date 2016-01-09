@@ -208,7 +208,7 @@ the session."
 
 ;; defmethod save ((session session) (instance standard-db-object))
 
-(defmethod delete ((session session) (instance standard-db-object))
+(defmethod delete-instance ((session session) (instance standard-db-object))
   "Delete an instance in the database. Return @c(nil)."
   (query (database-for-instance session instance)
          (sxql:delete-from (class-name (class-of instance))
