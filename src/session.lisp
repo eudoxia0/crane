@@ -8,7 +8,8 @@
                 :connect
                 :disconnect
                 :table-exists-p
-                :sql-query)
+                :sql-query
+                :query)
   (:import-from :crane.table
                 :table-class
                 :table-name
@@ -155,13 +156,37 @@ the names of its bound slots."
                  (mapcar #'column-name
                          (table-columns (class-of instance)))))
 
-(defun insertable-plist (instance database)
+(defun insertable-plist (database instance)
   "Given an instance of standard-db-object, return a plist that can be sent to
 SxQL for insertion. Conversion of Lisp values to database values happens here."
   (loop for name in (slot-names instance) appending
     (list (alexandria:make-keyword name)
           (crane.convert:lisp-to-database database
                                           (slot-value instance name)))))
+
+(defgeneric insert-into (database table-name plist)
+  (:documentation "Insert a plist into the database, returning the ID.")
+
+  (:method ((database database) table-name plist)
+    (declare (type symbol table-name)
+             (type list plist))
+    (second
+     (dbi:fetch
+      (query database
+             (sxql:insert-into table-name
+               (apply #'sxql.clause:make-clause
+                      (cons :set= plist))
+               (sxql:make-op :returning :id))))))
+
+  (:method ((database crane.database.sqlite3:sqlite3) table-name plist)
+    (declare (type symbol table-name)
+             (type list plist))
+    (query database
+           (sxql:insert-into table-name
+             (apply #'sxql.clause:make-clause
+                    (cons :set= plist))))
+    (let ((sxql:*quote-character* nil))
+      (second (dbi:fetch (query database (sxql:select :|last_insert_rowid()|)))))))
 
 (defmethod create-in-database ((database database) (instance standard-db-object))
   "Given an instance of a database object, create it in the database."
