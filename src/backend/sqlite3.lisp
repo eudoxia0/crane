@@ -8,6 +8,9 @@
                 :connectedp
                 :sql-query
                 :table-exists-p)
+  (:import-from :crane.types
+                :type-sql
+                :column-id)
   (:import-from :crane.convert
                 :lisp-to-database
                 :database-to-lisp)
@@ -52,5 +55,10 @@
 SQL."
   (declare (type string table-name))
   (let* ((sql "SELECT name FROM sqlite_master WHERE type='table' AND name=?")
-         (result (dbi:fetch-all (sql-query sql table-name))))
+         (result (dbi:fetch-all (sql-query database sql (list table-name)))))
     (and result (stringp (getf (first result) :|name|)))))
+
+;;; SQL types
+
+(defmethod type-sql ((type column-id) (database sqlite3))
+  "INTEGER")
