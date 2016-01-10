@@ -269,7 +269,7 @@ database where the definition will be applied."
 
 (defun constraint-name (constraint constraints)
   "Return the constraint's string name."
-  (format nil "\"~A_~D\""
+  (format nil "\"crane_~A_~D\""
           (constraint-partial-name constraint)
           (position constraint constraints :test #'eq)))
 
