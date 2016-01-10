@@ -8,7 +8,8 @@
            :save
            :del
            :filter
-           :total)
+           :total
+           :singlex)
   (:documentation "The crane.query package implements versions of the database
   interface methods in the crane.session package that work on the current
   @c(*session*) object. Basically, it's a simpler interface."))
@@ -48,3 +49,7 @@ Returns the instance."
     (apply #'crane.session:select (append
                                    (list '((:count :id)) *session* class-name)
                                    constraints)))))
+
+(defun single (class-name &rest constraints)
+  "Return a single instance or NIL."
+  (first (apply #'filter (cons class-name constraints))))
