@@ -270,13 +270,15 @@ database where the definition will be applied."
 (defun constraint-name (table-name constraint constraints)
   "Return the constraint's string name."
   (format nil "\"~A_~A_~D\""
-          table-name
+          (crane.util:unquote table-name)
           (constraint-partial-name constraint)
           (position constraint constraints :test #'eq)))
 
 (defun index-name (table-name index indices)
   "Return the index's string name."
-  (format nil "\"~A_index_~D\"" (position index indices :test #'eq)))
+  (format nil "\"~A_index_~D\""
+          (crane.util:unquote table-name)
+          (position index indices :test #'eq)))
 
 (defun table-definition-sql (table-definition)
   "Return a list of SQL statements needed to create a table from its definition."
