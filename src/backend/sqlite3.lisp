@@ -71,3 +71,6 @@ SQL."
 
 (defmethod type-sql ((type column-id) (database sqlite3))
   "INTEGER")
+
+(defmethod type-sql ((type bool) (database sqlite3))
+  "INTEGER")
