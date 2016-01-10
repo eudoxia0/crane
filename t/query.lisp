@@ -46,7 +46,10 @@
                                           :f 3.14
                                           :txt "text")))
         (is
-         (equal (crane.query:total 'all) 1))))
+         (equal (crane.query:total 'all) 1))
+        (let ((restored (crane.query:single 'all)))
+          (is
+           (typep restored 'all)))))
     ;; Final
     (crane.session:stop session)))
 
