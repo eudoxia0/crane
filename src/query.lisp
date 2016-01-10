@@ -43,6 +43,8 @@ Returns the instance."
 (defun total (class-name &rest constraints)
   "Return the number of instances of @c(class-name) that satisfy the optional
 @(constraints)."
-  (apply #'crane.session:select (append
-                                 (list '((:count :id)) *session* class-name)
-                                 constraints)))
+  (second
+   (dbi:fetch
+    (apply #'crane.session:select (append
+                                   (list '((:count :id)) *session* class-name)
+                                   constraints)))))
