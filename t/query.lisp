@@ -36,8 +36,7 @@
     (let ((crane.session:*session* session))
       ;; Count the number of instances
       (is
-       (equal (length (crane.query:filter 'all))
-              0))
+       (equal (crane.query:total 'all) 0))
       ;; Create an instance
       (let ((instance (crane.query:create 'all
                                           :b t
@@ -47,8 +46,7 @@
                                           :f 3.14
                                           :txt "text")))
         (is
-         (equal (length (crane.query:filter 'all))
-                0))))
+         (equal (crane.query:total 'all) 0))))
     ;; Final
     (crane.session:stop session)))
 
