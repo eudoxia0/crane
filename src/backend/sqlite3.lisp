@@ -10,7 +10,8 @@
                 :table-exists-p)
   (:import-from :crane.types
                 :type-sql
-                :column-id)
+                :column-id
+                :bool)
   (:import-from :crane.convert
                 :lisp-to-database
                 :database-to-lisp)
@@ -48,6 +49,11 @@
 (defmethod database-to-lisp ((database sqlite3) (value t) (type crane.types:sql-type))
   value)
 
+(defmethod database-to-lisp ((database sqlite3) (value integer) (type bool))
+  (if (= value 1)
+      t
+      nil))
+
 ;;; Other methods
 
 (defmethod table-exists-p ((database sqlite3) table-name)
@@ -64,4 +70,7 @@ SQL."
 ;;; SQL types
 
 (defmethod type-sql ((type column-id) (database sqlite3))
+  "INTEGER")
+
+(defmethod type-sql ((type bool) (database sqlite3))
   "INTEGER")
