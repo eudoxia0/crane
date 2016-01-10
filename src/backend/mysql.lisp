@@ -78,6 +78,9 @@
 (defmethod lisp-to-database ((database mysql) (value t))
   value)
 
+(defmethod lisp-to-database ((database mysql) (value (eql t)))
+  1)
+
 (defmethod database-to-lisp ((database mysql) (value t) (type crane.types:sql-type))
   value)
 
