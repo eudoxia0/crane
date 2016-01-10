@@ -274,9 +274,9 @@ database where the definition will be applied."
           (constraint-partial-name constraint)
           (position constraint constraints :test #'eq)))
 
-(defun index-name (index indices)
+(defun index-name (table-name index indices)
   "Return the index's string name."
-  (format nil "\"index_~D\"" (position index indices :test #'eq)))
+  (format nil "\"~A_index_~D\"" (position index indices :test #'eq)))
 
 (defun table-definition-sql (table-definition)
   "Return a list of SQL statements needed to create a table from its definition."
@@ -296,5 +296,5 @@ database where the definition will be applied."
                                                               constraints)))
                       constraints)))
      (mapcar #'(lambda (index)
-                 (add-index index (index-name index indices) name))
+                 (add-index index (index-name name index indices) name))
              indices))))
