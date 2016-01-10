@@ -46,7 +46,7 @@
                                           :f 3.14
                                           :txt "text")))
         (is
-         (equal (crane.query:total 'all) 0))))
+         (equal (crane.query:total 'all) 1))))
     ;; Final
     (crane.session:stop session)))
 
