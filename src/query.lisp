@@ -7,7 +7,8 @@
            :create-instance
            :save
            :del
-           :filter)
+           :filter
+           :total)
   (:documentation "The crane.query package implements versions of the database
   interface methods in the crane.session package that work on the current
   @c(*session*) object. Basically, it's a simpler interface."))
@@ -38,3 +39,10 @@ Returns the instance."
 (defun filter (class-name &rest constraints)
   "Return a list of instances that meet the constraints."
   (apply #'crane.session:filter (cons *session* (cons class-name constraints))))
+
+(defun total (class-name &rest constraints)
+  "Return the number of instances of @c(class-name) that satisfy the optional
+@(constraints)."
+  (apply #'crane.session:select (append
+                                 (list '(:count :id) *session* class-name)
+                                 constraints)))
