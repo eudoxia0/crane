@@ -10,4 +10,5 @@
     (run! 'crane-test.table:table-tests)
     (run! 'crane-test.table.serialize:serialization-tests)
     (run! 'crane-test.table.sql:sql-dsl)
-    (run! 'crane-test.session:session-tests)))
+    (run! 'crane-test.session:session-tests)
+    (run! 'crane-test.query:query-tests)))
