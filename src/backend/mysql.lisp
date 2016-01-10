@@ -86,9 +86,9 @@
   value)
 
 (defmethod database-to-lisp ((database mysql) (value integer) (type bool))
-  (if (= value 1)
-      t
-      nil))
+  (if (= value 0)
+      nil
+      t))
 
 ;;; Other methods
 
@@ -107,7 +107,7 @@
   "INTEGER AUTO_INCREMENT")
 
 (defmethod type-sql ((type bool) (database mysql))
-  "BIT")
+  "TINYINT(1)")
 
 (defmethod type-sql ((type double) (database mysql))
   "DOUBLE")
