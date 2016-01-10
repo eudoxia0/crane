@@ -49,7 +49,19 @@
          (equal (crane.query:total 'all) 1))
         (let ((restored (crane.query:single 'all)))
           (is
-           (typep restored 'all)))))
+           (typep restored 'all))
+          (is
+           (eql (all-b restored) t))
+          (is
+           (= (all-i restored) 10))
+          (is
+           (= (all-bi restored) 10000000000))
+          (is
+           (= (all-si restored) 10))
+          (is
+           (= (all-f restored) 3.14))
+          (is
+           (= (all-txt restored) "text")))))
     ;; Final
     (crane.session:stop session)))
 
