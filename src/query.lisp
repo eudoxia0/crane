@@ -44,5 +44,5 @@ Returns the instance."
   "Return the number of instances of @c(class-name) that satisfy the optional
 @(constraints)."
   (apply #'crane.session:select (append
-                                 (list '(:count :id) *session* class-name)
+                                 (list '((:count :id)) *session* class-name)
                                  constraints)))
