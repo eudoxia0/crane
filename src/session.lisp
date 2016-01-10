@@ -259,9 +259,12 @@ the session."
 (defun select (columns session class-name &rest arguments)
   "Execute a @c(SELECT) on a particular class."
   (query (database-for-class session class-name)
-         (sxql:select columns
-           (sxql:from class-name)
-           (sxql:make-clause :where (cons :and arguments)))))
+         (if arguments
+             (sxql:select columns
+               (sxql:from class-name)
+               (sxql:make-clause :where (cons :and arguments)))
+             (sxql:select columns
+               (sxql:from class-name)))))
 
 (defun sql-keyword-to-initarg (keyword)
   (let ((*package* (find-package :keyword)))
