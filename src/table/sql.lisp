@@ -267,9 +267,10 @@ database where the definition will be applied."
 )"
   "The format string to create tables.")
 
-(defun constraint-name (constraint constraints)
+(defun constraint-name (table-name constraint constraints)
   "Return the constraint's string name."
-  (format nil "\"crane_~A_~D\""
+  (format nil "\"~A_~A_~D\""
+          table-name
           (constraint-partial-name constraint)
           (position constraint constraints :test #'eq)))
 
@@ -290,7 +291,9 @@ database where the definition will be applied."
                       columns)
               (mapcar #'(lambda (constraint)
                           (render-constraint constraint
-                                             (constraint-name constraint constraints)))
+                                             (constraint-name name
+                                                              constraint
+                                                              constraints)))
                       constraints)))
      (mapcar #'(lambda (index)
                  (add-index index (index-name index indices) name))
