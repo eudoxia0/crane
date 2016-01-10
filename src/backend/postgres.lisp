@@ -10,7 +10,8 @@
                 :table-exists-p)
   (:import-from :crane.types
                 :type-sql
-                :column-id)
+                :column-id
+                :bool)
   (:import-from :crane.convert
                 :lisp-to-database
                 :database-to-lisp)
@@ -106,3 +107,6 @@ in the database object."
 
 (defmethod type-sql ((type column-id) (database postgres))
   "SERIAL")
+
+(defmethod type-sql ((type bool) (database postgres))
+  "BOOLEAN")

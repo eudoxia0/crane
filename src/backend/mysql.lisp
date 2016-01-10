@@ -10,7 +10,8 @@
                 :table-exists-p)
   (:import-from :crane.types
                 :type-sql
-                :column-id)
+                :column-id
+                :bool)
   (:import-from :crane.convert
                 :lisp-to-database
                 :database-to-lisp)
@@ -80,6 +81,11 @@
 (defmethod database-to-lisp ((database mysql) (value t) (type crane.types:sql-type))
   value)
 
+(defmethod database-to-lisp ((database mysql) (value integer) (type bool))
+  (if (= value 1)
+      t
+      nil))
+
 ;;; Other methods
 
 (defmethod table-exists-p ((database mysql) table-name)
@@ -96,3 +102,6 @@
 
 (defmethod type-sql ((type column-id) (database mysql))
   "INTEGER AUTO_INCREMENT")
+
+(defmethod type-sql ((type bool) (database mysql))
+  "BIT")
