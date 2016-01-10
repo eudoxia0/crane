@@ -59,7 +59,7 @@
           (is
            (= (all-si restored) 10))
           (is
-           (= (all-f restored) 3.14))
+           (= (coerce (all-f restored) 'single-float) 3.14))
           (is
            (string= (all-txt restored) "text")))))
     ;; Final
