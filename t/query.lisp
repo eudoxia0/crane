@@ -61,7 +61,7 @@
           (is
            (= (all-f restored) 3.14))
           (is
-           (= (all-txt restored) "text")))))
+           (string= (all-txt restored) "text")))))
     ;; Final
     (crane.session:stop session)))
 
