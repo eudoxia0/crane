@@ -103,7 +103,7 @@ in the database object."
          (result (dbi:fetch-all (sql-query database
                                            sql
                                            (list
-                                            (string-trim '(#\") table-name))))))
+                                            (crane.util:unquote table-name))))))
     (print result)
     (and result (stringp (second (first result))))))
 

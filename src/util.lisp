@@ -1,7 +1,8 @@
 (in-package :cl-user)
 (defpackage crane.util
   (:use :cl)
-  (:export :symbol-to-sql))
+  (:export :symbol-to-sql
+           :unquote))
 (in-package :crane.util)
 
 (defun symbol-to-sql (symbol)
@@ -9,3 +10,7 @@
 behaviour."
   (let ((sxql:*quote-character* #\"))
     (sxql:yield (sxql.operator:detect-and-convert symbol))))
+
+(defun unquote (string)
+  "Remove quotes from a string."
+  (string-trim '(#\") string))

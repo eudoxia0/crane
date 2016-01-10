@@ -68,7 +68,7 @@ SQL."
          (result (dbi:fetch-all (sql-query database
                                            sql
                                            (list
-                                            (string-trim '(#\") table-name))))))
+                                            (crane.util:unquote table-name))))))
     (and result (stringp (getf (first result) :|name|)) t)))
 
 ;;; SQL types
