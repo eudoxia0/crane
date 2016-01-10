@@ -11,7 +11,8 @@
   (:import-from :crane.types
                 :type-sql
                 :column-id
-                :bool)
+                :bool
+                :double)
   (:import-from :crane.convert
                 :lisp-to-database
                 :database-to-lisp)
@@ -77,3 +78,6 @@ SQL."
 
 (defmethod type-sql ((type bool) (database sqlite3))
   "INTEGER")
+
+(defmethod type-sql ((type double) (database sqlite3))
+  "REAL")
