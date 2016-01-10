@@ -11,6 +11,7 @@
   (:import-from :crane.types
                 :type-sql
                 :column-id
+                :bool
                 :double)
   (:import-from :crane.convert
                 :lisp-to-database
