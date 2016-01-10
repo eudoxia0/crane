@@ -28,12 +28,16 @@
         :type crane.types:text)))
 
 (defun test-database (database-tag)
-  (let ((session (make-session :migratep nil)))
-    (register-database session database-tag)
-    (register-table session 'all database-tag)
+  (let ((session (crane.session:make-session :migratep nil)))
+    (crane.session:register-database session database-tag)
+    (crane.session:register-table session 'all database-tag)
     (crane.session:start session)
     ;; With default
     (let ((crane.session:*session* session))
+      ;; Count the number of instances
+      (is
+       (equal (length (crane.query:filter 'all))
+              0))
       ;; Create an instance
       (let ((instance (crane.query:create 'all
                                           :b t
@@ -42,7 +46,9 @@
                                           :si 10
                                           :f 3.14
                                           :txt "text")))
-        t))
+        (is
+         (equal (length (crane.query:filter 'all))
+                0))))
     ;; Final
     (crane.session:stop session)))
 
