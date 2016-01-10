@@ -9,7 +9,7 @@
            :del
            :filter
            :total
-           :singlex)
+           :single)
   (:documentation "The crane.query package implements versions of the database
   interface methods in the crane.session package that work on the current
   @c(*session*) object. Basically, it's a simpler interface."))
