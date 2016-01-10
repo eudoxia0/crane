@@ -203,7 +203,7 @@ SQL statement to drop it."
     (remove-if #'null
                (list
                 (unless (column-null-p column)
-                  (make-instance 'not-null :column ((symbol-to-sql name))))
+                  (make-instance 'not-null :column (symbol-to-sql name)))
                 (when (column-unique-p column)
                   (make-instance 'unique :columns (list (symbol-to-sql name))))
                 (when (column-primary-p column)
