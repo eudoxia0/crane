@@ -1,6 +1,5 @@
 (in-package :cl-user)
 (defpackage crane
-  (:use :cl)
   (:import-from :crane.database
                 :database
                 :connect
