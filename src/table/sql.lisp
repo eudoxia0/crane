@@ -202,8 +202,8 @@ SQL statement to drop it."
   (let ((name (column-name column)))
     (remove-if #'null
                (list
-                (when (column-null-p column)
-                  (make-instance 'not-null :column (symbol-to-sql name)))
+                (unless (column-null-p column)
+                  (make-instance 'not-null :column ((symbol-to-sql name)))
                 (when (column-unique-p column)
                   (make-instance 'unique :columns (list (symbol-to-sql name))))
                 (when (column-primary-p column)

@@ -110,7 +110,7 @@
                      :initarg :col-type)
    (direct-slot-null-p :reader direct-slot-null-p
                        :initarg :nullp
-                       :initform t
+                       :initform nil
                        :type boolean)
    (direct-slot-unique-p :reader direct-slot-unique-p
                          :initarg :uniquep
