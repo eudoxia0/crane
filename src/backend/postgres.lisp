@@ -116,4 +116,4 @@ in the database object."
   "BOOLEAN")
 
 (defmethod type-sql ((type double) (database postgres))
-  "DOUBLE")
+  "DOUBLE PRECISION")
