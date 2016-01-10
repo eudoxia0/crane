@@ -70,7 +70,8 @@
                 :create-instance
                 :save
                 :del
-                :filter)
+                :filter
+                :single)
   (:export :database
            :connect
            :connectedp
@@ -135,5 +136,6 @@
            :create-instance
            :save
            :del
-           :filter)
+           :filter
+           :single)
   (:documentation "Import symbols from other packages and export them."))
