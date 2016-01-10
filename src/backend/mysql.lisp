@@ -11,7 +11,7 @@
   (:import-from :crane.types
                 :type-sql
                 :column-id
-                :bool)
+                :double)
   (:import-from :crane.convert
                 :lisp-to-database
                 :database-to-lisp)
@@ -108,3 +108,6 @@
 
 (defmethod type-sql ((type bool) (database mysql))
   "BIT")
+
+(defmethod type-sql ((type double) (database mysql))
+  "DOUBLE")

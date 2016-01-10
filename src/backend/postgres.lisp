@@ -11,7 +11,8 @@
   (:import-from :crane.types
                 :type-sql
                 :column-id
-                :bool)
+                :bool
+                :double)
   (:import-from :crane.convert
                 :lisp-to-database
                 :database-to-lisp)
@@ -113,3 +114,6 @@ in the database object."
 
 (defmethod type-sql ((type bool) (database postgres))
   "BOOLEAN")
+
+(defmethod type-sql ((type double) (database postgres))
+  "DOUBLE")
