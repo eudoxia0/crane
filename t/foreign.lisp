@@ -22,7 +22,7 @@
   ((parent :reader child-parent
            :initarg :parent
            :type crane.types:int
-           :foreign (person))))
+           :foreign (parent))))
 
 (defun test-database (database-tag)
   (let ((session (crane.session:make-session :migratep nil)))
