@@ -211,12 +211,14 @@ SQL statement to drop it."
                   (make-instance 'primary-key :columns (list (symbol-to-sql name))))
                 (when (slot-boundp column 'column-foreign)
                   (let ((foreign (column-foreign column)))
-                    (make-instance 'foreign
+                    (make-instance 'foreign-key
                                    :column (symbol-to-sql name)
                                    :foreign-table (symbol-to-sql (foreign-key-table foreign))
                                    :foreign-column (symbol-to-sql 'crane.table:id)
-                                   :on-delete (foreign-key-on-delete foreign)
-                                   :on-update (foreign-key-on-update foreign))))))))
+                                   :on-delete (referential-action-name
+                                               (foreign-key-on-delete foreign))
+                                   :on-update (referential-action-name
+                                               (foreign-key-on-update foreign)))))))))
 
 (defun table-constraints (table-class)
   "Extract a list of contraints from a table."
