@@ -16,7 +16,17 @@
   (:documentation "Convert a database value to a Lisp value, given the SQL
   type."))
 
-;;; Default implementation
+;;; Default implementations
+
+(defmethod lisp-to-database ((database crane.database:database) (value t))
+  (declare (ignore database))
+  value)
+
+(defmethod database-to-lisp ((database crane.database:database)
+                             (value t)
+                             (type crane.types:sql-type))
+  (declare (ignore database type))
+  value)
 
 (defmethod lisp-to-database ((database crane.database:database)
                              (value local-time:timestamp))
