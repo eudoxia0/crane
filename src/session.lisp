@@ -1,6 +1,8 @@
 (in-package :cl-user)
 (defpackage crane.session
   (:use :cl)
+  (:import-from :alexandria
+                :curry)
   (:import-from :crane.config
                 :get-database)
   (:import-from :crane.database
@@ -260,9 +262,12 @@ the session."
   "Execute a @c(SELECT) on a particular class."
   (query (database-for-class session class-name)
          (if arguments
-             (sxql:select columns
-               (sxql:from class-name)
-               (sxql:make-clause :where (cons :and arguments)))
+             (apply #'sxql.statement:make-statement
+                    (append (list :select
+                                  (sxql::convert-if-fields-clause columns)
+                                  (sxql:from class-name))
+                            (mapcar (curry #'apply #'sxql:make-clause)
+                                    arguments)))
              (sxql:select columns
                (sxql:from class-name)))))
 
