@@ -71,7 +71,8 @@
                 :save
                 :del
                 :filter
-                :single)
+                :single
+                :total)
   (:export :database
            :connect
            :connectedp
@@ -137,5 +138,6 @@
            :save
            :del
            :filter
-           :single)
+           :single
+           :total)
   (:documentation "Import symbols from other packages and export them."))
