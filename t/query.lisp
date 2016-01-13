@@ -25,7 +25,10 @@
       :type crane.types:double)
    (txt :reader all-txt
         :initarg :txt
-        :type crane.types:text)))
+        :type crane.types:text)
+   (stamp :reader all-stamp
+          :initarg :stamp
+          :type crane.types:timestamp)))
 
 (defun test-database (database-tag)
   (let ((session (crane.session:make-session :migratep nil)))
@@ -33,7 +36,8 @@
     (crane.session:register-table session 'all database-tag)
     (crane.session:start session)
     ;; With default
-    (let ((crane.session:*session* session))
+    (let ((crane.session:*session* session)
+          (now (local-time:now)))
       ;; Count the number of instances
       (is
        (equal (crane.query:total 'all) 0))
@@ -44,7 +48,8 @@
                                           :bi 10000000000
                                           :si 10
                                           :f 3.14
-                                          :txt "text")))
+                                          :txt "text"
+                                          :stamp now)))
         (is
          (equal (crane.query:total 'all) 1))
         (let ((restored (crane.query:single 'all)))
@@ -61,7 +66,9 @@
           (is
            (= (coerce (all-f restored) 'single-float) 3.14))
           (is
-           (string= (all-txt restored) "text")))))
+           (string= (all-txt restored) "text"))
+          (is
+           (local-time:timestamp= (all-stamp restored) now)))))
     ;; Final
     (crane.session:stop session)))
 

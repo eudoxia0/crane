@@ -60,7 +60,8 @@
                       (crane.session:select '(:model :mileage)
                                             session
                                             'truck
-                                            (list := :id (crane.table:id instance))))))
+                                            `(:where
+                                              (:= :id ,(crane.table:id instance)))))))
         (is
          (string= (getf results :|model|) "abc"))
         (is
@@ -73,7 +74,8 @@
                         (crane.session:select '(:model :mileage)
                                               session
                                               'truck
-                                              (list := :id (crane.table:id instance))))))
+                                              `(:where
+                                                (:= :id ,(crane.table:id instance)))))))
           (is
            (string= (getf results :|model|) "xyz"))
           (is
@@ -81,7 +83,7 @@
       ;; Filtering
       (let ((instances (crane.session:filter session
                                              'truck
-                                             '(:> :mileage 60))))
+                                             `(:where (:> :mileage 60)))))
         (is
          (= (length instances) 1))
         (let ((first (first instances)))
