@@ -24,7 +24,7 @@
   (local-time:timestamp-to-universal value))
 
 (defmethod database-to-lisp ((database crane.database:database)
-                             (value local-time:timestamp)
+                             (value integer)
                              (type crane.types:timestamp))
   (declare (ignore database type))
   (local-time:universal-to-timestamp value))
