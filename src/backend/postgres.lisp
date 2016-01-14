@@ -114,4 +114,4 @@ in the database object."
   "DOUBLE PRECISION")
 
 (defmethod type-sql ((type timestamp) (database postgres))
-  "TIMESTAMP WITH TIMEZONE")
+  "TIMESTAMP WITH TIME ZONE")
