@@ -12,7 +12,8 @@
                 :type-sql
                 :column-id
                 :bool
-                :double)
+                :double
+                :timestamp)
   (:import-from :crane.convert
                 :lisp-to-database
                 :database-to-lisp)
@@ -111,3 +112,6 @@ in the database object."
 
 (defmethod type-sql ((type double) (database postgres))
   "DOUBLE PRECISION")
+
+(defmethod type-sql ((type timestamp) (database postgres))
+  "TIMESTAMP WITH TIMEZONE")
