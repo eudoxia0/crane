@@ -22,6 +22,7 @@
                   ((:file "postgres")
                    (:file "mysql")
                    (:file "sqlite3")))
+                 (:file "url")
                  (:file "config")
                  (:file "serialize")
                  (:module "table"
