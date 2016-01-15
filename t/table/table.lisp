@@ -36,5 +36,5 @@
                                (crane.table:table-columns (find-class 'person)))))
     (loop for name in column-names do
       (is
-       (typep (print (crane.table:slot-type 'person name))
+       (typep (crane.table:slot-type 'person name)
               'crane.types:sql-type)))))
