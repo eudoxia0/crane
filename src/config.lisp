@@ -2,6 +2,7 @@
 (defpackage crane.config
   (:use :cl)
   (:export :*debug*
+           :add-database
            :define-postgres-database
            :define-mysql-database
            :define-sqlite3-database
