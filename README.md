@@ -5,6 +5,11 @@
 Crane is an ORM for Common Lisp, providing a simple bridge between CLOS and
 relational databases, and out of the box migrations.
 
+# Features
+
+* Support for Postgres, MySQL and SQLite3
+* SQLAlchemy-like database URIs
+
 # Usage
 
 ## Defining Tables
