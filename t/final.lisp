@@ -10,4 +10,5 @@
     (run! 'crane-test.table.diff:diff-tests)
     (run! 'crane-test.session:session-tests)
     (run! 'crane-test.query:query-tests)
-    (run! 'crane-test.foreign:foreign-tests)))
+    (run! 'crane-test.foreign:foreign-tests)
+    (run! 'crane-test.url:url-tests)))
