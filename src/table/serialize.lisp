@@ -28,6 +28,7 @@
                 :table-name
                 :table-abstract-p
                 :table-columns)
+  (:export :storable-table)
   (:documentation "Serialize tables to S-expressions and back into tables."))
 (in-package :crane.table.serialize)
 
@@ -102,13 +103,22 @@
 
 ;; Tables
 
+(defclass storable-table ()
+  ((name :reader table-name
+         :initarg :name
+         :type symbol)
+   (abstract :reader table-abstract-p
+             :initarg :abstractp
+             :type boolean)
+   (columns :reader table-columns
+            :initarg :columns
+            :type list))
+  (:documentation "Since @c(table-class) objects are not really amenable to
+  deserialization, we deserialize them into this class. This is the class we use
+  for diffing."))
+
 (defmethod from-plist ((class (eql 'table-class)) plist)
-  (let ((instance (make-instance 'table-class
-                                 :name (getf plist :name)
-                                 :abstractp (getf plist :abstractp))))
-    #+sbcl
-    (setf (slot-value instance 'sb-pcl::direct-slots)
-          (mapcar #'deserialize (getf plist :columns)))
-    #-sbcl
-    (error "Can only restore tables in SBCL right now.")
-    instance))
+  (make-instance 'storable-table
+                 :name (getf plist :name)
+                 :abstractp (getf plist :abstractp)
+                 :columns (mapcar #'deserialize (getf plist :columns))))
