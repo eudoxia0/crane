@@ -33,7 +33,7 @@
                         nil))
          (username (first user-pass))
          (password (second user-pass))
-         (host (quri:uri-domain uri))
+         (host (quri:uri-host uri))
          (port (quri:uri-port uri))
          (name (subseq (quri:uri-path uri) 1)))
     (ccase class
