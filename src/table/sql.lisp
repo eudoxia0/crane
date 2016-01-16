@@ -164,6 +164,23 @@ a @c(CREATE TABLE) statement."
            (type string name))
   (format nil "CONSTRAINT ~A ~A" name (constraint-sql constraint)))
 
+(defun same-class-p (a b)
+  (eq (class-name (class-of a)) (class-name (class-of b))))
+
+(defgeneric constraint= (a b)
+  (:documentation "Test whether two constraints are equal.")
+
+  (:method ((a single-column) (b single-column))
+    (and (same-class-p a b)
+         (equal (constraint-column a) (constraint-column b))))
+
+  (:method ((a multi-column) (b multi-column))
+    (and (same-class-p a b)
+         (equal (constraint-columns a) (constraint-columns b))))
+
+  (:method ((a t) (b t))
+    nil))
+
 ;;; Indices
 
 (defclass index ()
