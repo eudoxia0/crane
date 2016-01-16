@@ -11,7 +11,7 @@ env:
     - ROSWELL_INSTALL_DIR=$HOME/.roswell
     - COVERAGE_EXCLUDE=t
   matrix:
-    - LISP=sbcl-bin
+    - LISP=sbcl-bin COVERALLS=true
 
 addons:
   apt:
@@ -53,7 +53,8 @@ script:
                     (uiop:print-backtrace :condition c)
                     (uiop:quit -1)))'
         -e '(ql:quickload :crane-test)'
-        -e '(crane-test:run-tests)'
+        -e '(coveralls:with-coveralls (:exclude (list "t"))
+              (crane-test:run-tests))'
 
 notifications:
   email:
