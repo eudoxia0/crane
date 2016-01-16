@@ -21,5 +21,6 @@
                  (:file "session")
                  (:file "query")
                  (:file "foreign")
+                 (:file "diff")
                  (:file "final"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))

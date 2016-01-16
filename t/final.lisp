@@ -9,4 +9,5 @@
     (run! 'crane-test.table.sql:sql-dsl)
     (run! 'crane-test.session:session-tests)
     (run! 'crane-test.query:query-tests)
-    (run! 'crane-test.foreign:foreign-tests)))
+    (run! 'crane-test.foreign:foreign-tests)
+    (run! 'crane-test.diff:diff-tests)))
