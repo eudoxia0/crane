@@ -100,10 +100,10 @@
 
 (defun has-changes-p (difference)
   "Does this difference object have any actual differences?"
-  (and (new-columns difference)
-       (old-columns difference)
-       (new-constraints difference)
-       (old-constraints difference)
-       (new-indices difference)
-       (old-indices difference)
+  (and (or (new-columns difference)
+           (old-columns difference)
+           (new-constraints difference)
+           (old-constraints difference)
+           (new-indices difference)
+           (old-indices difference))o
        t))
