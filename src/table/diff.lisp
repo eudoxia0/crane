@@ -14,7 +14,8 @@
            :old-constraints
            :new-indices
            :old-indices
-           :differences)
+           :differences
+           :has-changes-p)
   (:documentation "Tools for computing the difference between two table definitions."))
 (in-package :crane.table.diff)
 
@@ -96,3 +97,13 @@
                        :old-constraints old-constraints
                        :new-indices new-indices
                        :old-indices old-indices)))))
+
+(defun has-changes-p (difference)
+  "Does this difference object have any actual differences?"
+  (and (new-columns difference)
+       (old-columns difference)
+       (new-constraints difference)
+       (old-constraints difference)
+       (new-indices difference)
+       (old-indices difference)
+       t))

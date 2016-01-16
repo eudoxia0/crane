@@ -8,7 +8,8 @@
                 :old-constraints
                 :new-indices
                 :old-indices
-                :differences)
+                :differences
+                :has-changes-p)
   (:export :diff-tests))
 (in-package :crane-test.table.diff)
 
@@ -63,10 +64,14 @@
     (is
      (null (new-indices diff)))
     (is
-     (null (old-indices diff)))))
+     (null (old-indices diff)))
+    (is-false
+     (has-changes-p diff))))
 
 (test column-addition
   (test-diff (diff alpha beta)
+    (is-true
+     (has-changes-p diff))
     (is
      (= (length (new-columns diff))
         1))
@@ -75,6 +80,8 @@
 
 (test column-deletion
   (test-diff (diff alpha gamma)
+    (is-true
+     (has-changes-p diff))
     (is
      (null (new-columns diff)))
     (is
@@ -83,6 +90,8 @@
 
 (test column-addition+deletion
   (test-diff (diff alpha delta)
+    (is-true
+     (has-changes-p diff))
     (is
      (= (length (new-columns diff))
         1))
@@ -106,14 +115,18 @@
 
 (test constraint-addition
   (test-diff (diff c-alpha c-beta)
+    (is-true
+     (has-changes-p diff))
     (is
      (= (length (new-constraints diff))
         1))
     (is
      (null (old-constraints diff)))))
 
-(test constreaint-deletion
+(test constraint-deletion
   (test-diff (diff c-beta c-alpha)
+    (is-true
+     (has-changes-p diff))
     (is
      (null (new-constraints diff)))
     (is
@@ -136,6 +149,8 @@
 
 (test index-addition
   (test-diff (diff i-alpha i-beta)
+    (is-true
+     (has-changes-p diff))
     (is
      (= (length (new-indices diff))
         1))
@@ -144,6 +159,8 @@
 
 (test index-deletion
   (test-diff (diff i-beta i-alpha)
+    (is-true
+     (has-changes-p diff))
     (is
      (null (new-indices diff)))
     (is
