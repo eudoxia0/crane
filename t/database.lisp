@@ -16,6 +16,9 @@
 (in-suite database-tests)
 
 (defun tests (database)
+  ;; disconnecting before connection errors
+  (signals error
+    (crane.database:disconnect database))
   ;; connect
   (is-true
    (crane.database:connect database))
