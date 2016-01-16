@@ -201,6 +201,11 @@ SQL statement to create it."
 SQL statement to drop it."
   (format nil "DROP INDEX ~A ON ~A" index-name table-name))
 
+(defun index= (a b)
+  (and (typep a 'index)
+       (typep b 'index)
+       (equal (index-column a) (index-column b))))
+
 ;;; Table definition
 
 (defclass column-definition ()
