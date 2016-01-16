@@ -27,34 +27,38 @@
   ((a :type crane.types:int)
    (b :type crane.types:int)))
 
-(let ((alpha (find-class 'alpha))
-      (beta (find-class 'beta))
-      (gamma (find-class 'gamma)))
-  (test same-table
-    (let ((diff (differences alpha alpha)))
-      (is
-       (typep diff 'difference))
-      (is
-       (null (new-columns diff)))
-      (is
-       (null (old-columns diff)))))
+(defun class-to-storable (class)
+  (crane.serialize:deserialize
+   (crane.serialize:serialize class)))
 
-  (test addition
-    (let ((diff (differences alpha beta)))
-      (is
-       (typep diff 'difference))
-      (is
-       (= (length (new-columns diff))
-          1))
-      (is
-       (null (old-columns diff)))))
+(defmacro storable (class-name)
+  `(class-to-storable (find-class ',class-name)))
 
-  (test deletion
-    (let ((diff (differences alpha beta)))
-      (is
-       (typep diff 'difference))
-      (is
-       (null (new-columns diff)))
-      (is
-       (= (length (old-columns diff))
-          1)))))
+(test same-table
+  (let ((diff (differences (storable alpha) (storable alpha))))
+    (is
+     (typep diff 'difference))
+    (is
+     (null (new-columns diff)))
+    (is
+     (null (old-columns diff)))))
+
+(test addition
+  (let ((diff (differences (storable alpha) (storable beta))))
+    (is
+     (typep diff 'difference))
+    (is
+     (= (length (new-columns diff))
+        1))
+    (is
+     (null (old-columns diff)))))
+
+(test deletion
+  (let ((diff (differences (storable alpha) (storable gamma))))
+    (is
+     (typep diff 'difference))
+    (is
+     (null (new-columns diff)))
+    (is
+     (= (length (old-columns diff))
+        1))))
