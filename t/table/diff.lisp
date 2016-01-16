@@ -16,6 +16,8 @@
   :description "Table diff tests.")
 (in-suite diff-tests)
 
+;;; Column changes
+
 (crane.table:deftable alpha ()
   ((a :type crane.types:int)
    (b :type crane.types:int)
@@ -87,3 +89,33 @@
     (is
      (= (length (old-columns diff))
         2))))
+
+;;; Column constrain changes
+
+;;; Column index changes
+
+(crane.table:deftable i-alpha ()
+  ((a :type crane.types:int
+      :indexp t)))
+
+(crane.table:deftable i-beta ()
+  ((a :type crane.types:int
+      :indexp t)
+   (b :type crane.types:int
+      :indexp t)))
+
+(test index-addition
+  (test-diff (diff i-alpha i-beta)
+    (is
+     (= (length (new-indices diff))
+        1))
+    (is
+     (null (old-indices diff)))))
+
+(test index-deletion
+  (test-diff (diff i-beta i-alpha)
+    (is
+     (null (new-indices diff)))
+    (is
+     (= (length (old-indices diff))
+        1))))
