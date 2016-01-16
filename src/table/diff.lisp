@@ -41,28 +41,54 @@
                 :documentation "A list of new indices."))
   (:documentation "Represents the difference between two tables."))
 
-(defun column= (a b)
-  (eq (column-name a) (column-name b)))
-
-(defun has-column-p (column table)
-  (not (null (position column table :test #'column=))))
+(defun thing-difference (past present &key key test)
+  (declare (type storable-table past present))
+  (let ((past-things (funcall key past))
+        (present-things (funcall key present)))
+    (flet ((has-thing-p (thing sequence)
+             (not (null (position thing sequence :test test)))))
+      (values (remove-if #'(lambda (thing)
+                             (has-thing-p thing past-things))
+                         present-things)
+              (remove-if #'(lambda (thing)
+                             (has-thing-p thing present-things))
+                         past-things)))))
 
 (defun column-difference (past present)
   (declare (type storable-table past present))
-  (let ((past-columns (table-columns past))
-        (present-columns (table-columns present)))
-    (values (remove-if #'(lambda (column)
-                           (has-column-p column past-columns))
-                       present-columns)
-            (remove-if #'(lambda (column)
-                           (has-column-p column present-columns))
-                       past-columns))))
+  (thing-difference past
+                    present
+                    :key #'table-columns
+                    :test #'(lambda (a b)
+                              (eq (column-name a) (column-name b)))))
+
+(defun constraint-difference (past present)
+  (declare (type storable-table past present))
+  (thing-difference past
+                    present
+                    :key #'crane.table.sql:table-constraints
+                    :test #'crane.table.sql:constraint=))
+
+(defun index-difference (past present)
+  (declare (type storable-table past present))
+  (thing-difference past
+                    present
+                    :key #'crane.table.sql:table-indices
+                    :test #'crane.table.sql:index=))
 
 (defun differences (past present)
   "Compute the differences between two table definitions."
   (declare (type storable-table past present))
   (multiple-value-bind (new-columns old-columns)
       (column-difference past present)
-    (make-instance 'difference
-                   :new-columns new-columns
-                   :old-columns old-columns)))
+    (multiple-value-bind (new-constraints old-constraints)
+        (constraint-difference past present)
+      (multiple-value-bind (new-indices old-indices)
+          (index-difference past present)
+        (make-instance 'difference
+                       :new-columns new-columns
+                       :old-columns old-columns
+                       :new-constraints new-constraints
+                       :old-constraints old-constraints
+                       :new-indices new-indices
+                       :old-indices old-indices)))))
