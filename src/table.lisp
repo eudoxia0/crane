@@ -62,7 +62,7 @@ symbols, table options are keywords."
                  (crane.meta:abstractp (find-class class-name)))
              superclasses))
 
-(defmacro deftable (name (&rest superclasses) &rest slots-and-options)
+(defmacro deftable (name (&rest superclasses) &body slots-and-options)
   "Define a table."
   (destructuring-bind (slots options)
       (separate-slots-and-options slots-and-options)
