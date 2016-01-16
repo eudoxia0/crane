@@ -50,6 +50,7 @@
                                           :f 3.14
                                           :txt "text"
                                           :stamp now)))
+        (declare (ignore instance))
         (is
          (equal (crane.query:total 'all) 1))
         (let ((restored (crane.query:single 'all)))

@@ -12,8 +12,7 @@
 (deftable person ()
   ((name :reader person-name
          :initarg :name
-         :type crane.types:text))
-  (:abstractp t))
+         :type crane.types:text)))
 
 (deftable parent (person)
   ())

@@ -17,4 +17,4 @@
    (typep (crane.serialize:deserialize
            (crane.serialize:serialize
             (find-class 'crane-test.table::person)))
-          'crane.table:table-class)))
+          'crane.table.serialize:storable-table)))
