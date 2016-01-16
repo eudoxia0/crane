@@ -135,6 +135,28 @@ TABLE), or after an @c(ALTER TABLE [table] ADD CONSTRAINT) statement.")
               on-delete
               on-update))))
 
+(defgeneric constraint-name (constraint table-name)
+  (:documentation "Given a constraint and the name of the table it belongs to,
+  return its unique name.")
+
+  (:method ((constraint single-column) table-name)
+    (format nil "\"~A_~A_~A\""
+            (crane.util:unquote table-name)
+            (crane.util:unquote (constraint-column constraint))
+            (constraint-partial-name constraint)))
+
+  (:method ((constraint multi-column) table-name)
+    (format nil "\"~A_~{~A~^_~}_~A\""
+            (crane.util:unquote table-name)
+            (mapcar #'crane.util:unquote (constraint-columns constraint))
+            (constraint-partial-name constraint)))
+
+  (:method ((constraint foreign-key) table-name)
+    (format nil "\"~A_~A_~A\""
+            (crane.util:unquote table-name)
+            (crane.util:unquote (constraint-column constraint))
+            (constraint-partial-name constraint))))
+
 (defun render-constraint (constraint name)
   "Given a constraint, and its name, return an SQL string ready for inclusion in
 a @c(CREATE TABLE) statement."
@@ -270,13 +292,6 @@ database where the definition will be applied."
 )"
   "The format string to create tables.")
 
-(defun constraint-name (table-name constraint constraints)
-  "Return the constraint's string name."
-  (format nil "\"~A_~A_~D\""
-          (crane.util:unquote table-name)
-          (constraint-partial-name constraint)
-          (position constraint constraints :test #'eq)))
-
 (defun index-name (table-name index indices)
   "Return the index's string name."
   (format nil "\"~A_index_~D\""
@@ -296,9 +311,7 @@ database where the definition will be applied."
                       columns)
               (mapcar #'(lambda (constraint)
                           (render-constraint constraint
-                                             (constraint-name name
-                                                              constraint
-                                                              constraints)))
+                                             (constraint-name constraint name)))
                       constraints)))
      (mapcar #'(lambda (index)
                  (add-index index (index-name name index indices) name))
