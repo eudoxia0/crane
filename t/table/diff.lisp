@@ -92,6 +92,34 @@
 
 ;;; Column constrain changes
 
+(crane.table:deftable c-alpha ()
+  ((a :type crane.types:int
+      :nullp nil)
+   (b :type crane.types:int
+      :nullp t)))
+
+(crane.table:deftable c-beta ()
+  ((a :type crane.types:int
+      :nullp nil)
+   (b :type crane.types:int
+      :nullp nil)))
+
+(test constraint-addition
+  (test-diff (diff c-alpha c-beta)
+    (is
+     (= (length (new-constraints diff))
+        1))
+    (is
+     (null (old-constraints diff)))))
+
+(test constreaint-deletion
+  (test-diff (diff c-beta c-alpha)
+    (is
+     (null (new-constraints diff)))
+    (is
+     (= (length (old-constraints diff))
+        1))))
+
 ;;; Column index changes
 
 (crane.table:deftable i-alpha ()
