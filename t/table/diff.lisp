@@ -1,5 +1,10 @@
 (defpackage crane-test.table.diff
   (:use :cl :fiveam)
+  (:import-from :crane.table.diff
+                :difference
+                :new-columns
+                :old-columns
+                :differences)
   (:export :diff-tests))
 (in-package :crane-test.table.diff)
 
@@ -21,3 +26,22 @@
 (crane.table:deftable gamma ()
   ((a :type crane.types:int)
    (b :type crane.types:int)))
+
+(test same-table
+  (let ((diff (differences alpha alpha)))
+    (is
+     (typep diff 'difference))
+    (is
+     (null (new-columns diff)))
+    (is
+     (null (old-columns diff)))))
+
+(test addition
+  (let ((diff (differences alpha beta)))
+    (is
+     (typep diff 'difference))
+    (is
+     (= (length (new-columns dif))
+        1))
+    (is
+     (null (old-columns diff)))))
