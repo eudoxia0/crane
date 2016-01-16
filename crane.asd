@@ -9,6 +9,7 @@
                :clos-fixtures
                :uiop
                :local-time
+               :quri
                :alexandria)
   :components ((:module "src"
                 :serial t
