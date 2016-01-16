@@ -10,6 +10,10 @@
   (:export :difference
            :new-columns
            :old-columns
+           :new-constraints
+           :old-constraints
+           :new-indices
+           :old-indices
            :differences)
   (:documentation "Tools for computing the difference between two table definitions."))
 (in-package :crane.table.diff)

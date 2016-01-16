@@ -4,6 +4,10 @@
                 :difference
                 :new-columns
                 :old-columns
+                :new-constraints
+                :old-constraints
+                :new-indices
+                :old-indices
                 :differences)
   (:export :diff-tests))
 (in-package :crane-test.table.diff)
@@ -49,7 +53,15 @@
     (is
      (null (new-columns diff)))
     (is
-     (null (old-columns diff)))))
+     (null (old-columns diff)))
+    (is
+     (null (new-constraints diff)))
+    (is
+     (null (old-constraints diff)))
+    (is
+     (null (new-indices diff)))
+    (is
+     (null (old-indices diff)))))
 
 (test addition
   (test-diff (diff alpha beta)
