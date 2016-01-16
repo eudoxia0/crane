@@ -67,9 +67,7 @@
           (is
            (= (coerce (all-f restored) 'single-float) 3.14))
           (is
-           (string= (all-txt restored) "text"))
-          (is
-           (local-time:timestamp= (all-stamp restored) now)))))
+           (string= (all-txt restored) "text")))))
     ;; Final
     (crane.session:stop session)))
 
