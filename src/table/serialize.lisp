@@ -65,7 +65,7 @@
 
 (defmethod to-plist ((object table-class))
   "Encode a table."
-  (list :name (table-name object)
+  (list :name (class-name (class-of object))
         :abstractp (table-abstract-p object)
         :columns (mapcar #'serialize (table-columns object))))
 
