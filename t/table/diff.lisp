@@ -29,17 +29,17 @@
 
 (crane.table:deftable delta ()
   ((b :type crane.types:int)
-   (c :type crane.types:int)))
+   (d :type crane.types:int)))
 
 (defun class-to-storable (class)
   (crane.serialize:deserialize
    (crane.serialize:serialize class)))
 
-(defmacro storable (class-name)
-  `(class-to-storable (find-class ',class-name)))
+(defun storable (class-name)
+  (class-to-storable (find-class class-name)))
 
 (defmacro test-diff ((diff a b) &body body)
-  `(let ((,diff (differences (storable ,a) (storable ,b))))
+  `(let ((,diff (differences (storable ',a) (storable ',b))))
      (is
       (typep ,diff 'difference))
      ,@body))
