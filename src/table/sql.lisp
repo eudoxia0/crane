@@ -27,6 +27,16 @@
                 :table-class
                 :table-name
                 :table-columns)
+  (:export :constraint
+           :unique
+           :not-null
+           :primary-key
+           :foreign-key
+           :constraint=
+           :column-constraints
+           :index
+           :index-column
+           :index=)
   (:documentation "A tiny DSL for building the SQL code to generate and alter
   tables. This is necessary because of SxQL's limitations."))
 (in-package :crane.table.sql)
