@@ -96,7 +96,9 @@
 
 (crane.table:deftable i-alpha ()
   ((a :type crane.types:int
-      :indexp t)))
+      :indexp t)
+   (b :type crane.types:int
+      :indexp nil)))
 
 (crane.table:deftable i-beta ()
   ((a :type crane.types:int
