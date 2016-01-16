@@ -41,7 +41,7 @@
     (is
      (typep diff 'difference))
     (is
-     (= (length (new-columns dif))
+     (= (length (new-columns diff))
         1))
     (is
      (null (old-columns diff)))))
