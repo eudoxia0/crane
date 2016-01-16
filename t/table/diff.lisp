@@ -63,7 +63,7 @@
     (is
      (null (old-indices diff)))))
 
-(test addition
+(test column-addition
   (test-diff (diff alpha beta)
     (is
      (= (length (new-columns diff))
@@ -71,7 +71,7 @@
     (is
      (null (old-columns diff)))))
 
-(test deletion
+(test column-deletion
   (test-diff (diff alpha gamma)
     (is
      (null (new-columns diff)))
@@ -79,7 +79,7 @@
      (= (length (old-columns diff))
         1))))
 
-(test addition+deletion
+(test column-addition+deletion
   (test-diff (diff alpha delta)
     (is
      (= (length (new-columns diff))
