@@ -26,6 +26,7 @@ cache:
 install:
   # Install Roswell
   - curl -L https://raw.githubusercontent.com/snmsts/roswell/$ROSWELL_BRANCH/scripts/install-for-ci.sh | sh
+  - git clone https://github.com/fukamachi/cl-coveralls ~/lisp/cl-coveralls
   # Install the latest versions of the major dependencies
   - git clone https://github.com/fukamachi/sxql.git quicklisp/local-projects/sxql
   - git clone https://github.com/fukamachi/cl-dbi.git quicklisp/local-projects/cl-dbi
@@ -43,7 +44,7 @@ before_script:
   - psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE postgres_db TO postgres_user"
 
 script:
-  - ros -e '(ql:quickload :fiveam)'
+  - ros -e '(ql:quickload (list :fiveam :cl-coveralls))'
         -e '(setf fiveam:*debug-on-error* t
                   fiveam:*debug-on-failure* t)'
         -e '(setf *debugger-hook*
