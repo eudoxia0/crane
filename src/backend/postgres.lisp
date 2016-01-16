@@ -86,6 +86,12 @@
 (defmethod lisp-to-database ((database postgres) (value (eql t)))
   1)
 
+(defmethod database-to-lisp ((database postgres)
+                             (value string)
+                             (type crane.types:timestamp))
+  (declare (ignore database type))
+  (local-time:parse-timestring value :date-time-separator #\Space))
+
 ;;; Other methods
 
 (defmethod table-exists-p ((database postgres) table-name)
