@@ -292,11 +292,11 @@ database where the definition will be applied."
 )"
   "The format string to create tables.")
 
-(defun index-name (table-name index indices)
+(defun index-name (index table-name)
   "Return the index's string name."
-  (format nil "\"~A_index_~D\""
+  (format nil "\"~A_~A_index\""
           (crane.util:unquote table-name)
-          (position index indices :test #'eq)))
+          (crane.util:unquote (index-column index))))
 
 (defun table-definition-sql (table-definition)
   "Return a list of SQL statements needed to create a table from its definition."
@@ -314,5 +314,5 @@ database where the definition will be applied."
                                              (constraint-name constraint name)))
                       constraints)))
      (mapcar #'(lambda (index)
-                 (add-index index (index-name name index indices) name))
+                 (add-index index (index-name index name) name))
              indices))))
