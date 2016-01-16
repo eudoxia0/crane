@@ -1,8 +1,8 @@
 (in-package :cl-user)
 (defpackage crane.table.diff
   (:use :cl)
-  (:import-from :crane.table
-                :table-class)
+  (:import-from :crane.table.serialize
+                :storable-table)
   (:documentation "Tools for computing the difference between two table definitions."))
 (in-package :crane.table.diff)
 
@@ -19,6 +19,6 @@
 
 (defun differences (past present)
   "Compute the differences between two table definitions."
-  (declare (type table-class past present)
+  (declare (type storable-table past present)
            (ignore past present))
   t)
