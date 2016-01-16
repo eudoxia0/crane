@@ -68,10 +68,10 @@
         1))))
 
 (test addition+deletion
-  (test-diff (diff alpha gamma)
+  (test-diff (diff alpha delta)
     (is
      (= (length (new-columns diff))
         1))
     (is
      (= (length (old-columns diff))
-        1))))
+        2))))
