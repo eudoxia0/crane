@@ -27,21 +27,34 @@
   ((a :type crane.types:int)
    (b :type crane.types:int)))
 
-(test same-table
-  (let ((diff (differences alpha alpha)))
-    (is
-     (typep diff 'difference))
-    (is
-     (null (new-columns diff)))
-    (is
-     (null (old-columns diff)))))
+(let ((alpha (find-class 'alpha))
+      (beta (find-class 'beta))
+      (gamma (find-class 'gamma)))
+  (test same-table
+    (let ((diff (differences alpha alpha)))
+      (is
+       (typep diff 'difference))
+      (is
+       (null (new-columns diff)))
+      (is
+       (null (old-columns diff)))))
 
-(test addition
-  (let ((diff (differences alpha beta)))
-    (is
-     (typep diff 'difference))
-    (is
-     (= (length (new-columns diff))
-        1))
-    (is
-     (null (old-columns diff)))))
+  (test addition
+    (let ((diff (differences alpha beta)))
+      (is
+       (typep diff 'difference))
+      (is
+       (= (length (new-columns diff))
+          1))
+      (is
+       (null (old-columns diff)))))
+
+  (test deletion
+    (let ((diff (differences alpha beta)))
+      (is
+       (typep diff 'difference))
+      (is
+       (null (new-columns diff)))
+      (is
+       (= (length (old-columns diff))
+          1)))))
