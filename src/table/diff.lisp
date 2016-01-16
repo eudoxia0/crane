@@ -22,7 +22,23 @@
    (old-columns :reader old-columns
                 :initarg :old-columns
                 :type list
-                :documentation "A list of column objects that are to be dropped."))
+                :documentation "A list of column objects that are to be dropped.")
+   (old-constraints :reader old-constraints
+                    :initarg :old-constraints
+                    :type list
+                    :documentation "A list of constraints that existed in the old table.")
+   (new-constraints :reader new-constraints
+                    :initarg :new-constraints
+                    :type list
+                    :documentation "A list of constraints that only exist in the new table.")
+   (old-indices :reader old-indices
+                :initarg :old-indices
+                :type list
+                :documentation "A list of old indices.")
+   (new-indices :reader new-indices
+                :initarg :new-indices
+                :type list
+                :documentation "A list of new indices."))
   (:documentation "Represents the difference between two tables."))
 
 (defun column= (a b)
@@ -31,14 +47,22 @@
 (defun has-column-p (column table)
   (not (null (position column table :test #'column=))))
 
+(defun column-difference (past present)
+  (declare (type storable-table past present))
+  (let ((past-columns (table-columns past))
+        (present-columns (table-columns present)))
+    (values (remove-if #'(lambda (column)
+                           (has-column-p column past-columns))
+                       present-columns)
+            (remove-if #'(lambda (column)
+                           (has-column-p column present-columns))
+                       past-columns))))
+
 (defun differences (past present)
   "Compute the differences between two table definitions."
   (declare (type storable-table past present))
-  (make-instance 'difference
-                 :new-columns (remove-if #'(lambda (column)
-                                             (has-column-p column (table-columns past)))
-                                         (table-columns present))
-                 :old-columns (remove-if #'(lambda (column)
-                                             (has-column-p column
-                                                           (table-columns present)))
-                                         (table-columns past))))
+  (multiple-value-bind (new-columns old-columns)
+      (column-difference past present)
+    (make-instance 'difference
+                   :new-columns new-columns
+                   :old-columns old-columns)))

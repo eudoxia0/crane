@@ -34,6 +34,7 @@
            :foreign-key
            :constraint=
            :column-constraints
+           :table-constraints
            :index
            :index-column
            :index=)
@@ -276,7 +277,6 @@ SQL statement to drop it."
 
 (defun table-constraints (table-class)
   "Extract a list of contraints from a table."
-  (declare (type table-class table-class))
   (loop for column in (table-columns table-class) appending
     (column-constraints column)))
 
