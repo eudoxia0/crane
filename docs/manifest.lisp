@@ -5,5 +5,10 @@
               :output-format (:type :multi-html
                               :template :minima)
               :sources ("overview.scr"
+                        "tutorial.scr"
+                        "tables.scr"
+                        "types.scr"
+                        "sessions.scr"
+                        "extending.scr"
                         "internals.scr"
                         "api.scr"))))
