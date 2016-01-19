@@ -1,0 +1,35 @@
+@begin(section)
+@title(Types)
+
+@cl:with-package[name="crane.types"](
+@cl:doc(class sql-type)
+@cl:doc(class column-id)
+@cl:doc(class bool)
+@cl:doc(class int)
+@cl:doc(class bigint)
+@cl:doc(class smallint)
+@cl:doc(class numeric)
+@cl:doc(class double)
+@cl:doc(class text)
+@cl:doc(class varchar)
+@cl:doc(class datetime)
+)
+
+@begin(section)
+@title(Converting)
+
+@cl:with-package[name="crane.convert"](
+@cl:doc(generic lisp-to-database)
+@cl:doc(generic database-to-lisp)
+)
+
+For example, timestamp conversion is implemented in this way:
+@c(local-time:timestamp) objects are converted to ISO 8601 strings, and database
+values are parsed as Unix timestamps (if they're integers) or as ISO 8601
+strings if they are strings.
+
+@code[lang=lisp](@include[path="includes/convert.lisp"]())
+
+@end(section)
+
+@end(section)
