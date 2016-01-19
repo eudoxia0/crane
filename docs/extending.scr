@@ -1,0 +1,11 @@
+@begin(section)
+@title(Extending)
+
+@begin(section)
+@title(New Column Types)
+
+@code[lang=lisp](@include[path="includes/new-types.lisp"]())
+
+@end(section)
+
+@end(section)
