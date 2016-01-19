@@ -22,9 +22,11 @@
 
 ;;; Configuration definition
 
-(defun add-database (tag instance)
+(defun add-database (tag database)
   "Add a database instance to the registry."
-  (push (cons tag instance) *database-registry*))
+  (declare (type symbol tag)
+           (type crane.database:database database))
+  (push (cons tag database) *database-registry*))
 
 (defmacro define-postgres-database (tag &key name username password
                                           (host crane.database.postgres:*default-host*)
@@ -62,6 +64,7 @@
 
 (defun get-database (tag)
   "Find the database object associated to that tag."
+  (declare (type symbol tag))
   (rest (assoc tag *database-registry*)))
 
 (defmacro do-databases ((tag database) &body body)
