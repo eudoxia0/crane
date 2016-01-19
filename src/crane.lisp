@@ -59,11 +59,8 @@
                 :make-session
                 :start
                 :stop
-                :session-databases
-                :session-tables
                 :session-migrate-p
                 :session-migrations-directory
-                :register-database
                 :register-table)
   (:import-from :crane.query
                 :create
@@ -127,11 +124,8 @@
            :make-session
            :start
            :stop
-           :session-databases
-           :session-tables
            :session-migrate-p
            :session-migrations-directory
-           :register-database
            :register-table
            :create
            :create-instance
