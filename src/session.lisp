@@ -9,6 +9,7 @@
                 :database
                 :connect
                 :disconnect
+                :connectedp
                 :table-exists-p
                 :sql-query
                 :query
@@ -26,10 +27,9 @@
            :session
            :make-session
            :session-databases
-           :session-tables
            :session-migrate-p
            :session-migrations-directory
-           :register-database
+           :do-tables
            :register-table
            :start
            :stop
@@ -46,18 +46,13 @@
 (defvar *session*)
 
 (defclass session ()
-  ((databases :accessor session-databases
-              :initarg :databases
-              :type list
-              :documentation "A list of database tags, representing the
-              databases this session connects to.")
-   (tables :accessor session-tables
-           :initarg :tables
-           :initform (make-hash-table :test #'eq)
-           :type hash-table
-           :documentation "A hash table from table names (symbols) to database
-           tags (symbol). This associates the tables this sessin will manage
-           with the databases where they will be created.")
+  ((map :accessor session-map
+        :initarg :map
+        :initform (make-hash-table :test #'eq)
+        :type hash-table
+        :documentation "A hash table from table names (symbols) to database
+objects. This associates the tables this session will manage with the databases
+where they will be created.")
    (migratep :reader session-migrate-p
              :initarg :migratep
              :initform t
@@ -67,84 +62,78 @@
                          :initarg :migrations-directory
                          :type pathname
                          :documentation "The absolute pathname to the directory
-                         where migrations data will be stored.")
+where migrations data will be stored.")
    (%startedp :accessor session-started-p
               :initform nil
               :type boolean
               :documentation "Holds whether or not the session has been started."))
   (:documentation "A session ties table definitions, which are not tied to any
-  particular database, to the actual databases where they will be created. It also manages the storage of migrations."))
+particular database, to the actual databases where they will be created. It also
+manages the storage of migrations."))
 
-(defun make-session (&key databases migratep (migrations-directory nil dirp)
-                       defaultp)
+(defun make-session (&key migratep (migrations-directory nil dirp) defaultp)
   "Create a session object."
   (let ((instance (if dirp
                       (make-instance 'session
-                                     :databases databases
                                      :migratep migratep
                                      :migrations-directory migrations-directory)
                       (make-instance 'session
-                                     :migratep migratep
-                                     :databases databases))))
+                                     :migratep migratep))))
     (when defaultp
       (setf *session* instance))
     instance))
 
-(defun register-database (session database-tag)
-  "Add a database tag to a session, so a connection will be created when the
-  session is started.
+(defmacro do-tables ((table-name database session) &body body)
+  "Iterate over the tables and databases in the session."
+  `(maphash #'(lambda (,table-name ,database)
+                (declare (type symbol ,table-name)
+                         (type database ,database))
+                ,@body)
+            (session-map ,session)))
 
-Returns the database tag."
-  (when (session-started-p session)
-    (warn "Registering a database once a session has started will have no effect
-      until it's restarted."))
-  (push database-tag (session-databases session))
-  database-tag)
+(defgeneric register-table (session table-name database)
+  (:documentation "Register a table, and the database where it will be created,
+  in the session.
 
-(defun register-table (session table-name database-tag)
-  "Register a table in the session, to be created in the given database.
+Returns the @cl:param(table-name) argument.")
 
-Returns the table name."
-  (when (session-started-p session)
-    (warn "Registering a tabe when a session has already started will have no
-    effect until the session is restarted."))
-  (when (gethash table-name (session-tables session))
-    (warn "This table has already been mapped to a database in the session."))
-  (setf (gethash table-name (session-tables session)) database-tag)
-  table-name)
+  (:method (session table-name (database symbol))
+    "Add a database by tag name."
+    (declare (type session session)
+             (type symbol table-name))
+    (register-table session table-name (get-database database)))
+
+  (:method (session table-name (database database))
+    "Add a database object."
+    (when (session-started-p session)
+      (warn "Registering a table when a session has already started will have no effect until the session is restarted."))
+    (when (gethash table-name (session-map session))
+      (warn "This table has already been mapped to a database in the session."))
+    (setf (gethash table-name (session-map session)) database)
+    table-name))
 
 (defmethod start ((session session))
   "Start the session, connecting to all the databases."
   (with-slots (databases tables migratep %startedp) session
     (unless %startedp
-      ;; Iterate over the databases, connecting them
-      (loop for tag in databases do
-        (let ((db (get-database tag)))
-          (when db
-            (crane.database:connect db))))
-      ;; Iterate over the tables, ensuring they exist
-      (loop for table-name being the hash-keys of tables
-            for database-tag being the hash-values of tables
-            do
-        (let ((table (find-class table-name))
-              (database (get-database database-tag)))
-          (when (and table database)
-            (if migratep
-                (error "Migrations not implemented yet :^)")
-                (progn
-                  ;; Check if the table exists
-                  (unless (table-exists-p database (table-name table))
-                    (format t "Creating table ~A" table-name)
-                    (create-table table database))))))))
+      (do-tables (table-name database session)
+        (connect database)
+        (let ((table-class (find-class table-name)))
+          (if migratep
+              (error "Migrations not implemented yet :^)")
+              (progn
+                ;; Check if the table exists
+                (unless (table-exists-p database (table-name table-class))
+                  (create-table table-class database)))))))
     (setf %startedp t))
   nil)
 
 (defmethod stop ((session session))
   "Stop the session, closing all database connections."
-  (loop for tag in (session-databases session) do
-    (let ((db (get-database tag)))
-      (when db
-        (crane.database:disconnect db))))
+  (do-tables (table-name database session)
+    (declare (ignore table-name))
+    (unless (connectedp database)
+      (disconnect database)))
   (setf (session-started-p session) nil)
   nil)
 
@@ -217,9 +206,8 @@ SxQL for insertion. Conversion of Lisp values to database values happens here."
 
 (defun database-for-instance (session instance)
   (declare (type standard-db-object instance))
-  (get-database
-   (gethash (class-name (class-of instance))
-            (session-tables session))))
+  (gethash (class-name (class-of instance))
+           (session-map session)))
 
 (defmethod exists-in-database-p ((session session) (instance standard-db-object))
   (when (slot-boundp instance 'crane.table:id)
@@ -256,7 +244,7 @@ the session."
   nil)
 
 (defun database-for-class (session class-name)
-  (crane.config:get-database (gethash class-name (session-tables session))))
+  (gethash class-name (session-map session)))
 
 (defun select (columns session class-name &rest arguments)
   "Execute a @c(SELECT) on a particular class."
