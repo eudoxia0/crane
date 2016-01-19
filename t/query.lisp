@@ -32,7 +32,6 @@
 
 (defun test-database (database-tag)
   (let ((session (crane.session:make-session :migratep nil)))
-    (crane.session:register-database session database-tag)
     (crane.session:register-table session 'all database-tag)
     (crane.session:start session)
     ;; With default

@@ -4,7 +4,6 @@
                 :make-session
                 :session
                 :session-databases
-                :register-database
                 :register-table)
   (:export :session-tests))
 (in-package :crane-test.session)
@@ -25,13 +24,6 @@
   (let ((session (make-session :migratep nil)))
     (is
      (typep session 'session))
-    (is
-     (null (session-databases session)))
-    (finishes
-      (register-database session database-tag))
-    (is
-     (equal (length (session-databases session))
-            1))
     (finishes
       (register-table session 'truck database-tag))
     (finishes
