@@ -93,11 +93,13 @@ table `table-name`."
                    (getf constraints :definition)
                    (if (getf constraints :internal) "," "")
                    (getf constraints :internal)
-                   (getf constraints :external)))
+                   '()))
          (conn (crane.connect:get-connection (crane.meta:table-database
                                               (find-class table-name)))))
     (format t "~&Query: ~A~&" query)
-    (dbi:execute (dbi:prepare conn query))))
+    (dbi:execute (dbi:prepare conn query))
+    (loop for external-constraint in (getf constraints :external)
+          do (dbi:execute (dbi:prepare conn external-constraint)))))
 
 (defun migrate (table-class diff)
   (let* ((table-name (crane.meta:table-name table-class))
