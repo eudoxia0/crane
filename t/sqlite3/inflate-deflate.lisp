@@ -7,10 +7,13 @@
 
 (test (queries :depends-on create-table)
   (is-true
-   (let* ((timestamp (local-time:today))
+   (let* ((the-timestamp (local-time:today))
           (instance (create 'sq-table-with-time
-                            :field timestamp))
+                            :field the-timestamp))
           (found-instance
-            (single 'sq-table-with-time :field timestamp)))
-     (local-time:timestamp= timestamp
+	   (single 'sq-table-with-time
+		   :field
+		   (crane.inflate-deflate:deflate the-timestamp))))
+     (declare (ignore instance))
+     (local-time:timestamp= the-timestamp
                             (field found-instance)))))
