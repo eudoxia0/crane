@@ -11,6 +11,7 @@
            :*default-db*
            :connect
            :disconnect
+	   :disconnect-clean
            :get-db
            :get-connection)
   (:documentation "Handles database connections, connection parameter validation, and various low-level DB-specific modes."))
@@ -89,7 +90,10 @@ the connection spec of the database '~A'" key db))))
 spec for the database '~A' have not been provided: ~A" db it))
          final-spec)))
 
-(defparameter *db* (make-hash-table)
+(defun initialize-*db* ()
+  (make-hash-table))
+
+(defparameter *db* (initialize-*db*)
   "A map from database names to <database> objects.")
 
 (defclass <database> ()
@@ -158,6 +162,11 @@ instances, and setting the value of *default-db*."
   "Cut all connections."
   (loop for db being the hash-values in *db* do
     (dbi:disconnect (database-connection db))))
+
+(defun disconnect-clean ()
+  "Cut all connections and reset *db* hashtable"
+  (disconnect)
+  (setf *db* (initialize-*db*)))
 
 (defun get-db (&optional database-name)
   "Return the database matching a specific name"

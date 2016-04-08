@@ -15,7 +15,7 @@
 
     (deftable sq-child-table ()
       (something-else :type text :initform "Foo")
-      (ref :type integer :foreign (sq-parent-table :on-delete :cascade)))))
+      (ref :type integer :foreign (sq-parent-table :cascade :cascade)))))
 
 (test (dereferencing :depends-on creating-related-tables)
   (is (equal

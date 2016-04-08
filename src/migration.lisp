@@ -37,9 +37,27 @@ table `table-name`."
   (probe-file (migration-history-pathname table-name)))
 
 (defun read-migration-history (table-name)
-  (read-from-string
-   (uiop:read-file-string
-    (migration-history-pathname table-name))))
+  (let ((tables (read-from-string
+		 (uiop:read-file-string
+		  (migration-history-pathname table-name)))))
+    (setf tables
+	  (mapcar #'(lambda (table)
+		      (nconc
+		       (list :table-options (getf table :table-options))
+		       (list :columns
+			     (mapcar #'(lambda (column)
+					 (let ((saved-foreign (getf column :foreign)))
+					   (setf (getf column :foreign)
+						 (if (or (null saved-foreign)
+							 (symbolp saved-foreign))
+						     saved-foreign
+						     (nconc
+						      (list (first saved-foreign))
+						      (mapcar #'alexandria:make-keyword (rest saved-foreign)))))
+					   column))
+				     (getf table :columns)))))
+		  tables))
+    tables))
 
 (defun get-last-migration (table-name)
   (first (last (read-migration-history table-name))))

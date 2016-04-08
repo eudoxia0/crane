@@ -37,7 +37,7 @@
 
     (deftable child-table ()
       (something-else :type text :initform "Foo")
-      (ref :type integer :foreign (parent-table :on-delete :cascade)))))
+      (ref :type integer :foreign (parent-table :cascade :cascade)))))
 
 (test (dereferencing :depends-on creating-related-tables)
   (is (equal
