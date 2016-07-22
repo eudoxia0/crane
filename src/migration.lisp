@@ -78,7 +78,7 @@ table `table-name`."
 
 (defparameter +create-table-format-string+
   ;; Are you ready for this one?
-  "CREATE TABLE ~A (~{    ~A~#[~:;, ~]~}~A~{    ~A~#[~:;, ~]~});~{~A;~}"
+  "CREATE TABLE ~A (~{    ~A~#[~:;, ~]~}~A~{    ~A~#[~:;, ~]~});"
   ;; Is that clear?
   )
 
@@ -87,17 +87,30 @@ table `table-name`."
                        table-name
                        digest
                        (crane.meta:table-database (find-class table-name))))
-         (query
-           (format nil +create-table-format-string+
-                   (crane.sql:sqlize (table-name (find-class table-name)))
-                   (getf constraints :definition)
-                   (if (getf constraints :internal) "," "")
-                   (getf constraints :internal)
-                   (getf constraints :external)))
+         ;; Queries must each be run separately, external constraints require
+         ;; separate query, so assemble a list of sql strings
+         ;; to be run in a transaction.
+         (queries
+          (append
+           (list (format nil +create-table-format-string+
+                         (crane.sql:sqlize (table-name (find-class table-name)))
+                         (getf constraints :definition)
+                         (if (getf constraints :internal) "," "")
+                         (getf constraints :internal)))
+           (getf constraints :external)))
          (conn (crane.connect:get-connection (crane.meta:table-database
                                               (find-class table-name)))))
-    (format t "~&Query: ~A~&" query)
-    (dbi:execute (dbi:prepare conn query))))
+    (format t "~&Query: ~{~& >> ~A~}~&" queries)
+    ;; Run queries inside a transaction to roll back if they fail
+    (dbi:with-transaction conn
+      (handler-case
+
+        (dolist (query queries)
+            (dbi:execute (dbi:prepare conn query)))
+
+        (dbi.error:<dbi-error> (e)
+          (declare (ignore e))
+          (dbi:rollback conn))))))
 
 (defun migrate (table-class diff)
   (let* ((table-name (crane.meta:table-name table-class))
