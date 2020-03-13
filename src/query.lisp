@@ -17,8 +17,7 @@
        (format t "~&Query: ~A~&" sql))
      (let* ((prepared (dbi:prepare (crane.connect:get-connection ,database-name)
                                    sql))
-            (result (apply #'dbi:execute
-                           (cons prepared args))))
+            (result (dbi:execute prepared args)))
        (when result ,body))))
 
 (defmacro query (query &optional database-name)
